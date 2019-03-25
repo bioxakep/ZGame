@@ -1,3 +1,112 @@
+//TAC_Master 05/MAR/2019 Beta
+//           21/MAR/2019 organized / pins tested 
+// i2c  16x2 display for debug pending
+
+#include <OneWire.h>
+#include <ArdCPZ.h>
+#include <SoftwareSerial.h>
+#include <DFPlayer_Mini_Mp3.h>
+#include <Adafruit_NeoPixel.h>
+
+#define PIXELS 3
+#define STRIPPIN 26 // wire 24 R(+) BK(-) G(SIG)
+
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(PIXELS, STRIPPIN, NEO_GRB + NEO_KHZ800);
+uint32_t greenColor, redColor;
+#define PIN_CPZ1 28
+
+ArdCPZ *cpz1;
+int ficha1ok = 384;
+
+int level = 0;
+byte startLevel = 1;
+boolean startRFWait = true;
+boolean operSkips[10];
+boolean gStates[10];
+boolean playerGDone[10];
+bool ok1 = false;
+
+int phoneOUT = 5;  // R+B- WIRE
+
+int radioIN  = 53; // wire 33
+int radioOUT = 51;
+
+int generIN  = 49;  // wire 23
+int generOUT = 47;
+
+int meterIN  = 45;  // wire 34
+int meterOUT = 43;
+
+int headOUT  = 23; // wire 18 R(+) B(-) G(OUT)
+ 
+int alleyIN  = A14; // wire 20
+int alleyOUT = A15;
+
+int fusesIN  = 25; // wire 19
+int fusesOUT = 27;
+
+// int door3IN  = 9; 
+unsigned long fusesSigStart = 0;
+unsigned long alleySigStart = 0;
+
+unsigned long fusesSigStop = 0;
+unsigned long alleySigStop = 0;
+
+boolean fusesStates[2] = {HIGH, HIGH};
+boolean alleyStates[2] = {HIGH, HIGH};
+
+int shelfIN  = 37; // wire 21
+int shelfOUT = 35;
+
+boolean gasOpened = true;
+
+int crateIN  = 33; // wire 30 W(IN) R(+)B(-)   >>>  previous called MAP
+int crateOUT = 31; // wire 30 G(OUT)
+
+int zombiIN  = 41;
+int zombiOUT = 39;
+
+int lightR1  = A11; // 
+int lightR2A =  A5; // RELAY 2 WIRE 25 G(+)W(-)
+int lightR2B =   7; // TIP PWM
+int lightR3A = A13; // SSR 3A
+int lightR3B = A12; // SSR 3A
+
+int door1    =  A8; // RELAY 5 WIRE 32 R(+)B(-)
+int door2    =  A4; // RELAY 1 WIRE 25 R(+)B(-) 
+int crateHD  =  A6; // RELAY 3 WIRE 29 R(+)B(-)
+int door3A   =  34; // wire 24 SHDR(PWR/GND)
+int door3B   =  32; // WIRE 19 SHIELD(PWR/GND)  R(+)
+int door4    =  A7; // RELAY 4 WIRE 26 R(+)B(-)
+int gunBox   = A10; // RELAY 7 WIRE 29 R(+) W(-) >>> to be connected
+int boxed    =  A9; // RELAY 6 WIRE 35 (+)(-)
+
+int ladder   =  12; // ladder fastlock
+
+int triplIN  =  8;
+int triplOUT = 12;
+
+int video1   = A0;
+int video2   = A1;
+int video3   = A2;
+int video4   = A3;
+
+byte start = 0;
+byte radio = 1;
+byte gener = 2;
+byte meter = 3;
+byte code = 4;
+byte fuses1 = 5;
+byte fuses2 = 7;
+byte alley = 8;
+byte shelf1 = 9;
+byte shelf2 = 10;
+byte crate1 = 11;
+byte crate2 = 12;
+byte tripl = 13;
+byte gun = 14;
+byte zombie = 15;
+byte gCount = 16;
 /*
 0. PRE-START   >>> ALL DOORS  (2,3,4) LOCK
 1. RFID for start / start button   >>> DOOR 1 LOCK  >>> SEND SIGNAL TO VIDEO PLAYER 1
@@ -24,48 +133,3 @@ SHELF IN/OUT (2 SIGNALS FROM)
 MAP IN/OUT (2 SIGNALS FROM)
 TARGET IN/OUT 
 */
-
-int door1Pin = 7;
-int door2Pin = 8;
-int door3Pin = 9;
-int door4Pin = 10;
-int startRFID = 11;
-int startBtn = 12;
-boolean startStates[2] = {HIGH, HIGH};
-unsigned long lastRFIDCheck = 0;
-boolean startRFWait = true;
-void setup()
-{
-  pinMode(door1Pin, OUTPUT);
-  pinMode(door2Pin, OUTPUT);
-  pinMode(door3Pin, OUTPUT);
-  pinMode(door4Pin, OUTPUT);
-  pinMode(startBtn, INPUT_PULLUP);
-  digitalWrite(door1Pin, LOW);
-  digitalWrite(door2Pin, LOW);
-  digitalWrite(door3Pin, LOW);
-  digitalWrite(door4Pin, LOW);
-  ArdCPZ *firstRF; // RFIDReader
-  
-}
-
-void loop()
-{
-	unsigned long tick = millis();
-  if (level == 1)
-  {
-    if(startGame(tick))
-    {
-      digitalWrite(door1Pin, LOW);
-      //Send Signal to video player//
-    }
-  }
-  elif (level == 2)
-  {
-    if(radioGadget())
-    {
-      
-    }
-  }
-
-}
