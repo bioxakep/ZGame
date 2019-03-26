@@ -1,9 +1,8 @@
-long lastRFIDCheck = 0;
 boolean Start(long t)
 {
-  boolean start = false;
   if (t - lastRFIDCheck > 100)
   {
+    Serial.print("Check RFID:");
     lastRFIDCheck = t;
     if (startRFWait) startRFWait = !getStartRFID();
   }

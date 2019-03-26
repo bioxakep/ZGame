@@ -16,14 +16,18 @@ uint32_t greenColor, redColor;
 #define PIN_CPZ1 28
 
 ArdCPZ *cpz1;
-int ficha1ok = 384;
+int ficha1ok = 436;
 
 int level = 0;
+
 byte startLevel = 1;
+long lastRFIDCheck = 0;
 boolean startRFWait = true;
+
 boolean operSkips[10];
 boolean gStates[10];
 boolean playerGDone[10];
+
 bool ok1 = false;
 
 int phoneOUT = 5;  // R+B- WIRE

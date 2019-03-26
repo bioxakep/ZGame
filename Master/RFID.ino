@@ -10,11 +10,18 @@ boolean getStartRFID() {
     {                               
       ficha2 = ficha2 + addr[i];    // Serial.print(addr[i], HEX);
     }
-    Serial.println("Start RFID recieved");
     //Serial.print(" sum = ");
     //Serial.println(ficha2);
-    if (ficha2 == ficha1ok) return true;
-    else return false;
+    if (ficha2 == ficha1ok) 
+    {
+      Serial.println("RFID Code OK");
+      return true;
+    }
+    else
+    {
+      Serial.println("RFID Code NOT OK");
+      return false;
+    }
   }
   else return false;
 }
