@@ -10,8 +10,8 @@ boolean getStartRFID() {
     {                               
       ficha2 = ficha2 + addr[i];    // Serial.print(addr[i], HEX);
     }
-    //Serial.print(" sum = ");
-    //Serial.println(ficha2);
+    Serial.print(" sum = ");
+    Serial.println(ficha2);
     if (ficha2 == ficha1ok) 
     {
       Serial.println("RFID Code OK");

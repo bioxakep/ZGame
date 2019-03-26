@@ -18,7 +18,6 @@ void sendHLms(int pin, int ms)
 
 void setMp3(byte n)
 {
-  mp3_stop();
   delay(10);
   if(n == 1) mp3_set_serial(Serial2);
   else if(n == 2) mp3_set_serial(Serial3);

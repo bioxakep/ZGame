@@ -2,7 +2,7 @@ boolean Start(long t)
 {
   if (t - lastRFIDCheck > 100)
   {
-    Serial.print("Check RFID:");
+    //Serial.print("Check RFID:");
     lastRFIDCheck = t;
     if (startRFWait) startRFWait = !getStartRFID();
   }
@@ -17,6 +17,7 @@ boolean Start(long t)
       sendHLms(video1, 100);
       sendHLms(video2, 100);
       setMp3(1);
+      delay(10);
       mp3_play(1);
       delay(10);
       Serial.print("Level 1 Start 2 OK");
@@ -52,6 +53,7 @@ boolean radioGadget()
     setMp3(1);
     mp3_play(2);
     setMp3(2);
+    delay(10);
     mp3_play(2);
     digitalWrite(lightR1, LOW);
     digitalWrite(lightR2A, HIGH);

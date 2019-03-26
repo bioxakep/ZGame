@@ -147,4 +147,7 @@ void setup()
   greenColor = strip.Color(150, 0, 0);
   redColor = strip.Color(0, 150, 0);
   strip.show();
+  setMp3(1);
+  mp3_set_volume(15);
+  Serial.println("Setup OK " + String(millis()));
 }
