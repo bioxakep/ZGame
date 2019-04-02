@@ -16,9 +16,10 @@ void sendHLms(int pin, int ms)
   digitalWrite(pin, LOW);
 }
 
-void setMp3(byte n)
+void mp3Set(byte n)
 {
-  delay(10);
-  if(n == 1) mp3_set_serial(Serial2);
-  else if(n == 2) mp3_set_serial(Serial3);
+  delay(100);
+  if (n == 1) mp3_set_serial(Serial2);
+  else if (n == 2) mp3_set_serial(Serial3);
+  delay(100);
 }

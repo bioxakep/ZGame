@@ -1,5 +1,9 @@
 //TAC_Master 05/MAR/2019 Beta
-//           21/MAR/2019 organized / pins tested 
+//           21/MAR/2019 organized / pins tested
+//           02/04/2019 Works until end of game
+// First Run Server.py
+// Second PowerUp Bridge and Master
+// Then run MasterMonitor
 // i2c  16x2 display for debug pending
 
 #include <OneWire.h>
@@ -10,27 +14,30 @@
 
 #define PIXELS 3
 #define STRIPPIN 26 // wire 24 R(+) BK(-) G(SIG)
-
-Adafruit_NeoPixel strip = Adafruit_NeoPixel(PIXELS, STRIPPIN, NEO_GRB + NEO_KHZ800);
-uint32_t greenColor, redColor;
+#define RSTXCNTRL 3   //RS485 Direction control
 #define PIN_CPZ1 28
 
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(PIXELS, STRIPPIN, NEO_GRB + NEO_KHZ800);
 ArdCPZ *cpz1;
-int ficha1ok = 436;
 
+uint32_t greenColor, redColor;
+
+boolean bridgeConnected = false;
 int level = 0;
 
-byte startLevel = 1;
+byte startLevel = 0;
 long lastRFIDCheck = 0;
 boolean startRFWait = true;
 
-boolean operSkips[10];
-boolean gStates[10];
-boolean playerGDone[10];
+boolean operSkips[16];
+boolean gStates[16];
+boolean playerGDone[16];
 
 bool ok1 = false;
-
 int phoneOUT = 5;  // R+B- WIRE
+
+int boxIN = 9;
+int boxHD = 36;
 
 int radioIN  = 53; // wire 33
 int radioOUT = 51;
@@ -50,6 +57,8 @@ int fusesIN  = 25; // wire 19
 int fusesOUT = 27;
 
 // int door3IN  = 9; 
+unsigned long lastSyncTime = 0;
+
 unsigned long fusesSigStart = 0;
 unsigned long alleySigStart = 0;
 
@@ -61,8 +70,6 @@ boolean alleyStates[2] = {HIGH, HIGH};
 
 int shelfIN  = 37; // wire 21
 int shelfOUT = 35;
-
-boolean gasOpened = true;
 
 int crateIN  = 33; // wire 30 W(IN) R(+)B(-)   >>>  previous called MAP
 int crateOUT = 31; // wire 30 G(OUT)
@@ -95,21 +102,22 @@ int video2   = A1;
 int video3   = A2;
 int video4   = A3;
 
-byte start = 0;
-byte radio = 1;
-byte gener = 2;
-byte meter = 3;
-byte code = 4;
+byte box = 0;
+byte radio =  1;
+byte gener =  2;
+byte meter =  3;
+byte code =   4;
 byte fuses1 = 5;
-byte fuses2 = 7;
-byte alley = 8;
-byte shelf1 = 9;
-byte shelf2 = 10;
-byte crate1 = 11;
-byte crate2 = 12;
-byte tripl = 13;
-byte gun = 14;
-byte zombie = 15;
+byte fuses2 = 6;
+byte alley =  7;
+byte shelf1 = 8;
+byte shelf2 = 9;
+byte crate1 = 10;
+byte crate2 = 11;
+byte tripl =  12;
+byte gun =    13;
+byte zombie = 14;
+byte head =   15;
 byte gCount = 16;
 /*
 0. PRE-START   >>> ALL DOORS  (2,3,4) LOCK

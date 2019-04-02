@@ -1,6 +1,6 @@
 void connectToMonitor()
 {
-  while (!monitorConnected)
+  while (!monConnected)
   {
     if (Serial.available() > 0)
     {
@@ -18,12 +18,12 @@ void connectToMonitor()
           {
             Serial.readStringUntil('\n');
             delay(50);
-            Serial.println("start");
+            Serial.println("startBridge");
             delay(1000);
           }
           else sync = true;
         }
-        monitorConnected = true;
+        monConnected = true;
       }
     }
   }

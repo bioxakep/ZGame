@@ -1,42 +1,70 @@
-boolean Start(long t)
+void Start(long t)
 {
+  // DEBUG
+  
+  if(Serial.available() > 0)
+  {
+    delay(100);
+    while(Serial.available()) Serial.read();
+    startRFWait = false;
+  }
+  
+  // DEBUG
   if (t - lastRFIDCheck > 100)
   {
-    //Serial.print("Check RFID:");
     lastRFIDCheck = t;
     if (startRFWait) startRFWait = !getStartRFID();
   }
   if (!startRFWait)
   {
-    if (startLevel == 2)
+    if (startLevel == 1)
     {
-      digitalWrite(lightR2A, LOW);
-      digitalWrite(lightR2B, LOW);
+      digitalWrite(lightR2A, HIGH);
+      digitalWrite(lightR2B, HIGH);
+      digitalWrite(door4, LOW); // close last door
+      digitalWrite(door2, LOW); // close second door
       digitalWrite(lightR3A, LOW);
       digitalWrite(lightR3B, LOW);
       sendHLms(video1, 100);
       sendHLms(video2, 100);
-      setMp3(1);
-      delay(10);
-      mp3_play(1);
+      //mp3Set(1);
+      //mp3_play(1);
       delay(10);
       Serial.print("Level 1 Start 2 OK");
       Serial.print("Level 1 Done");
+      strip.setPixelColor(1, 0, 0, 0);
+      strip.show();
+      sendByte(0xAA);
+      delay(300);
       level = 10;
     }
-    else if (startLevel == 1)
+    else if (startLevel == 0)
     {
-      digitalWrite(door1, HIGH);
+      digitalWrite(door1, LOW);
       digitalWrite(door2, HIGH);
-      digitalWrite(door4, HIGH);
+      digitalWrite(door4, LOW);
+      strip.setPixelColor(2, 0, 0, 0);
+      strip.show();
       Serial.print("Level 1 Start 1 OK");
       startLevel++;
+      delay(300);
     }
     startRFWait = true;
   }
 }
 
-boolean radioGadget()
+void Box()
+{
+  if ((!digitalRead(boxIN) || operSkips[box]) && !gStates[box])
+  {
+    if(operSkips[box]) sendHLms(boxHD, 250);
+    else playerGDone[box] = true;
+    Serial.println("Box OK");
+    level = 11;
+  }
+}
+
+void Radio()
 {
   // ROOM 1 "RADIO">>  wait for signal from radioIN  >> if skipped send signal to radioOUT
   //                                                     signal to Video player 3,
@@ -50,16 +78,22 @@ boolean radioGadget()
     if (operSkips[radio]) sendHLms(radioOUT, 250);
     else playerGDone[radio] = true;
     sendHLms(video2, 100);
-    setMp3(1);
-    mp3_play(2);
-    setMp3(2);
-    delay(10);
-    mp3_play(2);
-    digitalWrite(lightR1, LOW);
-    digitalWrite(lightR2A, HIGH);
-    digitalWrite(phoneOUT, LOW);
-    Serial.print("radioGadget OK");
+    //mp3Set(1);
+    //mp3_play(2);
+    //mp3Set(2);
+    //mp3_play(2);
+    //digitalWrite(lightR1,  LOW);  // OFF
+    digitalWrite(phoneOUT, LOW);  // turn off the phone
+    ///  events delayed for 25 seconds
+    digitalWrite(door2,   HIGH);  //open door 2
+    digitalWrite(lightR2A, LOW);  // ON LIGHT under door 2
+    digitalWrite(lightR2B, LOW); // OFF LIGHT under door 3
+    digitalWrite(lightR3A, LOW); // OFF LIGHT ROOM 3
+    digitalWrite(lightR3B, LOW); // OFF LIGHT ROOM 3
     level = 21;
+    strip.setPixelColor(0, 0, 0, 0);
+    strip.show();
+    Serial.println("Radio OK");
   }
 }
 
@@ -73,7 +107,7 @@ void Generator()
     if (operSkips[gener]) sendHLms(generOUT, 250);
     else playerGDone[gener] = true;
     sendHLms(headOUT, 100);
-    Serial.print("Generator OK");
+    Serial.println("Generator OK");
     level = 22;
   }
 }
@@ -93,12 +127,12 @@ void Meter()
     if (operSkips[meter]) sendHLms(meterOUT, 250);
     else playerGDone[meter] = true;
     sendHLms(video1, 100);
-    setMp3(1);
-    mp3_play(3);
+    //mp3Set(1);
+    //mp3_play(3);
     digitalWrite(lightR1, LOW);
     digitalWrite(lightR2B, HIGH);
     sendHLms(alleyOUT, 250);
-    Serial.print("Meter OK");
+    Serial.println("Meter OK");
     level = 23;
   }
   if (gStates[meter]) digitalWrite(lightR2B, !digitalRead(meterIN)); // Узнать это после прохождения или вообще
@@ -119,9 +153,9 @@ void Code()
     digitalWrite(lightR1, LOW);
     digitalWrite(door3A, LOW);
     sendHLms(video3, 100);
-    setMp3(1);
-    mp3_play(2);
-    Serial.print("Code OK");
+    //mp3Set(1);
+    //mp3_play(2);
+    Serial.println("Code OK");
     level = 30;
   }
 }
@@ -141,13 +175,13 @@ void Fuses()
     else playerGDone[fuses1] = true;
     sendHLms(video1, 100);
     sendHLms(video2, 100);
-    setMp3(1);
-    mp3_play(3);
+    //mp3Set(1);
+    //mp3_play(3);
     digitalWrite(lightR3A, HIGH);
     digitalWrite(lightR3B, HIGH);
     for (int i = 0; i < 3; i++) strip.setPixelColor(i, strip.Color(0, 200, 0));
     strip.show();
-    Serial.print("Fuses1 OK");
+    Serial.println("Fuses1 OK");
     level = 31;
   }
 }
@@ -181,7 +215,7 @@ void Lock(long t)
     digitalWrite(door3B, HIGH);
     strip.setPixelColor(0, greenColor);
     strip.show();
-    Serial.print("Fuses2 OK");
+    Serial.println("Fuses2 OK");
     // What else if skip or player
   }
 
@@ -195,7 +229,7 @@ void Lock(long t)
     sendHLms(video2, 100);
     strip.setPixelColor(1, greenColor);
     strip.show();
-    Serial.print("Alley OK");
+    Serial.println("Alley OK");
     // What else if skip or player
   }
 
@@ -203,15 +237,14 @@ void Lock(long t)
   {
     if (operSkips[shelf1]) sendHLms(shelfOUT, 250);
     else playerGDone[shelf1] = true;
-    gasOpened = true;
-    Serial.print("Shelf1 OK");
+    Serial.println("Shelf1 OK");
   }
-  
+
   if ((!digitalRead(shelfIN) || operSkips[shelf2]) && !gStates[shelf2] && gStates[shelf1])
   {
     if (operSkips[shelf2]) sendHLms(shelfOUT, 250);
     else playerGDone[shelf2] = true;
-    Serial.print("Shelf2 OK");
+    Serial.println("Shelf2 OK");
     strip.setPixelColor(2, greenColor);
     strip.show();
     sendHLms(video3, 100);
@@ -238,7 +271,7 @@ void Crate() // Duplicate
     if (operSkips[crate1]) sendHLms(crateOUT, 250);
     else playerGDone[crate1] = true;
     digitalWrite(crateHD, LOW);
-    Serial.print("Crate1 OK");
+    Serial.println("Crate1 OK");
   }
 
   if ((!digitalRead(crateIN) || operSkips[crate2]) && !gStates[crate2] && gStates[crate1])
@@ -250,7 +283,7 @@ void Crate() // Duplicate
     sendHLms(video2, 100);
     // Light and video comands
     digitalWrite(crateHD, LOW);
-    Serial.print("Crate2 OK");
+    Serial.println("Crate2 OK");
     level = 33;
   }
 }
@@ -282,9 +315,9 @@ void Gun()
     digitalWrite(gunBox, HIGH);
     sendHLms(zombiOUT, 250);
     sendHLms(video2, 100);
-    setMp3(1);
-    mp3_play(4);
-    Serial.print("Gun OK");
+    //mp3Set(1);
+    //mp3_play(4);
+    Serial.println("Gun OK");
     level = 35;
   }
 }
@@ -304,11 +337,11 @@ void Zombie()
     else playerGDone[zombie] = true;
     sendHLms(video3, 100);
     sendHLms(video2, 100);
-    setMp3(2);
-    mp3_play(3);
+    //mp3Set(2);
+    //mp3_play(3);
     sendHLms(ladder, 250);
     digitalWrite(door4, LOW);
-    Serial.print("Zombie OK");
+    Serial.println("Zombie OK");
     level = 50;
   }
 }

@@ -3,11 +3,12 @@ from datetime import datetime
 from flask import Flask
 from flask import request
 import sqlite3
-WAITSTART = 0x01
-WAITNAME = 0x02
-PLAYING = 0x03
+SHOW_RECS = 0x01
+WAIT_NAME = 0x02
+WAIT_START = 0x03
+PLAYING = 0x04
 
-STATE = WAITSTART
+STATE = SHOW_RECS
 '''
 Запросы
 
@@ -43,7 +44,7 @@ class Command:
 def not_found(error):
     return 'error'
 
-@app.route('/test')
+@app.route('/connect')
 def test():
 	return 'OK'
 # ========================= MASTER ROUTES =========================
@@ -51,41 +52,25 @@ def test():
 def reset():
 	global STATE
 	global curr_id
-	STATE = WAITSTART
+	STATE = WAIT_NAME
 	curr_id = -1
 	return 'OK'
 
-@app.route('/initgame', methods = ['POST'])
+@app.route('/startgame', methods = ['GET'])
 def prepare():
 	global STATE
-	if request.method == 'POST' and STATE == WAITSTART:
-		passwd = request.form['password']
-		if passwd == 'master':
-			STATE = WAITNAME
-			print('SERVER GO TO WAITNAME STATE')
-			return 'OK'
-		else:
-			return 'errorPswd'
+	if STATE == WAIT_NAME or STATE == WAIT_START:
+		STATE = PLAYING
+		print('SERVER GO TO WAITNAME STATE')
+		return 'OK'
 	else:
 		return 'errorPost'
 
-
-@app.route('/getname')
-def ready():
-	global curr_id
-	if STATE == PLAYING:
-		with sqlite3.connect("playdb.db") as connect:
-			com = Command(curr_id, connect)
-			if len(com.name) > 0:
-				return com.name
-	return 'command not set'
-
-
-@app.route('/endgame', methods = ['POST'])
+@app.route('/endgame', methods = ['GET'])
 def endgame():
 	global curr_id
 	global STATE
-	if request.method == 'POST' and curr_id > -1 and STATE == PLAYING:
+	if curr_id > -1 and STATE == PLAYING:
 		g_data = list(request.form['gdata'].split(','))
 		total_scores = request.form['scores']
 		if len(g_data) == 10:
@@ -98,7 +83,7 @@ def endgame():
 				c.execute("""INSERT INTO Scores VALUES (?,?,?,?,?,?,?,?,?,?,?,?)""",data_list)
 				connect.commit()
 				curr_id = -1
-				STATE = WAITSTART
+				STATE = SHOW_RECS
 				print('SERVER GO TO WAITSTART STATE')
 			return 'game stop'
 		else:
@@ -108,12 +93,24 @@ def endgame():
 	else:
 		return 'wrong method'
 
+
+@app.route('/getname')
+def ready():
+	global curr_id
+	if STATE == WAIT_START:
+		with sqlite3.connect("playdb.db") as connect:
+			com = Command(curr_id, connect)
+			if len(com.name) > 0:
+				return com.name
+	elif STATE == WAIT_NAME:
+		return 'SERVER_WAIT_NAME'
 # ========================= VIEW ROUTES =========================
+
 @app.route('/sendname', methods = ['POST'])
 def setname():
 	global curr_id
 	global STATE
-	if request.method == 'POST' and curr_id == -1 and STATE == WAITNAME:
+	if request.method == 'POST' and curr_id == -1 and STATE == WAIT_NAME:
 		cName = request.form['cname']
 		dt = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 		if len(cName) > 0:
@@ -129,13 +126,13 @@ def setname():
 				c.execute("""INSERT INTO Commands VALUES (?,?,?)""",[next_id,dt,cName])
 				connect.commit()
 				curr_id = next_id
-				STATE = PLAYING
-				print('SERVER GO TO PLAYING STATE')
-			return str(curr_id) + ':' + cName
+				STATE = WAIT_START
+				print('CMD NAME: {}, WAIT START FROM MASTER'.format(cName))
+			return 'SERVER_SET_CMDNAME_OK'
 		else:
-			return 'wrong name'
+			return 'SERVER_SET_CMDNAME_ERROR'
 	else:
-		return 'wrong request'
+		return 'SERVER_ERROR_REQUEST'
 
 @app.route('/getscores', methods = ['GET'])
 def getscores():
@@ -147,12 +144,14 @@ def getscores():
 
 @app.route('/getstate')
 def state():
-	if STATE == WAITNAME:
-		return 'WAITNAME'
+	if STATE == WAIT_NAME:
+		return 'WAIT_NAME'
 	elif STATE == PLAYING:
 		return 'PLAYING'
-	elif STATE == WAITSTART:
-		'WAITSTART'
+	elif STATE == WAIT_START:
+		return 'WAIT_START'
+	elif STATE == SHOW_RECS:
+		return 'SHOW_RECS'
 	else:
 		return 'ERROR'
 	return 'ERROR'

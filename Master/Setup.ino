@@ -4,7 +4,7 @@ void setup()
   Serial1.begin(9600); // RS-485
   Serial2.begin(9600); // mp3player A
   Serial3.begin(9600); // mp3player B
-
+  
   /*
   mp3_set_serial(Serial2);
   delay(100);
@@ -84,6 +84,12 @@ void setup()
   digitalWrite(lightR3A  , OUTPUT);
   digitalWrite(lightR3B  , OUTPUT);
 
+  digitalWrite(lightR1   , LOW);  // LOW = ON
+  digitalWrite(lightR2A  , LOW);  // LOW = ON
+  digitalWrite(lightR2B  , HIGH); // LOW = OFF
+  digitalWrite(lightR3A  , HIGH);  // LOW = OFF
+  digitalWrite(lightR3B  , HIGH); // LOW = OFF
+  
   digitalWrite(video1   ,  LOW);
   digitalWrite(video2   ,  LOW);
   digitalWrite(video3   ,  LOW);
@@ -105,38 +111,38 @@ void setup()
   digitalWrite (boxed,     HIGH); // LOW=CLOSED
   digitalWrite (ladder,    LOW);  // FASTLOCK
 
-
-  digitalWrite(door1     , LOW);
-  digitalWrite(door2     , LOW);
-  digitalWrite(door3A    , HIGH);
-  digitalWrite(door3B    , HIGH);
-  digitalWrite(door4     , LOW);
+  digitalWrite(door1     , HIGH);  //open
+  digitalWrite(door2     , LOW);  // closed > light Room 1 ON
+  digitalWrite(door3A    , LOW);  // open
+  digitalWrite(door3B    , LOW);  // open
+  digitalWrite(door4     , LOW);  // open
   digitalWrite(gunBox    , LOW);
 
-  digitalWrite(lightR2A  , LOW);  // LOW = ON
-  digitalWrite(lightR2B  , HIGH); // LOW = OFF
-
-  digitalWrite(lightR3A  , LOW);
-  digitalWrite(lightR3B  , HIGH);
-  delay(1300);
-  //digitalWrite(lightR3A  ,HIGH);
-
-
   Serial.println("radio = " + String(digitalRead(radioIN) ? "HIGH" : "LOW"));
+  delay(10);
   Serial.println("gener = " + String(digitalRead(generIN) ? "HIGH" : "LOW"));
-  Serial.println("meter = " + String(digitalRead(meterIN) ? "HIGH" : "LOW"));
+  delay(10);
+  Serial.println("meter = " + String(digitalRead(meterIN) ? "HIGH" : "LOW"));  
+  delay(10);
   Serial.println("alley = " + String(digitalRead(alleyIN) ? "HIGH" : "LOW"));
+  delay(10);
   Serial.println("fuses = " + String(digitalRead(fusesIN) ? "HIGH" : "LOW"));
+  delay(10);
   Serial.println("shelf = " + String(digitalRead(shelfIN) ? "HIGH" : "LOW"));
+  delay(10);
   Serial.println("crate = " + String(digitalRead(crateIN) ? "HIGH" : "LOW"));
+  delay(10);
   Serial.println("tripl = " + String(digitalRead(triplIN) ? "HIGH" : "LOW"));
+  delay(10);
   Serial.println("zombi = " + String(digitalRead(zombiIN) ? "HIGH" : "LOW"));
+  delay(10);
   //Serial.println("door3 = "+String(digitalRead(door3IN) ? "HIGH" : "LOW"));
+  delay(10);
 
   for (int  x = 0; x < 3; x++) {
-    strip.setPixelColor(x, 0, 0, 0); // ALL RED (SHOULD START ALL BLACK)
+    strip.setPixelColor(x, 0, 0, 110); // ALL RED (SHOULD START ALL BLACK)
   }
-
+  strip.show();
   
   for (int i = 0; i < gCount; i++)
   {
@@ -144,10 +150,16 @@ void setup()
     gStates[i] = false;
     playerGDone[i] = false;
   }
+  
   greenColor = strip.Color(150, 0, 0);
   redColor = strip.Color(0, 150, 0);
-  strip.show();
-  setMp3(1);
+  
+  
+  mp3Set(1);
   mp3_set_volume(15);
+  
   Serial.println("Setup OK " + String(millis()));
+
+  // Bridge Connector/
+  connectToBridge();
 }

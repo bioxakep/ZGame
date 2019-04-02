@@ -1,10 +1,42 @@
+void getBridgeData()
+{
+  if (Serial1.available() > 0)
+  {
+    byte input[gCount];
+    byte inByte = Serial1.read();
+    if (inByte == 0xBD) // Bridge Gadget Data
+    {
+      Serial.print("Operator Skips Recieved:");
+      delay(380);
+      for (int i = 0; i < gCount; i++)
+      {
+        input[i] = Serial1.read();
+        if (input[i] == 0x03) operSkips[i] = true;
+        Serial.print(input[i]);
+        Serial.print("|");
+      }
+      byte last = Serial1.read();
+      if (last == 0xFF) Serial.println("OK");
+    }
+    else if (inByte == 0xBC) // Restart connection (clear game data)
+    {
+      Serial.println("Resync with Bridge...");
+      bridgeConnected = false;
+      resetStates();
+      connectToBridge();
+    }
+    else Serial1.flush();
+  }
+}
+
+
 void sendGStates() // Проверяем прошел ли игрок какой-нибудь гаджет или применяем скипы оператора
 {
   byte chkSum = 0;
   boolean needSend = false;
   for (int s = 0; s < gCount; s++)
   {
-    if ((playerGDone[s] || operSkips[s]) && !gStates[s]) 
+    if ((playerGDone[s] || operSkips[s]) && !gStates[s])
     {
       if (playerGDone[s]) needSend = true;
       gStates[s] = true;
@@ -13,11 +45,11 @@ void sendGStates() // Проверяем прошел ли игрок какой
   }
   if (needSend)
   {
-    /*digitalWrite(SSerialTxControl, HIGH);  // Init Transmitter
+    digitalWrite(RSTXCNTRL, HIGH);  // Init Transmitter
     Serial.print("Send States to Operator: ");
     Serial1.write(0xAD);
     delay(10);
-    for (int d = 0; d < 32; d++)
+    for (int d = 0; d < gCount; d++)
     {
       if (gStates[d] && !playerGDone[d]) Serial1.write(0x03);
       else if (gStates[d] && playerGDone[d]) Serial1.write(0x05);
@@ -30,8 +62,64 @@ void sendGStates() // Проверяем прошел ли игрок какой
     }
     Serial1.write(0xFF);
     delay(10);
-    digitalWrite(SSerialTxControl, LOW);  // Stop Transmitter
+    digitalWrite(RSTXCNTRL, LOW);  // Stop Transmitter
     Serial.println(", level = " + String(level)); // DEBUG
-    */
   }
+}
+
+void connectToBridge()
+{
+  byte outByte = 0xA1;
+  unsigned long tick = millis();
+  unsigned long sendTime = tick;
+  Serial.print("Connecting to Bridge..");
+  while (!bridgeConnected)
+  {
+    sendTime = tick;
+    digitalWrite(RSTXCNTRL, HIGH);
+    Serial1.write(outByte);
+    delay(10);
+    digitalWrite(RSTXCNTRL, LOW);
+    Serial.print("..");
+    while (tick - sendTime < 1500)
+    {
+      tick = millis();
+      if (Serial1.available() > 0)
+      {
+        while (Serial1.available())
+        {
+          byte inByte = Serial1.read();
+          if (inByte == 0xA1 && outByte == 0xA1) {
+            outByte = 0xA2;
+            Serial.print("1..");
+          }
+          if (inByte == 0xA2 && outByte == 0xA2) bridgeConnected = true;
+        }
+      }
+    }
+  }
+  lastSyncTime = tick;
+  Serial.println("Connected");
+}
+
+void resetStates()
+{
+  level = 0;
+  for (int i = 0; i < gCount; i++)
+  {
+    operSkips[i] = false;
+    gStates[i] = false;
+    playerGDone[i] = false;
+  }
+  startLevel = 0;
+  fusesStates[0] = fusesStates[1] = HIGH;
+  alleyStates[0] = alleyStates[1] = HIGH;
+}
+
+void sendByte(byte n)
+{
+  digitalWrite(RSTXCNTRL, HIGH);
+  Serial1.write(n);
+  delay(10);
+  digitalWrite(RSTXCNTRL, LOW);
 }

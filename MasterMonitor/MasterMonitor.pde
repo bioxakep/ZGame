@@ -1,165 +1,121 @@
+// operMonitor of ZGame
+// 02.04.2019 Big Update
+import processing.serial.*;
 import http.requests.*;
+
+Serial arduino;
+String portName;
+PrintWriter data;
+PFont startFont, gadFont, timerFont, digitalFont;
+
+String[] gadgetNames = {"BOX", "RADIO", "GENERATOR", "METER", "CODE", "FUSES-1", "FUSES-2", "ALLEY", "SHELF-1", "SHELF-2", "CRATE-1", "CRATE-2", "TRIPL", "GUN", "ZOMBIE", "HEAD"};
+long[] passedTimes = new long[16];
+byte[] passedGadgets = new byte[16];
+boolean[] operPressed = new boolean[16];
 boolean game_started = false;
-int[] gTimes = new int[10];
+boolean sendToBridge = false;
+int[] gTimes = new int[16];
 int total_scores = 0;
 int getStateTime = 0;
-byte STATE = 0;
-byte WAIT_START = 1;
-byte WAIT_NAME = 2;
-byte PLAYING = 3;
+
+int gCount = 16;
+String server_addr = "http://127.0.0.1:8484/";
+
 boolean server_connect = false;
+boolean bridge_connect = false;
+boolean master_connect = false;
 boolean prevMouseState = false;
+boolean currMouseState = false;
 String command_name = "";
+
+float scrH, scrW;
+float r1x, r1y, r1w, r1h;
+float r2x, r2y, r2w, r2h;
+float r3x, r3y, r3w, r3h;
+
+float mar, off, r_txt_h, h_off;
+float gadW, gadH, th;
+
+color orange, grey, green, yellow, red;
+color darkgreen, bkrd, darkblue;
+
+StopWatchTimer t;
+int timerHours = 0;
+int timerMinutes = 0;  
+int timerSeconds = 0;
+long gameTime = 0;
+long doneTime = 0;
+long server_connect_timeout = 10000;
+int startScores = 10000;
+int currScores = 10000;
+int hintDec = 500;
+
 void setup()
 {
-  size(400, 400);
+  size(1200, 600);
   background(0);
   fill(100);
   stroke(255);
   textSize(20);
-  STATE = WAIT_START;
-  String uns = "";
-  while (!uns.equals("OK"))
+  portName = "/dev/cu.usbmodem14141";//"COM3"; // COM3 or /dev/tty.wchusbserial1410 or /dev/tty.wchusbserial1420
+  bridgeConnect();
+  serverConnect();
+
+  startFont = createFont("Arial", 10);//Silom
+  gadFont = createFont("Arial", 14); //MyanmarMN
+  timerFont = createFont("Arial", 14); //MyanmarMN
+  //lcdFont = createFont("LCD.vlw", 24);
+  digitalFont = createFont("digital-7.ttf", 24);
+  orange = color(220, 150, 65);
+  red = color(160, 10, 10);
+  grey = color(75, 75, 75);
+  green = color(120, 170, 90);
+  yellow = color(255, 200, 100);
+
+  bkrd = color(230, 210, 170);
+  darkgreen = color(170, 220, 180);
+  darkblue = color(140, 200, 250);
+
+  scrW = width;
+  scrH = height;
+  mar = 5;
+  off = 2 * mar;
+  h_off = 0;
+  r_txt_h = 20;
+  gadW = (scrW - mar * 10) / 5;
+  gadH = (scrH - 2 * r_txt_h - 2 * mar - 5 * off) / 5;
+  r1x = 0;
+  r1y = 0;
+  r1w = 2 * gadW + 2 * off;
+  r1h = r_txt_h + gadH + 2 * mar;
+  r2x = r1x + r1w;
+  r2y = 0;
+  r2w = 3 * gadW + 3 * off;
+  r2h = r1h;
+  r3x = 0;
+  r3y = r1y + r1h;
+  r3w = scrW;
+  r3h = scrH - r1h;
+  th = 25;
+  for (int i = 0; i < gCount; i++) 
   {
-    GetRequest rstGet = new GetRequest("http://127.0.0.1:8484/rst");
-    rstGet.send();
-    uns = rstGet.getContent();
+    passedGadgets[i] = 0;
+    operPressed[i] = false;
+    passedTimes[i] = 0;
   }
+  t = new StopWatchTimer();
+  gameTime = t.setStartTime(1, 30, 0);
+  command_name = "___";
 }
 
-void draw()
+void draw() //Описать работу
 {
   background(0);
-  if (STATE == WAIT_START)
+  if (!game_started)
   {
-    fill(100);
-    rect(width/4, height/4, width/2, height/2);
-    fill(255);
-    textAlign(CENTER);
-    text("Press to init game", width/2, height/2);
-    if (mousePressed && !prevMouseState)
-    {
-      if (mouseX > width/4 && mouseY > height/4 && mouseX < 3*width/4 && mouseY < 3*height/4)
-      {
-        while (STATE != WAIT_NAME) initGame();
-        println("Server waiting command name from ViewMonitor");
-      }
-    }
-    prevMouseState = mousePressed;
-  } else if (STATE == WAIT_NAME) 
-  {
-    fill(255);
-    text("Waiting name from players...", width/2, height/2);
-    if (millis() - getStateTime > 1000)
-    {
-      getName();
-      getStateTime += 1000;
-    }
-  } else if (STATE == PLAYING)
-  {
-    // playgame
-    fill(color(20, 200, 10));
-    rect(0, height/4, width, height/2);
-    fill(255);
-    text("Playing with command:" + command_name, width/2, height/2);
-    if (mousePressed && !prevMouseState)
-    {
-      if (mouseX > 0 && mouseY > height/4 && mouseX < width && mouseY < 3*height/4)
-      {
-        total_scores = 4000;
-        for (int i = 0; i < 10; i++) gTimes[i] = 3;
-        while (STATE != WAIT_START) endGame();
-        println("Server waiting command name from ViewMonitor");
-      }
-    }
-    prevMouseState = mousePressed;
+    if (server_connect && command_name.equals("___")) waitName();
+    if (master_connect) waitRun();
+    else waitMaster();
   }
-}
-
-void connectToServer()
-{
-  if (!server_connect)
-  {
-    GetRequest testGet = new GetRequest("http://127.0.0.1:8484/test");
-    testGet.send();
-    while (!server_connect)
-    {
-      String resp = testGet.getContent();
-      if (resp.equals("OK")) server_connect = true;
-      else testGet.send();
-    }
-    println("Server connected");
-  } else println("Server connected");
-}
-
-void initGame()
-{
-  PostRequest initPost = new PostRequest("http://127.0.0.1:8484/initgame");
-  initPost.addData("password", "master");
-  initPost.send();
-  String resp = initPost.getContent();
-  if (resp.equals("OK")) STATE = WAIT_NAME;
-  else STATE = WAIT_START;
-}
-
-void getName()
-{
-  GetRequest nameGet = new GetRequest("http://127.0.0.1:8484/getname");
-  nameGet.send();
-  String uns = nameGet.getContent();
-  if (uns.indexOf("not set") < 0) 
-  {
-    command_name = uns;
-    println("Start playing the game with command:" + uns);
-    STATE = PLAYING;
-  }
-}
-
-void startGame(String commandName)
-{
-  PostRequest startPost = new PostRequest("http://127.0.0.1:8484/startgame");
-  println("Try start game with command name: " + commandName);
-  startPost.addData("cname", commandName);
-  startPost.send();
-  String resp = startPost.getContent();
-  println("Server Response: " + resp);
-  if (resp.equals(commandName)) game_started = true;
-}
-
-void endGame()
-{
-  println("Sending game results to server...");
-  PostRequest endPost = new PostRequest("http://127.0.0.1:8484/endgame");
-  endPost.addData("gdata", join(nf(gTimes, 0), ","));
-  endPost.addData("scores", str(total_scores));
-  endPost.send();
-  String resp = endPost.getContent();
-  println("Server Response: " + resp);
-  if (resp.equals("game stop")) 
-  {
-    game_started = false;
-    STATE = WAIT_START;
-  }
-}
-
-void keyPressed()
-{
-  println(keyCode);
-}
-
-String toStr(char[] a)
-{
-  int s = a.length;
-  String ret = "";
-  for (int i = 0; i < s; i++)
-  {
-    ret += a[i];
-  }
-  return ret;
-}
-
-void showStat()
-{
-  // write this later
-  //
+  playGame();
 }
