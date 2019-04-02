@@ -1,15 +1,13 @@
 void Start(long t)
 {
-  // DEBUG
-  
+  /*// DEBUG
   if(Serial.available() > 0)
   {
     delay(100);
     while(Serial.available()) Serial.read();
     startRFWait = false;
   }
-  
-  // DEBUG
+  // DEBUG*/
   if (t - lastRFIDCheck > 100)
   {
     lastRFIDCheck = t;
