@@ -20,7 +20,7 @@ cursor.execute("""INSERT INTO Phones VALUES (?,?,?)""", [str(tmp_objID), man_pho
 '''
 
 app = Flask(__name__)
-conn = sqlite3.connect("playdb")
+conn = sqlite3.connect("play.db")
 c = conn.cursor()
 curr_id = -1
 
@@ -78,9 +78,9 @@ def endgame():
 			data_list.append(str(curr_id))
 			data_list.append(total_scores)
 			data_list.extend(g_data)
-			with sqlite3.connect("playdb.db") as connect:
+			with sqlite3.connect("play.db") as connect:
 				c = connect.cursor()
-				c.execute("""INSERT INTO Scores VALUES (?,?,?,?,?,?,?,?,?,?,?,?)""",data_list)
+				c.execute("""INSERT INTO Scores VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",data_list)
 				connect.commit()
 				curr_id = -1
 				STATE = SHOW_RECS
@@ -98,7 +98,7 @@ def endgame():
 def ready():
 	global curr_id
 	if STATE == WAIT_START:
-		with sqlite3.connect("playdb.db") as connect:
+		with sqlite3.connect("play.db") as connect:
 			com = Command(curr_id, connect)
 			if len(com.name) > 0:
 				return com.name
@@ -114,7 +114,7 @@ def setname():
 		cName = request.form['cname']
 		dt = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 		if len(cName) > 0:
-			with sqlite3.connect("playdb.db") as connect:
+			with sqlite3.connect("play.db") as connect:
 				c = connect.cursor()
 				res = c.execute("""SELECT * from Commands""").fetchall()
 				next_id = -1
@@ -138,7 +138,7 @@ def setname():
 def getscores():
 	if request.method == 'GET' and STATE == WAITSTART:
 		get_id = request.args.get('id')
-		with sqlite3.connect("playdb.db") as conn:
+		with sqlite3.connect("play.db") as conn:
 			command = Command(get_id, conn)
 			return command.to_string()
 
