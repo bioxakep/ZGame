@@ -33,14 +33,13 @@ void bridgeConnect()
   }
 }
 
-void waitMaster()
+void waitMaster(String data)
 {
   fill(orange);
   textFont(startFont, 24);
   textAlign(CENTER); 
   text("WAIT MASTER CONNECT", scrW/2 - scrW/6, scrH/2 + scrH/4);
-  String startData = getInput(false);
-  if (startData.equals("masterConnected"))
+  if (data.equals("masterConnected"))
   {
     game_started = false;
     master_connect = true;
@@ -49,14 +48,13 @@ void waitMaster()
   }
 }
 
-void waitRun()
+void waitRun(String data)
 {
   fill(orange);
   textFont(startFont, 24);
   textAlign(CENTER);
   text("WAIT START FROM MASTER", scrW/2 - scrW/6, scrH/2 + scrH/4);
-  String startData = getInput(false);
-  if (startData.equals("Rungame"))
+  if (data.equals("Rungame"))
   {
     game_started = true;
     for (int g = 0; g < gCount; g++)

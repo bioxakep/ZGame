@@ -89,7 +89,8 @@ void connectToBridge()
         while (Serial1.available())
         {
           byte inByte = Serial1.read();
-          if (inByte == 0xA1 && outByte == 0xA1) {
+          if (inByte == 0xA1 && outByte == 0xA1) 
+          {
             outByte = 0xA2;
             Serial.print("1..");
           }

@@ -1,12 +1,12 @@
 // 29.03.2019 Bridge in ZGame
 // 02/04/2019 Big Update
 #include <SoftwareSerial.h>
-#define RSTXCNTRL 3
+#define RSTXCNTRL 10
 //0xAA from Master to Bridge
 //0xBB from Bridge to other
 //0xCC from Operator to Bridge
 
-SoftwareSerial masterSerial(10, 11);
+SoftwareSerial masterSerial(9, 11);
 
 byte gStates[16]; //1 3 5
 
@@ -52,7 +52,7 @@ void loop()
       if (masterSerial.available())
       {
         inByte = masterSerial.read();
-        delay(10);
+        delay(15);
         if (inByte == 0xA9)
         {
           delay(350);
@@ -60,7 +60,7 @@ void loop()
           digitalWrite(RSTXCNTRL, HIGH);  // Init Transmitter
           digitalWrite(13, HIGH);
           masterSerial.write(0xBC);
-          delay(10);
+          delay(15);
           digitalWrite(RSTXCNTRL, LOW);  // Stop Transmitter
           digitalWrite(13, LOW);
           Serial.println("Send reSync to Master");
@@ -70,7 +70,7 @@ void loop()
           if (!monConnected) Serial.println("\nConnecting... recieved and sending back: " + String(inByte, HEX) + " in " + String(whileTick));
           digitalWrite(RSTXCNTRL, HIGH);  // Init Transmitter
           masterSerial.write(inByte);
-          delay(10);
+          delay(15);
           digitalWrite(RSTXCNTRL, LOW);  // Stop Transmitter
         }
         if (inByte == 0xA2)
@@ -105,17 +105,17 @@ void loop()
           // Prepare to send states to Master
           digitalWrite(RSTXCNTRL, HIGH);  // передаем состояния мастеру
           masterSerial.write(0xBD);
-          delay(10);
+          delay(15);
           //Sending...
           for (int d = 0; d < gCount; d++)
           {
             digitalWrite(13, HIGH);
             masterSerial.write(gStates[d]);
-            delay(10);
+            delay(15);
             digitalWrite(13, LOW);
           }
           masterSerial.write(0xFF); // конец передачи состояний мастеру
-          delay(10);
+          delay(15);
           digitalWrite(RSTXCNTRL, LOW);  // Stop Transmitter
         }
       }
@@ -125,7 +125,7 @@ void loop()
         // Prepare to send states to Master
         digitalWrite(RSTXCNTRL, HIGH);  // Init
         masterSerial.write(0xBC);
-        delay(10);
+        delay(15);
         digitalWrite(RSTXCNTRL, LOW);  // Stop
         digitalWrite(13, LOW);
       }
@@ -182,7 +182,7 @@ void loop()
       {
         digitalWrite(RSTXCNTRL, HIGH);  // Init Transmitter
         masterSerial.write(0xBC);
-        delay(10);
+        delay(15);
         digitalWrite(RSTXCNTRL, LOW);  // Stop Transmitter
       }
     }

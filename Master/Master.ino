@@ -11,12 +11,14 @@
 #include <SoftwareSerial.h>
 #include <DFPlayer_Mini_Mp3.h>
 #include <Adafruit_NeoPixel.h>
+#include <LiquidCrystal_I2C.h>
 
 #define PIXELS 3
 #define STRIPPIN 26 // wire 24 R(+) BK(-) G(SIG)
 #define RSTXCNTRL 3   //RS485 Direction control
 #define PIN_CPZ1 28
 
+LiquidCrystal_I2C lcd(0x3F, 16, 2); // set the lcd address to 0x27 for a 16 chars and 2 line display
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(PIXELS, STRIPPIN, NEO_GRB + NEO_KHZ800);
 ArdCPZ *cpz1;
 

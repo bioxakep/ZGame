@@ -1,13 +1,5 @@
 void Start(long t)
 {
-  /*// DEBUG
-  if(Serial.available() > 0)
-  {
-    delay(100);
-    while(Serial.available()) Serial.read();
-    startRFWait = false;
-  }
-  // DEBUG*/
   if (t - lastRFIDCheck > 100)
   {
     lastRFIDCheck = t;
@@ -31,9 +23,17 @@ void Start(long t)
       Serial.print("Level 1 Start 2 OK, Level 1 Done");
       strip.setPixelColor(1, 0, 0, 0);
       strip.show();
-      sendByte(0xAA);
-      delay(300);
+      delay(50);
       level = 10;
+      lcd.clear();
+      lcd.setCursor(0, 0); // X, Y
+      lcd.print("Level 1 Done");
+      delay(50);
+      sendByte(0xAA);
+      delay(50);
+      lcd.setCursor(0, 1); // X, Y
+      lcd.print("Send Start to M");
+      delay(50);
     }
     else if (startLevel == 0)
     {
@@ -57,6 +57,10 @@ void Box()
     if(operSkips[box]) sendHLms(boxHD, 250);
     else playerGDone[box] = true;
     Serial.println("Box OK");
+    lcd.clear();
+    lcd.setCursor(0, 0); // X, Y
+    lcd.print("Box OK");
+    delay(50);
     level = 11;
   }
 }

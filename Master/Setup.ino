@@ -1,23 +1,30 @@
 void setup()
 {
+  Wire.begin();
   Serial.begin(9600);
   Serial1.begin(9600); // RS-485
   Serial2.begin(9600); // mp3player A
   Serial3.begin(9600); // mp3player B
-  
   /*
-  mp3_set_serial(Serial2);
-  delay(100);
-  mp3_set_volume (29);
-  delay(100);
-  mp3_play(4); // test hint sound
-  delay(200);
+    mp3_set_serial(Serial2);
+    delay(100);
+    mp3_set_volume (29);
+    delay(100);
+    mp3_play(4); // test hint sound
+    delay(200);
   */
 
   strip.begin();
 
+  lcd.init();
+  lcd.backlight();
+  lcd.print("   TEST MODE");
+  lcd.setCursor(0, 1);
+  lcd.print("They are coming!");
+  delay(3000);
 
-  Serial.println("TAC Master 05/MAR/2019\n");
+
+  Serial.println("TAC Master 07/APR/2019\n");
   cpz1 = new ArdCPZ(PIN_CPZ1);
 
   // ---- props ----
@@ -89,7 +96,7 @@ void setup()
   digitalWrite(lightR2B  , HIGH); // LOW = OFF
   digitalWrite(lightR3A  , HIGH);  // LOW = OFF
   digitalWrite(lightR3B  , HIGH); // LOW = OFF
-  
+
   digitalWrite(video1   ,  LOW);
   digitalWrite(video2   ,  LOW);
   digitalWrite(video3   ,  LOW);
@@ -122,7 +129,7 @@ void setup()
   delay(15);
   Serial.println("gener = " + String(digitalRead(generIN) ? "HIGH" : "LOW"));
   delay(15);
-  Serial.println("meter = " + String(digitalRead(meterIN) ? "HIGH" : "LOW"));  
+  Serial.println("meter = " + String(digitalRead(meterIN) ? "HIGH" : "LOW"));
   delay(15);
   Serial.println("alley = " + String(digitalRead(alleyIN) ? "HIGH" : "LOW"));
   delay(15);
@@ -143,23 +150,65 @@ void setup()
     strip.setPixelColor(x, 0, 0, 110); // ALL RED (SHOULD START ALL BLACK)
   }
   strip.show();
-  
+
   for (int i = 0; i < gCount; i++)
   {
     operSkips[i] = false;
     gStates[i] = false;
     playerGDone[i] = false;
   }
-  
+
   greenColor = strip.Color(150, 0, 0);
   redColor = strip.Color(0, 150, 0);
-  
-  
+
+
   mp3Set(1);
   mp3_set_volume(15);
-  
+
   Serial.println("Setup OK " + String(millis()));
 
+  while (true) 
+  {
+    checkStates();
+    delay(1000);
+  }
   // Bridge Connector/
   connectToBridge();
+}
+
+void checkStates() {
+
+  lcd.setCursor(2, 0);
+
+  Serial.println("radio = " + String(digitalRead(radioIN) ? "HIGH" : "LOW"));
+  lcd.print(String(digitalRead(radioIN) ? "r_" : "R_"));
+  delay(10);
+  Serial.println("gener = " + String(digitalRead(generIN) ? "HIGH" : "LOW"));
+  lcd.print(String(digitalRead(generIN) ? "g" : "G"));
+  delay(10);
+  Serial.println("meter = " + String(digitalRead(meterIN) ? "HIGH" : "LOW"));
+  lcd.print(String(digitalRead(meterIN) ? "m" : "M"));
+  delay(10);
+  Serial.println("alley = " + String(digitalRead(alleyIN) ? "HIGH" : "LOW"));
+  lcd.print(String(digitalRead(alleyIN) ? "a_" : "A_"));
+  delay(10);
+  Serial.println("fuses = " + String(digitalRead(fusesIN) ? "HIGH" : "LOW"));
+  lcd.print(String(digitalRead(fusesIN) ? "f" : "F"));
+  delay(10);
+  Serial.println("shelf = " + String(digitalRead(shelfIN) ? "HIGH" : "LOW"));
+  lcd.print(String(digitalRead(shelfIN) ? "s" : "S"));
+  delay(10);
+  Serial.println("crate = " + String(digitalRead(crateIN) ? "HIGH" : "LOW"));
+  lcd.print(String(digitalRead(crateIN) ? "c" : "C"));
+  delay(10);
+  Serial.println("tripl = " + String(digitalRead(triplIN) ? "HIGH" : "LOW"));
+  lcd.print(String(digitalRead(triplIN) ? "t_" : "T_"));
+  delay(10);
+  Serial.println("zombi = " + String(digitalRead(zombiIN) ? "HIGH" : "LOW"));
+  lcd.print(String(digitalRead(zombiIN) ? "z" : "Z"));
+  delay(10);
+  //Serial.println("door3 = "+String(digitalRead(door3IN) ? "HIGH" : "LOW"));
+  delay(10);
+  Serial.println("------------------------------" + String(millis()));
+
 }

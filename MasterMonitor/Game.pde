@@ -32,7 +32,7 @@ void playGame()
     strokeWeight(1);
     line(r1x + mar + (i%5) * (gadW + off), r1y + r_txt_h + mar + h_off + (i/5) * (gadH + off) + gadH - th, 
       r1x + mar + (i%5) * (gadW + off) + gadW, r1y + r_txt_h + mar + h_off + (i/5) * (gadH + off) + gadH - th); // gadget time line
-    
+
     strokeWeight(0);
     textFont(gadFont, 20);
     text(gadgetNames[i], r1x + mar + (i%5) * (gadW + off) + gadW/2, r1y + r_txt_h + mar + h_off + (i/5) * (gadH + off) + gadH/2 + mar);
@@ -105,26 +105,32 @@ void playGame()
   ellipse(r3x + 3 * mar + masterTWidth, r3y + r3h - mar - 92, 25, 25);
   prevMouseState = currMouseState;
 
-
   String fromBridge = getInput(true);
-  if (fromBridge.startsWith("BD") && fromBridge.endsWith("FF"))
+  if (!game_started)
   {
-    for (int i = 0; i < fromBridge.length()-4; i++)
+    if (server_connect && command_name.equals("___")) waitName();
+    if (master_connect) waitRun(fromBridge);
+    else waitMaster(fromBridge);
+  } else
+  {
+    if (fromBridge.startsWith("BD") && fromBridge.endsWith("FF"))
     {
-      //print(fromBridge.charAt(i));
-      int data = Integer.parseInt(String.valueOf(fromBridge.charAt(i+2)));
-      if (data == 5)
+      for (int i = 0; i < fromBridge.length()-4; i++)
       {
-        passedGadgets[i] = 5;
-        print("Gadget ");
-        print(i);
-        println(" done by player");
-        long passedTime = int((gameTime-t.getElapsedTime())/1000);
-        passedTimes[i] = getTime(hours(passedTime), minutes(passedTime), seconds(passedTime));
+        //print(fromBridge.charAt(i));
+        int data = Integer.parseInt(String.valueOf(fromBridge.charAt(i+2)));
+        if (data == 5)
+        {
+          passedGadgets[i] = 5;
+          print("Gadget ");
+          print(i);
+          println(" done by player");
+          long passedTime = int((gameTime-t.getElapsedTime())/1000);
+          passedTimes[i] = getTime(hours(passedTime), minutes(passedTime), seconds(passedTime));
+        }
       }
-    }
+    } else if (fromBridge.equals("masterConnected")) resetStates();
   }
-  else if (fromBridge.equals("masterConnected")) resetStates();
 
   if (sendToBridge)
   {

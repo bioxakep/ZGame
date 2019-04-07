@@ -113,12 +113,5 @@ void setup()
 
 void draw()
 {
-  background(0);
-  if (!game_started)
-  {
-    if (server_connect && command_name.equals("___")) waitName();
-    if (master_connect) waitRun();
-    else waitMaster();
-  }
   playGame();
 }
