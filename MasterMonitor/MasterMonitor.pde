@@ -26,6 +26,7 @@ boolean bridge_connect = false;
 boolean master_connect = false;
 boolean prevMouseState = false;
 boolean currMouseState = false;
+boolean debug = false;
 String command_name = "";
 
 float scrH, scrW;
@@ -52,12 +53,14 @@ int hintDec = 500;
 
 void setup()
 {
-  size(1200, 600);
+  fullScreen();
+  if (debug) size(1200, 600);
   background(0);
   fill(100);
   stroke(255);
   textSize(20);
-  portName = "/dev/cu.usbmodem14141";//"COM3"; // COM3 or /dev/tty.wchusbserial1410 or /dev/tty.wchusbserial1420
+  portName = "COM4";//"COM4"; // COM3 or /dev/tty.wchusbserial1410 or /dev/tty.wchusbserial1420
+  if (debug) portName = "/dev/cu.usbmodem14141";
   bridgeConnect();
   serverConnect();
 

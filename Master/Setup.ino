@@ -119,25 +119,25 @@ void setup()
   digitalWrite(gunBox    , LOW);
 
   Serial.println("radio = " + String(digitalRead(radioIN) ? "HIGH" : "LOW"));
-  delay(10);
+  delay(15);
   Serial.println("gener = " + String(digitalRead(generIN) ? "HIGH" : "LOW"));
-  delay(10);
+  delay(15);
   Serial.println("meter = " + String(digitalRead(meterIN) ? "HIGH" : "LOW"));  
-  delay(10);
+  delay(15);
   Serial.println("alley = " + String(digitalRead(alleyIN) ? "HIGH" : "LOW"));
-  delay(10);
+  delay(15);
   Serial.println("fuses = " + String(digitalRead(fusesIN) ? "HIGH" : "LOW"));
-  delay(10);
+  delay(15);
   Serial.println("shelf = " + String(digitalRead(shelfIN) ? "HIGH" : "LOW"));
-  delay(10);
+  delay(15);
   Serial.println("crate = " + String(digitalRead(crateIN) ? "HIGH" : "LOW"));
-  delay(10);
+  delay(15);
   Serial.println("tripl = " + String(digitalRead(triplIN) ? "HIGH" : "LOW"));
-  delay(10);
+  delay(15);
   Serial.println("zombi = " + String(digitalRead(zombiIN) ? "HIGH" : "LOW"));
-  delay(10);
+  delay(15);
   //Serial.println("door3 = "+String(digitalRead(door3IN) ? "HIGH" : "LOW"));
-  delay(10);
+  delay(15);
 
   for (int  x = 0; x < 3; x++) {
     strip.setPixelColor(x, 0, 0, 110); // ALL RED (SHOULD START ALL BLACK)

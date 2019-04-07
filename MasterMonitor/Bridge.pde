@@ -45,6 +45,7 @@ void waitMaster()
     game_started = false;
     master_connect = true;
     resetStates();
+    wait(1);
   }
 }
 

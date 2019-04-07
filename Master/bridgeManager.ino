@@ -48,20 +48,20 @@ void sendGStates() // Проверяем прошел ли игрок какой
     digitalWrite(RSTXCNTRL, HIGH);  // Init Transmitter
     Serial.print("Send States to Operator: ");
     Serial1.write(0xAD);
-    delay(10);
+    delay(15);
     for (int d = 0; d < gCount; d++)
     {
       if (gStates[d] && !playerGDone[d]) Serial1.write(0x03);
       else if (gStates[d] && playerGDone[d]) Serial1.write(0x05);
       else Serial1.write(0x01);
-      delay(10);
+      delay(15);
       operSkips[d] = false;
       if (gStates[d] && !playerGDone[d]) Serial.print('3');
       else if (gStates[d] && playerGDone[d]) Serial.print('5');
       else Serial.print('1');
     }
     Serial1.write(0xFF);
-    delay(10);
+    delay(15);
     digitalWrite(RSTXCNTRL, LOW);  // Stop Transmitter
     Serial.println(", level = " + String(level)); // DEBUG
   }
@@ -78,7 +78,7 @@ void connectToBridge()
     sendTime = tick;
     digitalWrite(RSTXCNTRL, HIGH);
     Serial1.write(outByte);
-    delay(10);
+    delay(15);
     digitalWrite(RSTXCNTRL, LOW);
     Serial.print("..");
     while (tick - sendTime < 1500)
@@ -100,6 +100,7 @@ void connectToBridge()
   }
   lastSyncTime = tick;
   Serial.println("Connected");
+  delay(1000);
 }
 
 void resetStates()
@@ -120,6 +121,6 @@ void sendByte(byte n)
 {
   digitalWrite(RSTXCNTRL, HIGH);
   Serial1.write(n);
-  delay(10);
+  delay(15);
   digitalWrite(RSTXCNTRL, LOW);
 }

@@ -27,9 +27,8 @@ void Start(long t)
       sendHLms(video2, 100);
       //mp3Set(1);
       //mp3_play(1);
-      delay(10);
-      Serial.print("Level 1 Start 2 OK");
-      Serial.print("Level 1 Done");
+      delay(15);
+      Serial.print("Level 1 Start 2 OK, Level 1 Done");
       strip.setPixelColor(1, 0, 0, 0);
       strip.show();
       sendByte(0xAA);
