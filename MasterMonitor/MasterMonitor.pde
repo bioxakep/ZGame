@@ -54,7 +54,7 @@ int hintDec = 500;
 void setup()
 {
   fullScreen();
-  if (debug) size(1200, 600);
+  //if (debug) size(1200, 600);
   background(0);
   fill(100);
   stroke(255);
