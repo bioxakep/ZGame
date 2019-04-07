@@ -22,6 +22,7 @@ void loop()
   {
     sendByte(0xA9);
     Serial.println("Send Sync signal");
+    printEvent("Send Sync signal");
     lastSyncTime = tick;
   }
 
