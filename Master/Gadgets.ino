@@ -54,7 +54,7 @@ void Box()
 {
   if ((!digitalRead(boxIN) || operSkips[box]) && !gStates[box])
   {
-    if(operSkips[box]) sendHLms(boxHD, 250);
+    if (operSkips[box]) sendHLms(boxHD, 250);
     else playerGDone[box] = true;
     Serial.println("Box OK");
     lcd.clear();
@@ -95,6 +95,10 @@ void Radio()
     strip.setPixelColor(0, 0, 0, 0);
     strip.show();
     Serial.println("Radio OK");
+    lcd.clear();
+    lcd.setCursor(0, 0); // X, Y
+    lcd.print("Radio OK");
+    delay(50);
   }
 }
 
@@ -134,6 +138,10 @@ void Meter()
     digitalWrite(lightR2B, HIGH);
     sendHLms(alleyOUT, 250);
     Serial.println("Meter OK");
+    lcd.clear();
+    lcd.setCursor(0, 0); // X, Y
+    lcd.print("Meter OK");
+    delay(50);
     level = 23;
   }
   if (gStates[meter]) digitalWrite(lightR2B, !digitalRead(meterIN)); // Узнать это после прохождения или вообще
@@ -157,6 +165,10 @@ void Code()
     //mp3Set(1);
     //mp3_play(2);
     Serial.println("Code OK");
+    lcd.clear();
+    lcd.setCursor(0, 0); // X, Y
+    lcd.print("Code OK");
+    delay(50);
     level = 30;
   }
 }
@@ -183,6 +195,10 @@ void Fuses()
     for (int i = 0; i < 3; i++) strip.setPixelColor(i, strip.Color(0, 200, 0));
     strip.show();
     Serial.println("Fuses1 OK");
+    lcd.clear();
+    lcd.setCursor(0, 0); // X, Y
+    lcd.print("Fuses1 OK");
+    delay(50);
     level = 31;
   }
 }
@@ -217,6 +233,10 @@ void Lock(long t)
     strip.setPixelColor(0, greenColor);
     strip.show();
     Serial.println("Fuses2 OK");
+    lcd.clear();
+    lcd.setCursor(0, 0); // X, Y
+    lcd.print("Fuses2 OK");
+    delay(50);
     // What else if skip or player
   }
 
@@ -231,6 +251,10 @@ void Lock(long t)
     strip.setPixelColor(1, greenColor);
     strip.show();
     Serial.println("Alley OK");
+    lcd.clear();
+    lcd.setCursor(0, 0); // X, Y
+    lcd.print("Alley OK");
+    delay(50);
     // What else if skip or player
   }
 
@@ -239,6 +263,10 @@ void Lock(long t)
     if (operSkips[shelf1]) sendHLms(shelfOUT, 250);
     else playerGDone[shelf1] = true;
     Serial.println("Shelf1 OK");
+    lcd.clear();
+    lcd.setCursor(0, 0); // X, Y
+    lcd.print("Shelf1 OK");
+    delay(50);
   }
 
   if ((!digitalRead(shelfIN) || operSkips[shelf2]) && !gStates[shelf2] && gStates[shelf1])
@@ -249,12 +277,20 @@ void Lock(long t)
     strip.setPixelColor(2, greenColor);
     strip.show();
     sendHLms(video3, 100);
+    lcd.clear();
+    lcd.setCursor(0, 0); // X, Y
+    lcd.print("Shelf2 OK");
+    delay(50);
   }
 
   if (gStates[fuses2] && gStates[alley] && gStates[shelf2])
   {
     level = 32;
     Serial.print("Lock OK");
+    lcd.clear();
+    lcd.setCursor(0, 0); // X, Y
+    lcd.print("Lock OK");
+    delay(50);
   }
 }
 
@@ -273,6 +309,10 @@ void Crate() // Duplicate
     else playerGDone[crate1] = true;
     digitalWrite(crateHD, LOW);
     Serial.println("Crate1 OK");
+    lcd.clear();
+    lcd.setCursor(0, 0); // X, Y
+    lcd.print("Crate1 OK");
+    delay(50);
   }
 
   if ((!digitalRead(crateIN) || operSkips[crate2]) && !gStates[crate2] && gStates[crate1])
@@ -285,6 +325,10 @@ void Crate() // Duplicate
     // Light and video comands
     digitalWrite(crateHD, LOW);
     Serial.println("Crate2 OK");
+    lcd.clear();
+    lcd.setCursor(0, 0); // X, Y
+    lcd.print("Crate2 OK");
+    delay(50);
     level = 33;
   }
 }
@@ -319,6 +363,10 @@ void Gun()
     //mp3Set(1);
     //mp3_play(4);
     Serial.println("Gun OK");
+    lcd.clear();
+    lcd.setCursor(0, 0); // X, Y
+    lcd.print("Gun OK");
+    delay(50);
     level = 35;
   }
 }
@@ -343,6 +391,10 @@ void Zombie()
     sendHLms(ladder, 250);
     digitalWrite(door4, LOW);
     Serial.println("Zombie OK");
+    lcd.clear();
+    lcd.setCursor(0, 0); // X, Y
+    lcd.print("Zombie OK");
+    delay(50);
     level = 50;
   }
 }
@@ -350,6 +402,10 @@ void Zombie()
 void gameOver()
 {
   Serial.println("Game Over");
+  lcd.clear();
+  lcd.setCursor(0, 0); // X, Y
+  lcd.print("Game Over");
+  delay(50);
   level = 0;
   startLevel = 1;
 }

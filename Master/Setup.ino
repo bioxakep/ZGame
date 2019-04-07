@@ -150,7 +150,7 @@ void setup()
     strip.setPixelColor(x, 0, 0, 110); // ALL RED (SHOULD START ALL BLACK)
   }
   strip.show();
-
+  
   for (int i = 0; i < gCount; i++)
   {
     operSkips[i] = false;

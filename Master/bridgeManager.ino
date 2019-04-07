@@ -23,6 +23,8 @@ void getBridgeData()
       Serial.println("Resync with Bridge...");
       bridgeConnected = false;
       resetStates();
+      lcd.clear();
+      lcd.print("Reset...");
       connectToBridge();
     }
     else Serial1.flush();
@@ -101,6 +103,9 @@ void connectToBridge()
   }
   lastSyncTime = tick;
   Serial.println("Connected");
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Bridge connected");
   delay(1000);
 }
 
