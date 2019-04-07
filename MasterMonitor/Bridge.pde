@@ -40,17 +40,11 @@ void waitMaster()
   textAlign(CENTER); 
   text("WAIT MASTER CONNECT", scrW/2 - scrW/6, scrH/2 + scrH/4);
   String startData = getInput(false);
-  if (startData.equals("masterConnected")) 
+  if (startData.equals("masterConnected"))
   {
+    game_started = false;
     master_connect = true;
-    t = new StopWatchTimer();
-    gameTime = t.setStartTime(1, 20, 0);
-    println("Connecting to Master: true");
-    for (int g = 0; g < gCount; g++)
-    {
-      passedGadgets[g] = 0;
-      operPressed[g] = false;
-    }
+    resetStates();
   }
 }
 
@@ -68,7 +62,7 @@ void waitRun()
     {
       passedGadgets[g] = 0;
       operPressed[g] = false;
-      passedTimes[g] = 0;
+      passedTimes[g] = "";
     }
     t.start();
     println("Run game");
@@ -88,4 +82,17 @@ String getInput(boolean debug)
       return inp;
     } else return " ";
   } else return " ";
+}
+
+
+void resetStates()
+{
+  t = new StopWatchTimer();
+    gameTime = t.setStartTime(1, 20, 0);
+    println("Connecting to Master: true");
+    for (int g = 0; g < gCount; g++)
+    {
+      passedGadgets[g] = 0;
+      operPressed[g] = false;
+    }
 }

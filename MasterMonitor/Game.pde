@@ -32,8 +32,13 @@ void playGame()
     strokeWeight(1);
     line(r1x + mar + (i%5) * (gadW + off), r1y + r_txt_h + mar + h_off + (i/5) * (gadH + off) + gadH - th, 
       r1x + mar + (i%5) * (gadW + off) + gadW, r1y + r_txt_h + mar + h_off + (i/5) * (gadH + off) + gadH - th); // gadget time line
+    
     strokeWeight(0);
+    textFont(gadFont, 20);
     text(gadgetNames[i], r1x + mar + (i%5) * (gadW + off) + gadW/2, r1y + r_txt_h + mar + h_off + (i/5) * (gadH + off) + gadH/2 + mar);
+    textAlign(CENTER);
+    textFont(gadFont, 17);
+    if (passedTimes[i].length() > 0) text(passedTimes[i], r1x + mar + (i%5) * (gadW + off) + gadW/2, r1y + r_txt_h + mar + h_off + (i/5) * (gadH + off) + gadH - mar); // passed time text
     if (!prevMouseState && currMouseState)
     {
       if (game_started && mouseX > r1x + mar + (i%5) * (gadW + off) && mouseX < r1x + mar + (i%5) * (gadW + off) + gadW 
@@ -42,7 +47,8 @@ void playGame()
         if (passedGadgets[i] < 1) 
         {
           passedGadgets[i] = 3;
-          passedTimes[i] = int((gameTime-t.getElapsedTime())/1000);
+          long passedTime = int((gameTime-t.getElapsedTime())/1000);
+          passedTimes[i] = getTime(hours(passedTime), minutes(passedTime), seconds(passedTime));
         }
         operPressed[i] = true;
         sendToBridge = true;
@@ -70,8 +76,6 @@ void playGame()
       println("rect2 pressed");
     }
   }
-
-
 
   // TIMER DRAW
   long elpsTime = t.getElapsedTime();
@@ -115,10 +119,12 @@ void playGame()
         print("Gadget ");
         print(i);
         println(" done by player");
-        passedTimes[i] = int((gameTime-t.getElapsedTime())/1000);
+        long passedTime = int((gameTime-t.getElapsedTime())/1000);
+        passedTimes[i] = getTime(hours(passedTime), minutes(passedTime), seconds(passedTime));
       }
     }
   }
+  else if (fromBridge.equals("masterConnected")) resetStates();
 
   if (sendToBridge)
   {

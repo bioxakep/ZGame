@@ -9,7 +9,7 @@ PrintWriter data;
 PFont startFont, gadFont, timerFont, digitalFont;
 
 String[] gadgetNames = {"BOX", "RADIO", "GENERATOR", "METER", "CODE", "FUSES-1", "FUSES-2", "ALLEY", "SHELF-1", "SHELF-2", "CRATE-1", "CRATE-2", "TRIPL", "GUN", "ZOMBIE", "HEAD"};
-long[] passedTimes = new long[16];
+String[] passedTimes = new String[16];
 byte[] passedGadgets = new byte[16];
 boolean[] operPressed = new boolean[16];
 boolean game_started = false;
@@ -101,14 +101,14 @@ void setup()
   {
     passedGadgets[i] = 0;
     operPressed[i] = false;
-    passedTimes[i] = 0;
+    passedTimes[i] = "";
   }
   t = new StopWatchTimer();
   gameTime = t.setStartTime(1, 30, 0);
   command_name = "___";
 }
 
-void draw() //Описать работу
+void draw()
 {
   background(0);
   if (!game_started)
