@@ -8,7 +8,7 @@ String portName;
 PrintWriter data;
 PFont startFont, gadFont, timerFont, digitalFont;
 
-String[] gadgetNames = {"BOX", "RADIO", "GENERATOR", "METER", "CODE", "FUSES-1", "FUSES-2", "ALLEY", "SHELF-1", "SHELF-2", "CRATE-1", "CRATE-2", "TRIPL", "GUN", "ZOMBIE", "HEAD"};
+String[] gadgetNames = {"RADIO", "GENERATOR-1", "GENERATOR-2", "METER", "CODE", "FUSES-1", "FUSES-2", "ALLEY", "SHELF-1", "SHELF-2", "CRATE-1", "CRATE-2", "TRIPL", "GUN", "ZOMBIE", "HEAD"};
 String[] passedTimes = new String[16];
 byte[] passedGadgets = new byte[16];
 boolean[] operPressed = new boolean[16];
@@ -60,7 +60,7 @@ void setup()
   stroke(255);
   textSize(20);
   portName = "COM4";//"COM4"; // COM3 or /dev/tty.wchusbserial1410 or /dev/tty.wchusbserial1420
-  if (debug) portName = "/dev/cu.usbmodem14141";
+  portName = "/dev/cu.usbmodem14141";
   bridgeConnect();
   //serverConnect();
 
@@ -89,11 +89,11 @@ void setup()
   gadH = (scrH - 2 * r_txt_h - 2 * mar - 5 * off) / 5;
   r1x = 0;
   r1y = 0;
-  r1w = 2 * gadW + 2 * off;
+  r1w = gadW + off;
   r1h = r_txt_h + gadH + 2 * mar;
   r2x = r1x + r1w;
   r2y = 0;
-  r2w = 3 * gadW + 3 * off;
+  r2w = 4 * gadW + 4 * off;
   r2h = r1h;
   r3x = 0;
   r3y = r1y + r1h;

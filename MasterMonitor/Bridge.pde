@@ -8,7 +8,6 @@ void bridgeConnect()
     while (!bridge_connect && (millis() - startConnect < 60000))
     {
       arduino.write("startMonitor\n");
-      //println("Connecting...");
       long now = millis();
       while (millis() - now < 1000) {
         ;
@@ -65,7 +64,7 @@ void waitRun(String data)
     }
     t.start();
     println("Run game");
-    sendStart();
+    //sendStart(); // DEBUG
   }
 }
 
@@ -87,11 +86,11 @@ String getInput(boolean debug)
 void resetStates()
 {
   t = new StopWatchTimer();
-    gameTime = t.setStartTime(1, 20, 0);
-    println("Connecting to Master: true");
-    for (int g = 0; g < gCount; g++)
-    {
-      passedGadgets[g] = 0;
-      operPressed[g] = false;
-    }
+  gameTime = t.setStartTime(1, 20, 0);
+  for (int g = 0; g < gCount; g++)
+  {
+    passedGadgets[g] = 0;
+    operPressed[g] = false;
+    passedTimes[g] = "";
+  }
 }

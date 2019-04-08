@@ -4,8 +4,7 @@ void loop()
   unsigned long tick = millis();
 
   if (level == 0) Start(tick);
-  else if (level == 10) Box();
-  else if (level == 11) Radio();
+  else if (level == 10) Radio();
   else if (level == 21) Generator();
   else if (level == 22) Meter();
   else if (level == 23) Code();
@@ -21,8 +20,7 @@ void loop()
   if (tick - lastSyncTime > 10000)
   {
     sendByte(0xA9);
-    Serial.println("Send Sync signal");
-    printEvent("Send Sync signal");
+    printEvent("Send Sync signal", true);
     lastSyncTime = tick;
   }
 

@@ -41,14 +41,18 @@ void playGame()
     if (passedTimes[i].length() > 0) text(passedTimes[i], r1x + mar + (i%5) * (gadW + off) + gadW/2, r1y + r_txt_h + mar + h_off + (i/5) * (gadH + off) + gadH - mar); // passed time text
     if (!prevMouseState && currMouseState)
     {
-      if (game_started && mouseX > r1x + mar + (i%5) * (gadW + off) && mouseX < r1x + mar + (i%5) * (gadW + off) + gadW 
+      if (mouseX > r1x + mar + (i%5) * (gadW + off) && mouseX < r1x + mar + (i%5) * (gadW + off) + gadW 
         && mouseY > r1y + r_txt_h + mar + h_off + (i/5) * (gadH + off) && mouseY < r1y + r_txt_h + mar + h_off + (i/5) * (gadH + off) + gadH)
       {
         if (passedGadgets[i] < 1) 
         {
           passedGadgets[i] = 3;
-          long passedTime = int((gameTime-t.getElapsedTime())/1000);
+          long passedTime = gameTime-t.getElapsedTime();
+          print("Total game time: "); println(gameTime);
+          print("Elapsed time: "); println(t.getElapsedTime());
+          print("Passed by time: "); println(passedTime);
           passedTimes[i] = getTime(hours(passedTime), minutes(passedTime), seconds(passedTime));
+          println("Skipped at " + passedTimes[i]);
         }
         operPressed[i] = true;
         sendToBridge = true;
@@ -124,9 +128,10 @@ void playGame()
           passedGadgets[i] = 5;
           print("Gadget ");
           print(i);
-          println(" done by player");
-          long passedTime = int((gameTime-t.getElapsedTime())/1000);
+          print(" done by player at ");
+          long passedTime = gameTime-t.getElapsedTime();
           passedTimes[i] = getTime(hours(passedTime), minutes(passedTime), seconds(passedTime));
+          println(passedTimes[i]);
         }
       }
     } else if (fromBridge.equals("masterConnected")) resetStates();

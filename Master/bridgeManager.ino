@@ -6,7 +6,7 @@ void getBridgeData()
     byte inByte = Serial1.read();
     if (inByte == 0xBD) // Bridge Gadget Data
     {
-      Serial.print("Operator Skips Recieved:");
+      printEvent("Operator Skips Recieved:", false);
       delay(380);
       for (int i = 0; i < gCount; i++)
       {
@@ -20,7 +20,7 @@ void getBridgeData()
     }
     else if (inByte == 0xBC) // Restart connection (clear game data)
     {
-      Serial.println("Resync with Bridge...");
+      printEvent("Resync with Bridge...", true);
       bridgeConnected = false;
       resetStates();
       lcd.clear();
@@ -65,7 +65,7 @@ void sendGStates() // Проверяем прошел ли игрок какой
     Serial1.write(0xFF);
     delay(15);
     digitalWrite(RSTXCNTRL, LOW);  // Stop Transmitter
-    Serial.println(", level = " + String(level)); // DEBUG
+    printEvent(", level = " + String(level), true); // DEBUG
   }
 }
 

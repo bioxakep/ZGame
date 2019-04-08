@@ -24,7 +24,7 @@ void mp3Set(byte n)
   delay(100);
 }
 
-void printEvent(String e)
+void printEvent(String e, boolean endline)
 {
   unsigned long t = millis();
   String h_str = String(hours(t));
@@ -33,20 +33,21 @@ void printEvent(String e)
   if (m_str.length() < 2) m_str = "0" + m_str;
   String s_str = String(seconds(t));
   if (s_str.length() < 2) s_str = "0" + s_str;
-  Serial.println(String(h_str + ":" + m_str + ":" + s_str) + ": " + e);
+  if(endline) Serial.println(String(h_str + ":" + m_str + ":" + s_str) + ": " + e);
+  else Serial.print(String(h_str + ":" + m_str + ":" + s_str) + ": " + e);
 }
 
-unsigned int seconds(unsigned long t) {
+int seconds(unsigned long t) {
   unsigned long dev = t/1000;
   return int(dev % 60);
 }
 
-unsigned int minutes(unsigned long t) {
+int minutes(unsigned long t) {
   unsigned long dev = t/1000;
   return int((dev / 60) % 60);
 }
 
-unsigned int hours(unsigned long t) {
+int hours(unsigned long t) {
   unsigned long dev = t/1000;
   return int((dev / 3600) % 24);
 }

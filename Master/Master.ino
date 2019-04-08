@@ -105,9 +105,9 @@ int video2   = A1;
 int video3   = A2;
 int video4   = A3;
 
-byte box = 0;
-byte radio =  1;
-byte gener =  2;
+byte radio =  0;
+byte gener1 = 1;
+byte gener2 = 2;
 byte meter =  3;
 byte code =   4;
 byte fuses1 = 5;

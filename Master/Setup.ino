@@ -125,32 +125,11 @@ void setup()
   digitalWrite(door4     , LOW);  // open
   digitalWrite(gunBox    , LOW);
 
-  Serial.println("radio = " + String(digitalRead(radioIN) ? "HIGH" : "LOW"));
-  delay(15);
-  Serial.println("gener = " + String(digitalRead(generIN) ? "HIGH" : "LOW"));
-  delay(15);
-  Serial.println("meter = " + String(digitalRead(meterIN) ? "HIGH" : "LOW"));
-  delay(15);
-  Serial.println("alley = " + String(digitalRead(alleyIN) ? "HIGH" : "LOW"));
-  delay(15);
-  Serial.println("fuses = " + String(digitalRead(fusesIN) ? "HIGH" : "LOW"));
-  delay(15);
-  Serial.println("shelf = " + String(digitalRead(shelfIN) ? "HIGH" : "LOW"));
-  delay(15);
-  Serial.println("crate = " + String(digitalRead(crateIN) ? "HIGH" : "LOW"));
-  delay(15);
-  Serial.println("tripl = " + String(digitalRead(triplIN) ? "HIGH" : "LOW"));
-  delay(15);
-  Serial.println("zombi = " + String(digitalRead(zombiIN) ? "HIGH" : "LOW"));
-  delay(15);
-  //Serial.println("door3 = "+String(digitalRead(door3IN) ? "HIGH" : "LOW"));
-  delay(15);
-
   for (int  x = 0; x < 3; x++) {
     strip.setPixelColor(x, 0, 0, 110); // ALL RED (SHOULD START ALL BLACK)
   }
   strip.show();
-  
+
   for (int i = 0; i < gCount; i++)
   {
     operSkips[i] = false;
@@ -161,21 +140,19 @@ void setup()
   greenColor = strip.Color(150, 0, 0);
   redColor = strip.Color(0, 150, 0);
 
-
   mp3Set(1);
   mp3_set_volume(15);
+  delay(100);
+  printEvent("Setup OK", true);
 
-  Serial.println("Setup OK " + String(millis()));
-
-    checkStates();
-  // Bridge Connector/
+  checkStates();
   connectToBridge();
 }
 
 void checkStates() {
 
   lcd.setCursor(2, 0);
-
+  printEvent("Scan gadgets:", true);
   Serial.println("radio = " + String(digitalRead(radioIN) ? "HIGH" : "LOW"));
   lcd.print(String(digitalRead(radioIN) ? "r_" : "R_"));
   delay(10);
