@@ -41,18 +41,18 @@ void playGame()
     if (passedTimes[i].length() > 0) text(passedTimes[i], r1x + mar + (i%5) * (gadW + off) + gadW/2, r1y + r_txt_h + mar + h_off + (i/5) * (gadH + off) + gadH - mar); // passed time text
     if (!prevMouseState && currMouseState)
     {
-      if (mouseX > r1x + mar + (i%5) * (gadW + off) && mouseX < r1x + mar + (i%5) * (gadW + off) + gadW 
+      if (game_started && mouseX > r1x + mar + (i%5) * (gadW + off) && mouseX < r1x + mar + (i%5) * (gadW + off) + gadW 
         && mouseY > r1y + r_txt_h + mar + h_off + (i/5) * (gadH + off) && mouseY < r1y + r_txt_h + mar + h_off + (i/5) * (gadH + off) + gadH)
       {
         if (passedGadgets[i] < 1) 
         {
           passedGadgets[i] = 3;
           long passedTime = gameTime-t.getElapsedTime();
-          print("Total game time: "); println(gameTime);
-          print("Elapsed time: "); println(t.getElapsedTime());
-          print("Passed by time: "); println(passedTime);
+          //print("Total game time: "); println(gameTime);
+          //print("Elapsed time: "); println(t.getElapsedTime());
+          //print("Passed by time: "); println(passedTime);
           passedTimes[i] = getTime(hours(passedTime), minutes(passedTime), seconds(passedTime));
-          println("Skipped at " + passedTimes[i]);
+          //println("Skipped at " + passedTimes[i]);
         }
         operPressed[i] = true;
         sendToBridge = true;
@@ -98,7 +98,7 @@ void playGame()
   text("TIME:" + currTime, r3x + mar, r3y + r3h - mar);
   float masterTWidth = textWidth("MASTER: ");
   text("MASTER: ", r3x + mar, r3y + r3h - mar - 40);
-  float serverTWidth = textWidth("SERVER: ");
+  //float serverTWidth = textWidth("SERVER: ");
   text("SERVER: ", r3x + mar, r3y + r3h - mar - 80);
   ellipseMode(CENTER);
   if (master_connect) fill(green);
