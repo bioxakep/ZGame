@@ -167,11 +167,7 @@ void setup()
 
   Serial.println("Setup OK " + String(millis()));
 
-  while (true) 
-  {
     checkStates();
-    delay(1000);
-  }
   // Bridge Connector/
   connectToBridge();
 }

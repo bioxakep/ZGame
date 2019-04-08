@@ -36,14 +36,17 @@ void printEvent(String e)
   Serial.println(String(h_str + ":" + m_str + ":" + s_str) + ": " + e);
 }
 
-int seconds(unsigned long t) {
-  return int((t / 1000) % 60);
+unsigned int seconds(unsigned long t) {
+  unsigned long dev = t/1000;
+  return int(dev % 60);
 }
 
-int minutes(unsigned long t) {
-  return int((t / (1000 * 60)) % 60);
+unsigned int minutes(unsigned long t) {
+  unsigned long dev = t/1000;
+  return int((dev / 60) % 60);
 }
 
-int hours(unsigned long t) {
-  return int((t / (1000 * 60 * 60)) % 24);
+unsigned int hours(unsigned long t) {
+  unsigned long dev = t/1000;
+  return int((dev / 3600) % 24);
 }

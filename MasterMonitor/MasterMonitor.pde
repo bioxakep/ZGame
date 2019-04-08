@@ -26,7 +26,7 @@ boolean bridge_connect = false;
 boolean master_connect = false;
 boolean prevMouseState = false;
 boolean currMouseState = false;
-boolean debug = false;
+boolean debug = true;
 String command_name = "";
 
 float scrH, scrW;
@@ -53,8 +53,8 @@ int hintDec = 500;
 
 void setup()
 {
-  fullScreen();
-  //if (debug) size(1200, 600);
+  //fullScreen();
+  size(1200, 600);
   background(0);
   fill(100);
   stroke(255);
@@ -62,7 +62,7 @@ void setup()
   portName = "COM4";//"COM4"; // COM3 or /dev/tty.wchusbserial1410 or /dev/tty.wchusbserial1420
   if (debug) portName = "/dev/cu.usbmodem14141";
   bridgeConnect();
-  serverConnect();
+  //serverConnect();
 
   startFont = createFont("Arial", 10);//Silom
   gadFont = createFont("Arial", 14); //MyanmarMN
