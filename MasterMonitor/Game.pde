@@ -152,7 +152,18 @@ void playGame()
   }
 }
 
-
+void resetStates()
+{
+  t = new StopWatchTimer();
+  gameTime = t.setStartTime(1, 20, 0);
+  game_started = false;
+  for (int g = 0; g < gCount; g++)
+  {
+    passedGadgets[g] = 0;
+    operPressed[g] = false;
+    passedTimes[g] = "";
+  }
+}
 /*
 void endGame()
  {

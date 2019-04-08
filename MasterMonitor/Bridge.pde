@@ -40,7 +40,6 @@ void waitMaster(String data)
   text("WAIT MASTER CONNECT", scrW/2 - scrW/6, scrH/2 + scrH/4);
   if (data.equals("masterConnected"))
   {
-    game_started = false;
     master_connect = true;
     resetStates();
     wait(1);
@@ -63,7 +62,7 @@ void waitRun(String data)
       passedTimes[g] = "";
     }
     t.start();
-    println("Run game");
+    println("Running game");
     //sendStart(); // DEBUG
   }
 }
@@ -80,17 +79,4 @@ String getInput(boolean debug)
       return inp;
     } else return " ";
   } else return " ";
-}
-
-
-void resetStates()
-{
-  t = new StopWatchTimer();
-  gameTime = t.setStartTime(1, 20, 0);
-  for (int g = 0; g < gCount; g++)
-  {
-    passedGadgets[g] = 0;
-    operPressed[g] = false;
-    passedTimes[g] = "";
-  }
 }
