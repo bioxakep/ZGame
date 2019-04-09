@@ -17,7 +17,7 @@ boolean sendToBridge = false;
 int[] gTimes = new int[16];
 int total_scores = 0;
 int getStateTime = 0;
-
+long lastPassedTime = 0;
 int gCount = 16;
 String server_addr = "http://127.0.0.1:8484/";
 

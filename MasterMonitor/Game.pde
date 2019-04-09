@@ -47,7 +47,8 @@ void playGame()
         if (passedGadgets[i] < 1) 
         {
           passedGadgets[i] = 3;
-          long passedTime = gameTime-t.getElapsedTime();
+          long passedTime = t.getPassedTime() - lastPassedTime;
+          lastPassedTime = passedTime + lastPassedTime;
           //print("Total game time: "); println(gameTime);
           //print("Elapsed time: "); println(t.getElapsedTime());
           //print("Passed by time: "); println(passedTime);
@@ -126,10 +127,13 @@ void playGame()
         if (data == 5)
         {
           passedGadgets[i] = 5;
+          long passedTime = t.getPassedTime() - lastPassedTime;
+          lastPassedTime = passedTime + lastPassedTime;
+          
           print("Gadget ");
           print(i);
           print(" done by player at ");
-          long passedTime = gameTime-t.getElapsedTime();
+          
           passedTimes[i] = getTime(hours(passedTime), minutes(passedTime), seconds(passedTime));
           println(passedTimes[i]);
         }

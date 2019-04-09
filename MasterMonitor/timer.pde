@@ -7,15 +7,26 @@ class StopWatchTimer {
       totalSecs = 1000*(hours*60*60 + minutes*60 + seconds);
       return totalSecs;
     }
+    
     void start() 
     {
         startTime = millis();
         running = true;
     }
+    
     void stop() 
     {
         stopTime = millis();
         running = false;
+    }
+    long getPassedTime()
+    {
+      long passed;
+      if (running) {
+             passed = millis() - startTime;
+      }
+      else passed = stopTime - startTime;
+      return passed;
     }
     long getElapsedTime() {
         long elapsed;
