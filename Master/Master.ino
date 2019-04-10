@@ -39,8 +39,8 @@ boolean playerGDone[16];
 bool ok1 = false;
 int phoneOUT = 5;  // R+B- WIRE
 
-int boxIN = 9;
-int boxHD = 36;
+//int boxIN = 9;
+//int boxHD = 36;
 
 int radioIN  = 53; // wire 33
 int radioOUT = 51;
@@ -63,13 +63,13 @@ int fusesOUT = 27;
 unsigned long lastSyncTime = 0;
 
 unsigned long fusesSigStart = 0;
-unsigned long alleySigStart = 0;
+unsigned long windowSigStart = 0;
 
 unsigned long fusesSigStop = 0;
-unsigned long alleySigStop = 0;
+unsigned long windowSigStop = 0;
 
 boolean fusesStates[2] = {HIGH, HIGH};
-boolean alleyStates[2] = {HIGH, HIGH};
+boolean windowStates[2] = {HIGH, HIGH};
 
 int shelfIN  = 37; // wire 21
 int shelfOUT = 35;
@@ -77,8 +77,8 @@ int shelfOUT = 35;
 int crateIN  = 33; // wire 30 W(IN) R(+)B(-)   >>>  previous called MAP
 int crateOUT = 31; // wire 30 G(OUT)
 
-int zombiIN  = 41;
-int zombiOUT = 39;
+int zombiIN  = 41; // wire 27 W(IN) R(+)B(-)
+int zombiOUT = 39; // wire 27 G(OUT)
 
 int lightR1  = A11; // 
 int lightR2A =  A5; // RELAY 2 WIRE 25 G(+)W(-)
@@ -95,7 +95,8 @@ int door4    =  A7; // RELAY 4 WIRE 26 R(+)B(-)
 int gunBox   = A10; // RELAY 7 WIRE 29 R(+) W(-) >>> to be connected
 int boxed    =  A9; // RELAY 6 WIRE 35 (+)(-)
 
-int ladder   =  12; // ladder fastlock
+int hatchIN  =  9;   // button
+int hatchOUT = A11; // RELAY 8 wire 37 SPK roof
 
 int triplIN  =  8;
 int triplOUT = 12;
@@ -105,22 +106,22 @@ int video2   = A1;
 int video3   = A2;
 int video4   = A3;
 
-byte radio =  0;
-byte gener1 = 1;
-byte gener2 = 2;
-byte meter =  3;
-byte code =   4;
-byte fuses1 = 5;
-byte fuses2 = 6;
-byte alley =  7;
-byte shelf1 = 8;
-byte shelf2 = 9;
-byte crate1 = 10;
-byte crate2 = 11;
-byte tripl =  12;
-byte gun =    13;
-byte zombie = 14;
-byte head =   15;
+byte radio  =  0;
+byte gener1 =  1;
+byte gener2 =  2;
+byte meter  =  3;
+byte code =  4;
+byte fuses2 =  5;
+byte fuses3 =  6;
+byte window  =  7;
+byte shelf1 =  8;
+byte shelf2 =  9;
+byte emp =  10;
+byte crate1 = 11;
+byte crate2 = 12;
+byte zombie = 13;
+byte head =   14;
+byte hatch =  15;
 byte gCount = 16;
 /*
 0. PRE-START   >>> ALL DOORS  (2,3,4) LOCK

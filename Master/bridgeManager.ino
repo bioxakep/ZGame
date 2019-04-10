@@ -50,7 +50,6 @@ void sendGStates() // Проверяем прошел ли игрок какой
   {
     digitalWrite(RSTXCNTRL, HIGH);  // Init Transmitter
     Serial.print("Send States to Operator: ");
-    delay(5);
     Serial1.write(0xAD);
     delay(15);
     for (int d = 0; d < gCount; d++)
@@ -84,7 +83,6 @@ void connectToBridge()
     Serial1.write(outByte);
     delay(15);
     digitalWrite(RSTXCNTRL, LOW);
-    delay(5);
     Serial.print(".");
     while (tick - sendTime < 1500)
     {
@@ -123,7 +121,7 @@ void resetStates()
   }
   startLevel = 0;
   fusesStates[0] = fusesStates[1] = HIGH;
-  alleyStates[0] = alleyStates[1] = HIGH;
+  windowStates[0] = windowStates[1] = HIGH;
 }
 
 void sendByte(byte n)
@@ -133,5 +131,4 @@ void sendByte(byte n)
   Serial1.write(n);
   delay(15);
   digitalWrite(RSTXCNTRL, LOW);
-  delay(5);
 }

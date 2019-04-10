@@ -8,7 +8,7 @@ String portName;
 PrintWriter data;
 PFont startFont, gadFont, timerFont, digitalFont;
 
-String[] gadgetNames = {"RADIO", "GENERATOR-1", "GENERATOR-2", "METER", "CODE", "FUSES-1", "FUSES-2", "ALLEY", "SHELF-1", "SHELF-2", "CRATE-1", "CRATE-2", "TRIPL", "GUN", "ZOMBIE", "HEAD"};
+String[] gadgetNames = {"RADIO", "GEN/FUEL", "GEN/RUN", "METER", "CODE", "FUSES", "DOOR", "WINDOW", "GAS", "SHELF", "E.M.P", "MAP", "FLARE", "ZOMBIE"};
 String[] passedTimes = new String[16];
 byte[] passedGadgets = new byte[16];
 boolean[] operPressed = new boolean[16];

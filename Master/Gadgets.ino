@@ -1,3 +1,24 @@
+// START > RADIO > GEN/FUEL > GEN/RUN > METER > CODE  >   FUSES  >  DOOR   >  WINDOW  > GAS     >  SHELF  > E.M.P. > MAP  >  FLARE  >  ZOMBIE    
+// ROOM1---radioIN |          |         |       |         |         |         |       |         |         |        |         |         |
+// ROOM2-----------generIN-1  |         |       |         |         |         |       |         |         |        |         |         |
+//                            generIN-2 |       |         |         |         |       |         |         |        |         |         |
+//                                      meterIN |         |         |         |       |         |         |        |         |         |
+//                                              fusesIN-1 |         |         |       |         |         |        |         |         |
+// ROOM3--------------------------------------------------fusesIN-2 |         |       |         |         |        |         |         |
+//                                                                  fusesIN-3 |       |         |         |        |         |         |                            
+//                                                                            alleyIN |         |         |        |         |         |
+//                                                                                    shelfIN-1 |         |        |         |         |
+//                                                                                              shelfIN-2 |        |         |         |
+//                                                                                                        tripleIN |         |         |
+//                                                                                                                 crateIN-1 |         |
+//                                                                                                                           crateIN-2 |
+//_____________________________________________________________________________________________________________________________________zombieIN
+// [HEAD ] works anywhere
+// [HATCH] unlock ladder works anywhere
+
+
+
+
 void Start(long t)
 {
   if (t - lastRFIDCheck > 100)
@@ -45,6 +66,8 @@ void Start(long t)
       strip.setPixelColor(2, 0, 0, 0);
       printEvent("Level 1 Start 1 OK", true);
       startLevel++;
+      lcd.setCursor(0, 0);
+      lcd.print("Pre-Start Done !");
       delay(300);
     }
     startRFWait = true;
@@ -77,7 +100,6 @@ void Radio()
     digitalWrite(lightR2B, LOW); // OFF LIGHT under door 3
     digitalWrite(lightR3A, LOW); // OFF LIGHT ROOM 3
     digitalWrite(lightR3B, LOW); // OFF LIGHT ROOM 3
-    level = 21;
     strip.setPixelColor(0, 0, 0, 0);
     strip.show();
     printEvent("Radio OK", true);
@@ -85,6 +107,7 @@ void Radio()
     lcd.setCursor(0, 0); // X, Y
     lcd.print("Radio OK");
     delay(50);
+    level = 21;
   }
 }
 
@@ -99,6 +122,10 @@ void Generator()
     else playerGDone[gener1] = true;
     sendHLms(headOUT, 100);
     printEvent("Generator-1 OK", true);
+    lcd.clear();
+    lcd.setCursor(0, 0); // X, Y
+    lcd.print("Generator/FUEL");
+    delay(200);
   }
   if ((!digitalRead(generIN) || operSkips[gener2]) && !gStates[gener2] && gStates[gener1])
   {
@@ -106,6 +133,10 @@ void Generator()
     else playerGDone[gener2] = true;
     sendHLms(headOUT, 100);
     printEvent("Generator-2 OK", true);
+    lcd.clear();
+    lcd.setCursor(0, 0); // X, Y
+    lcd.print("Generator/RUN ");
+    delay(200);
     level = 22;
   }
 }
@@ -176,10 +207,10 @@ void Fuses()
   //                                                     mp3_player1 track3
   //                                                     turn on lightR3A and lightR3B
   //                                                     turn on neopixel 1-3 red
-  if ((!digitalRead(fusesIN) || operSkips[fuses1]) && !gStates[fuses1])
+  if ((!digitalRead(fusesIN) || operSkips[fuses2]) && !gStates[fuses2])
   {
-    if (operSkips[fuses1]) sendHLms(fusesOUT, 250);
-    else playerGDone[fuses1] = true;
+    if (operSkips[fuses2]) sendHLms(fusesOUT, 250);
+    else playerGDone[fuses2] = true;
     sendHLms(video1, 100);
     sendHLms(video2, 100);
     //mp3Set(1);
@@ -188,10 +219,10 @@ void Fuses()
     digitalWrite(lightR3B, HIGH);
     for (int i = 0; i < 3; i++) strip.setPixelColor(i, strip.Color(0, 200, 0));
     strip.show();
-    printEvent("Fuses1 OK", true);
+    printEvent("Fuses2 OK", true);
     lcd.clear();
     lcd.setCursor(0, 0); // X, Y
-    lcd.print("Fuses1 OK");
+    lcd.print("Fuses2 OK");
     delay(50);
     level = 31;
   }
@@ -199,10 +230,24 @@ void Fuses()
 
 void Head()
 {
-
+  if(operSkips[head]) 
+  {
+    sendHLms(headOUT, 250);
+    operSkips[head] = false;
+  }
 }
 
-void Lock(long t)
+void Hatch()
+{
+// if signal from hatchIN the signal to hatchOUT, or skip  
+// 250ms signal to hatchOUT  
+  if ((!digitalRead(hatchIN) || operSkips[hatch]) && gStates[fuses2])
+  {
+    sendHLms(hatchOUT, 250);
+  }
+}
+
+void Door(long t)
 {
   // ROOM 3 "LOCK"
   //                wait for permanent signal from fusesIN        >> if recieved turn neopixel 1 green , lock door3B
@@ -220,38 +265,44 @@ void Lock(long t)
   if (!fusesStates[0] && fusesStates[1]) fusesSigStart = t;
   if (!fusesStates[1] && fusesStates[0]) fusesSigStop = t;
   fusesStates[1] = fusesStates[0];
-  if ((t - fusesSigStart > 3000 && fusesSigStart - fusesSigStop > 0 || operSkips[fuses2]) && !gStates[fuses2])
+  if ((t - fusesSigStart > 3000 && fusesSigStart - fusesSigStop > 0 || operSkips[fuses3]) && !gStates[fuses3])
   {
-    if (!operSkips[fuses2]) playerGDone[fuses2] = true;
+    if (!operSkips[fuses3]) playerGDone[fuses3] = true;
     digitalWrite(door3B, HIGH);
     strip.setPixelColor(0, greenColor);
     strip.show();
-    printEvent("Fuses2 OK", true);
+    printEvent("Fuses3 OK", true);
     lcd.clear();
     lcd.setCursor(0, 0); // X, Y
-    lcd.print("Fuses2 OK");
+    lcd.print("Fuses3 OK");
     delay(50);
+    level = 32;
     // What else if skip or player
   }
-
-  alleyStates[0] = debounce(alleyIN, alleyStates[1]);
-  if (!alleyStates[0] && alleyStates[1]) alleySigStart = t;
-  if (!alleyStates[1] && alleyStates[0]) alleySigStop = t;
-  alleyStates[1] = alleyStates[0];
-  if ((t - alleySigStart > 3000 && alleySigStart - alleySigStop > 0 || operSkips[alley]) && !gStates[alley])
+}
+void Window(long t)
+{
+  windowStates[0] = debounce(alleyIN, windowStates[1]);
+  if (!windowStates[0] && windowStates[1]) windowSigStart = t;
+  if (!windowStates[1] && windowStates[0]) windowSigStop = t;
+  windowStates[1] = windowStates[0];
+  if ((t - windowSigStart > 3000 && windowSigStart - windowSigStop > 0 || operSkips[window]) && !gStates[window])
   {
-    if (!operSkips[alley]) playerGDone[alley] = true;
+    if (!operSkips[window]) playerGDone[window] = true;
     sendHLms(video2, 100);
     strip.setPixelColor(1, greenColor);
     strip.show();
     printEvent("Alley OK", true);
     lcd.clear();
     lcd.setCursor(0, 0); // X, Y
-    lcd.print("Alley OK");
+    lcd.print("Window OK");
     delay(50);
+    level = 33;
     // What else if skip or player
   }
-
+}
+void Gus()
+{
   if ((!digitalRead(shelfIN) || operSkips[shelf1]) && !gStates[shelf1])
   {
     if (operSkips[shelf1]) sendHLms(shelfOUT, 250);
@@ -261,8 +312,12 @@ void Lock(long t)
     lcd.setCursor(0, 0); // X, Y
     lcd.print("Shelf1 OK");
     delay(50);
+    level = 34;
   }
+}
 
+void Shelf()
+{
   if ((!digitalRead(shelfIN) || operSkips[shelf2]) && !gStates[shelf2] && gStates[shelf1])
   {
     if (operSkips[shelf2]) sendHLms(shelfOUT, 250);
@@ -275,19 +330,37 @@ void Lock(long t)
     lcd.setCursor(0, 0); // X, Y
     lcd.print("Shelf2 OK");
     delay(50);
-  }
-
-  if (gStates[fuses2] && gStates[alley] && gStates[shelf2])
-  {
-    level = 32;
-    printEvent("Lock OK", true);
-    lcd.clear();
-    lcd.setCursor(0, 0); // X, Y
-    lcd.print("Lock OK");
-    delay(50);
+    level = 35;
   }
 }
 
+void Emp()
+{
+  // ROOM 3 "GUN"
+  //                wait for first signal from triplIN   >> if skipped ??
+  //                                                     turn off boxed
+  //                                                     turn on gunBox
+  //                                                     turn off lightR3B
+  //                                                     signal to zombiOUT
+  //                                                     signal to Video player 2,
+  //                                                     mp3_player1 track4
+  if ((!digitalRead(triplIN) || operSkips[emp]) && !gStates[emp])
+  {
+    if (!operSkips[emp]) playerGDone[emp] = true;
+    digitalWrite(boxed, LOW);
+    digitalWrite(gunBox, HIGH);
+    sendHLms(zombiOUT, 250);
+    sendHLms(video2, 100);
+    //mp3Set(1);
+    //mp3_play(4);
+    printEvent("EMP OK", true);
+    lcd.clear();
+    lcd.setCursor(0, 0); // X, Y
+    lcd.print("EMP OK");
+    delay(50);
+    level = 36;
+  }
+}
 
 void Crate() // Duplicate
 {
@@ -323,47 +396,10 @@ void Crate() // Duplicate
     lcd.setCursor(0, 0); // X, Y
     lcd.print("Crate2 OK");
     delay(50);
-    level = 33;
+    level = 37;
   }
 }
 
-void Triple()
-{
-  if ((!digitalRead(triplIN) || operSkips[tripl]) && !gStates[tripl])
-  {
-    if (operSkips[tripl]) sendHLms(triplOUT, 250);
-    else playerGDone[tripl] = true;
-    level = 34;
-  }
-}
-
-void Gun()
-{
-  // ROOM 3 "GUN"
-  //                wait for first signal from triplIN   >> if skipped ??
-  //                                                     turn off boxed
-  //                                                     turn on gunBox
-  //                                                     turn off lightR3B
-  //                                                     signal to zombiOUT
-  //                                                     signal to Video player 2,
-  //                                                     mp3_player1 track4
-  if ((!digitalRead(triplIN) || operSkips[gun]) && !gStates[gun])
-  {
-    if (!operSkips[gun]) playerGDone[gun] = true;
-    digitalWrite(boxed, LOW);
-    digitalWrite(gunBox, HIGH);
-    sendHLms(zombiOUT, 250);
-    sendHLms(video2, 100);
-    //mp3Set(1);
-    //mp3_play(4);
-    printEvent("Gun OK", true);
-    lcd.clear();
-    lcd.setCursor(0, 0); // X, Y
-    lcd.print("Gun OK");
-    delay(50);
-    level = 35;
-  }
-}
 
 void Zombie()
 {
@@ -382,7 +418,7 @@ void Zombie()
     sendHLms(video2, 100);
     //mp3Set(2);
     //mp3_play(3);
-    sendHLms(ladder, 250);
+    //sendHLms(ladder, 250); ???????
     digitalWrite(door4, LOW);
     printEvent("Zombie OK", true);
     lcd.clear();

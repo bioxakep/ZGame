@@ -19,7 +19,7 @@ void playGame()
   strokeWeight(0);
   textAlign(CENTER);
   textFont(gadFont, 20);
-  for (int i = 0; i < gCount; i++)
+  for (int i = 0; i < gCount-2; i++)
   {
     if (i < 5) h_off = 0;
     else h_off = r_txt_h;
@@ -66,19 +66,43 @@ void playGame()
   rect(r1x + mar + 3 * (gadW + off), r1y + r_txt_h + mar + h_off + 3 * (gadH + off), gadW, gadH); // gadget rects
   rect(r1x + mar + 4 * (gadW + off), r1y + r_txt_h + mar + h_off + 3 * (gadH + off), gadW, gadH); // gadget rects
   fill(grey);
-  text("CMD 1", r1x + mar + 3 * (gadW + off) + gadW/2, r1y + r_txt_h + mar + h_off + 3 * (gadH + off) + gadH/2 + mar);
-  text("CMD 2", r1x + mar + 4 * (gadW + off) + gadW/2, r1y + r_txt_h + mar + h_off + 3 * (gadH + off) + gadH/2 + mar);
+  text("HEAD", r1x + mar + 3 * (gadW + off) + gadW/2, r1y + r_txt_h + mar + h_off + 3 * (gadH + off) + gadH/2 + mar);
+  text("HATCH", r1x + mar + 4 * (gadW + off) + gadW/2, r1y + r_txt_h + mar + h_off + 3 * (gadH + off) + gadH/2 + mar);
   if (!prevMouseState && currMouseState)
   {
     if (mouseX > r1x + mar + 3 * (gadW + off) && mouseX < r1x + mar + 3 * (gadW + off) + gadW 
       && mouseY > r1y + r_txt_h + mar + h_off + 3 * (gadH + off) && mouseY < r1y + r_txt_h + mar + h_off + 3 * (gadH + off) + gadH) // first rect
     {
-      println("rect1 pressed");
+      if (passedGadgets[14] < 1) 
+        {
+          passedGadgets[14] = 3;
+          long passedTime = t.getPassedTime() - lastPassedTime;
+          lastPassedTime = passedTime + lastPassedTime;
+          //print("Total game time: "); println(gameTime);
+          //print("Elapsed time: "); println(t.getElapsedTime());
+          //print("Passed by time: "); println(passedTime);
+          passedTimes[14] = getTime(hours(passedTime), minutes(passedTime), seconds(passedTime));
+          //println("Skipped at " + passedTimes[i]);
+        }
+        operPressed[14] = true;
+        sendToBridge = true;
     }
     if (mouseX > r1x + mar + 4 * (gadW + off) && mouseX < r1x + mar + 4 * (gadW + off) + gadW 
       && mouseY > r1y + r_txt_h + mar + h_off + 3 * (gadH + off) && mouseY < r1y + r_txt_h + mar + h_off + 3 * (gadH + off) + gadH) // second rect
     {
-      println("rect2 pressed");
+      if (passedGadgets[15] < 1) 
+        {
+          passedGadgets[15] = 3;
+          long passedTime = t.getPassedTime() - lastPassedTime;
+          lastPassedTime = passedTime + lastPassedTime;
+          //print("Total game time: "); println(gameTime);
+          //print("Elapsed time: "); println(t.getElapsedTime());
+          //print("Passed by time: "); println(passedTime);
+          passedTimes[15] = getTime(hours(passedTime), minutes(passedTime), seconds(passedTime));
+          //println("Skipped at " + passedTimes[i]);
+        }
+        operPressed[15] = true;
+        sendToBridge = true;
     }
   }
 

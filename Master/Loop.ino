@@ -2,18 +2,21 @@ void loop()
 {
   getBridgeData();
   unsigned long tick = millis();
-
+  Hatch();
+  Head();
   if (level == 0) Start(tick);
   else if (level == 10) Radio();
   else if (level == 21) Generator();
   else if (level == 22) Meter();
   else if (level == 23) Code();
   else if (level == 30) Fuses();
-  else if (level == 31) Lock(tick);
-  else if (level == 32) Crate();
-  else if (level == 33) Triple();
-  else if (level == 34) Gun();
-  else if (level == 35) Zombie();
+  else if (level == 31) Door(tick);
+  else if (level == 32) Window(tick);
+  else if (level == 33) Gus();
+  else if (level == 34) Shelf();
+  else if (level == 35) Emp();
+  else if (level == 36) Crate();
+  else if (level == 37) Zombie();
   else if (level == 50) gameOver();
   sendGStates();
 

@@ -59,7 +59,6 @@ void loop()
           while (masterSerial.available()) masterSerial.read();
           digitalWrite(RSTXCNTRL, HIGH);  // Init Transmitter
           digitalWrite(13, HIGH);
-          delay(5);
           masterSerial.write(0xBC);
           delay(15);
           digitalWrite(RSTXCNTRL, LOW);  // Stop Transmitter
@@ -70,7 +69,6 @@ void loop()
         {
           if (!monConnected) Serial.println("\nConnecting... recieved and sending back: " + String(inByte, HEX) + " in " + String(whileTick));
           digitalWrite(RSTXCNTRL, HIGH);  // Init Transmitter
-          delay(5);
           masterSerial.write(inByte);
           delay(15);
           digitalWrite(RSTXCNTRL, LOW);  // Stop Transmitter
@@ -127,7 +125,6 @@ void loop()
         digitalWrite(13, HIGH);
         // Prepare to send states to Master
         digitalWrite(RSTXCNTRL, HIGH);  // Init
-        delay(5);
         masterSerial.write(0xBC);
         delay(15);
         digitalWrite(RSTXCNTRL, LOW);  // Stop
@@ -188,7 +185,6 @@ void loop()
     if (tick - mLastSync > mConnTimeOut) // при отсутствии контрольного сигнала переподключаемся к мастеру
     {
       digitalWrite(RSTXCNTRL, HIGH);  // Init Transmitter
-      delay(5);
       masterSerial.write(0xBC);
       delay(15);
       digitalWrite(RSTXCNTRL, LOW);  // Stop Transmitter
