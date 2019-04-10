@@ -3,7 +3,7 @@ void bridgeConnect()
   bridge_connect = false;
   print("Connecting to Bridge: ");
   try { 
-    arduino = new Serial(this, portName, 9600);
+    arduino = new Serial(this, portName, 38400);
     long startConnect = millis();
     while (!bridge_connect && (millis() - startConnect < 60000))
     {

@@ -10,7 +10,7 @@ void loop()
   else if (level == 23) Code();
   else if (level == 30) Fuses();
   else if (level == 31) Lock(tick);
-  else if (level == 32) Crate();// parallel or devide
+  else if (level == 32) Crate();
   else if (level == 33) Triple();
   else if (level == 34) Gun();
   else if (level == 35) Zombie();

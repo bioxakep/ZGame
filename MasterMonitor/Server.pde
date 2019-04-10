@@ -9,9 +9,9 @@ void serverConnect()
     {
       try
       {
-      String resp = testGet.getContent();
-      if (resp.equals("OK")) server_connect = true;
-      else testGet.send();
+        String resp = testGet.getContent();
+        if (resp.equals("OK")) server_connect = true;
+        else testGet.send();
       }
       catch(Exception e)
       {
@@ -28,12 +28,11 @@ void waitName()
   GetRequest getName = new GetRequest("http://127.0.0.1:8484/getname");
   getName.send();
   String resp = getName.getContent();
-  if(resp.equals("SERVER_WAIT_NAME"))
+  if (resp.equals("SERVER_WAIT_NAME"))
   {
     wait(2);
     println("SERVER UNSW:" + resp);
-  }
-  else command_name = resp;
+  } else command_name = resp;
 }
 
 void sendStart()
@@ -41,7 +40,7 @@ void sendStart()
   GetRequest startGet = new GetRequest("http://127.0.0.1:8484/startgame");
   startGet.send();
   String resp = startGet.getContent();
-  if(resp.equals("OK"))
+  if (resp.equals("OK"))
   {
     wait(2);
     println("SERVER UNSW:" + resp);

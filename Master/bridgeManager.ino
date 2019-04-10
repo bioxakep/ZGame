@@ -1,5 +1,6 @@
 void getBridgeData()
 {
+  digitalWrite(RSTXCNTRL,LOW); //allways LOW besides send mode
   if (Serial1.available() > 0)
   {
     byte input[gCount];
@@ -49,6 +50,7 @@ void sendGStates() // Проверяем прошел ли игрок какой
   {
     digitalWrite(RSTXCNTRL, HIGH);  // Init Transmitter
     Serial.print("Send States to Operator: ");
+    delay(5);
     Serial1.write(0xAD);
     delay(15);
     for (int d = 0; d < gCount; d++)
@@ -63,7 +65,7 @@ void sendGStates() // Проверяем прошел ли игрок какой
       else Serial.print('1');
     }
     Serial1.write(0xFF);
-    delay(15);
+    delay(25);
     digitalWrite(RSTXCNTRL, LOW);  // Stop Transmitter
     printEvent(", level = " + String(level), true); // DEBUG
   }
@@ -82,7 +84,8 @@ void connectToBridge()
     Serial1.write(outByte);
     delay(15);
     digitalWrite(RSTXCNTRL, LOW);
-    Serial.print("..");
+    delay(5);
+    Serial.print(".");
     while (tick - sendTime < 1500)
     {
       tick = millis();
@@ -94,7 +97,7 @@ void connectToBridge()
           if (inByte == 0xA1 && outByte == 0xA1) 
           {
             outByte = 0xA2;
-            Serial.print("1..");
+            Serial.print(".sync.");
           }
           if (inByte == 0xA2 && outByte == 0xA2) bridgeConnected = true;
         }
@@ -126,7 +129,9 @@ void resetStates()
 void sendByte(byte n)
 {
   digitalWrite(RSTXCNTRL, HIGH);
+  delay(5);
   Serial1.write(n);
   delay(15);
   digitalWrite(RSTXCNTRL, LOW);
+  delay(5);
 }

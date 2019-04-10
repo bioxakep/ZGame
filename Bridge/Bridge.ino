@@ -20,10 +20,10 @@ unsigned long mConnTimeOut = 20000;
 
 int gCount = 16;
 
-void setup() 
+void setup()
 {
-  masterSerial.begin(9600);
-  Serial.begin(9600);
+  masterSerial.begin(38400);
+  Serial.begin(38400);
   pinMode(RSTXCNTRL, OUTPUT);
   digitalWrite(RSTXCNTRL, LOW);
   for (int s = 0; s < gCount; s++) gStates[s] = 0x01;
@@ -59,6 +59,7 @@ void loop()
           while (masterSerial.available()) masterSerial.read();
           digitalWrite(RSTXCNTRL, HIGH);  // Init Transmitter
           digitalWrite(13, HIGH);
+          delay(5);
           masterSerial.write(0xBC);
           delay(15);
           digitalWrite(RSTXCNTRL, LOW);  // Stop Transmitter
@@ -69,6 +70,7 @@ void loop()
         {
           if (!monConnected) Serial.println("\nConnecting... recieved and sending back: " + String(inByte, HEX) + " in " + String(whileTick));
           digitalWrite(RSTXCNTRL, HIGH);  // Init Transmitter
+          delay(5);
           masterSerial.write(inByte);
           delay(15);
           digitalWrite(RSTXCNTRL, LOW);  // Stop Transmitter
@@ -104,6 +106,7 @@ void loop()
         {
           // Prepare to send states to Master
           digitalWrite(RSTXCNTRL, HIGH);  // передаем состояния мастеру
+          delay(5);
           masterSerial.write(0xBD);
           delay(15);
           //Sending...
@@ -124,6 +127,7 @@ void loop()
         digitalWrite(13, HIGH);
         // Prepare to send states to Master
         digitalWrite(RSTXCNTRL, HIGH);  // Init
+        delay(5);
         masterSerial.write(0xBC);
         delay(15);
         digitalWrite(RSTXCNTRL, LOW);  // Stop
@@ -134,7 +138,7 @@ void loop()
     // =========== КОМАНДЫ ОТ МАСТЕРА ===========
     if (masterSerial.available() > 0) //прием команд от мастера
     {
-      
+
       byte inByte = masterSerial.read();
 
       if (inByte == 0xA1) // переподключение к мастеру
@@ -149,7 +153,9 @@ void loop()
         if (!monConnected) Serial.println("Send to operator clear states and run");
         Serial.write("masterStart\n");
       }
-      else if (inByte == 0xAA) {Serial.println("Rungame");} //  старт игры
+      else if (inByte == 0xAA) {
+        Serial.println("Rungame"); //  старт игры
+      }
       else if (inByte == 0xAD) // Принимаем информацию о гаджетах с мастера
       {
         byte input[gCount];
@@ -178,13 +184,14 @@ void loop()
         }
       }
       while (masterSerial.available()) masterSerial.read();
-      if (tick - mLastSync > mConnTimeOut) // при отсутствии контрольного сигнала переподключаемся к мастеру
-      {
-        digitalWrite(RSTXCNTRL, HIGH);  // Init Transmitter
-        masterSerial.write(0xBC);
-        delay(15);
-        digitalWrite(RSTXCNTRL, LOW);  // Stop Transmitter
-      }
+    }
+    if (tick - mLastSync > mConnTimeOut) // при отсутствии контрольного сигнала переподключаемся к мастеру
+    {
+      digitalWrite(RSTXCNTRL, HIGH);  // Init Transmitter
+      delay(5);
+      masterSerial.write(0xBC);
+      delay(15);
+      digitalWrite(RSTXCNTRL, LOW);  // Stop Transmitter
     }
   }
 }

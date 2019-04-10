@@ -46,21 +46,21 @@ int timerMinutes = 0;
 int timerSeconds = 0;
 long gameTime = 0;
 long doneTime = 0;
-long server_connect_timeout = 10000;
+long server_connect_timeout = 5000;
 int startScores = 10000;
 int currScores = 10000;
 int hintDec = 500;
 
 void setup()
 {
-  //fullScreen();
-  size(1200, 600);
+  fullScreen();
+  //size(1200, 600);
   background(0);
   fill(100);
   stroke(255);
   textSize(20);
-  portName = "COM4";//"COM4"; // COM3 or /dev/tty.wchusbserial1410 or /dev/tty.wchusbserial1420
-  portName = "/dev/cu.usbmodem14141";
+  portName = "COM3";//"COM4"; // COM3 or /dev/tty.wchusbserial1410 or /dev/tty.wchusbserial1420
+  //portName = "/dev/cu.usbmodem14141";
   bridgeConnect();
   //serverConnect();
 

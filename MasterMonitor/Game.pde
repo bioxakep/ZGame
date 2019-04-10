@@ -168,38 +168,3 @@ void resetStates()
     passedTimes[g] = "";
   }
 }
-/*
-void endGame()
- {
- println("Sending game results to server...");
- PostRequest endPost = new PostRequest("http://127.0.0.1:8484/endgame");
- endPost.addData("gdata", join(nf(gTimes, 0), ","));
- endPost.addData("scores", str(total_scores));
- endPost.send();
- String resp = endPost.getContent();
- println("Server Response: " + resp);
- if (resp.equals("game stop")) 
- {
- game_started = false;
- STATE = WAIT_START;
- }
- }
- 
- String toStr(char[] a)
- {
- int s = a.length;
- String ret = "";
- for (int i = 0; i < s; i++)
- {
- ret += a[i];
- }
- return ret;
- }
- 
- void showStat()
- {
- // write this later
- //
- }
- 
- */

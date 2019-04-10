@@ -19,8 +19,8 @@ void Start(long t)
       digitalWrite(lightR3B, LOW);
       sendHLms(video1, 100);
       sendHLms(video2, 100);
-      //mp3Set(1);
-      //mp3_play(1);
+      mp3Set(1);
+      mp3_play(1);
       delay(15);
       printEvent("Level 1 Start 2 OK, Level 1 Done", true);
       strip.setPixelColor(1, 0, 0, 0);
@@ -65,10 +65,10 @@ void Radio()
     if (operSkips[radio]) sendHLms(radioOUT, 250);
     else playerGDone[radio] = true;
     sendHLms(video2, 100);
-    //mp3Set(1);
-    //mp3_play(2);
-    //mp3Set(2);
-    //mp3_play(2);
+    mp3Set(1);
+    mp3_play(2);
+    mp3Set(2);
+    mp3_play(2);
     //digitalWrite(lightR1,  LOW);  // OFF
     digitalWrite(phoneOUT, LOW);  // turn off the phone
     ///  events delayed for 25 seconds
@@ -134,6 +134,7 @@ void Meter()
     lcd.clear();
     lcd.setCursor(0, 0); // X, Y
     lcd.print("Meter OK");
+    sendHLms(fusesOUT, 250);
     delay(50);
     level = 23;
   }
