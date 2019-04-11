@@ -79,8 +79,9 @@ void playGame()
       if (passedGadgets[14] < 1) 
         {
           passedGadgets[14] = 3;
-          long passedTime = t.getPassedTime() - lastPassedTime;
-          lastPassedTime = passedTime + lastPassedTime;
+          long now = t.getPassedTime();
+          long passedTime = now - lastPassedTime;
+          lastPassedTime = now;
           passedTimes[14] = getTime(hours(passedTime), minutes(passedTime), seconds(passedTime));
           print("Gadget "); print(14); print(" skipped at ");
           print(passedTimes[14]);
@@ -96,8 +97,9 @@ void playGame()
       if (passedGadgets[15] < 1) 
         {
           passedGadgets[15] = 3;
-          long passedTime = t.getPassedTime() - lastPassedTime;
-          lastPassedTime = passedTime + lastPassedTime;
+          long now = t.getPassedTime();
+          long passedTime = now - lastPassedTime;
+          lastPassedTime = now;
           passedTimes[15] = getTime(hours(passedTime), minutes(passedTime), seconds(passedTime));
           print("Gadget "); print(15); print(" skipped at ");
           print(passedTimes[15]);
@@ -146,15 +148,18 @@ void playGame()
   {
     if (fromBridge.startsWith("BD") && fromBridge.endsWith("FF"))
     {
-      for (int i = 0; i < fromBridge.length()-4; i++)
+      for (int i = 0; i < fromBridge.length() - 4; i++)
       {
         //print(fromBridge.charAt(i));
         int data = Integer.parseInt(String.valueOf(fromBridge.charAt(i+2)));
         if (data == 5)
         {
           passedGadgets[i] = 5;
-          long passedTime = t.getPassedTime() - lastPassedTime;
-          lastPassedTime = passedTime + lastPassedTime;
+          long now = t.getPassedTime();
+          long passedTime = now - lastPassedTime;
+          lastPassedTime = now;
+          // ST-------------|-------------------|-------------------|----
+          //               pT
           passedTimes[i] = getTime(hours(passedTime), minutes(passedTime), seconds(passedTime));
           print("Gadget "); print(i); print(" done by player at ");
           print(passedTimes[i]);
