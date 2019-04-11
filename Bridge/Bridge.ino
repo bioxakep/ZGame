@@ -154,7 +154,7 @@ void loop()
         Serial.println("Rungame"); //  старт игры
       }
       else if (inByte == 0xBB) {
-        Serial.println("Stopgame"); //  старт игры
+        Serial.println("Stopgame"); //  стоп игры
       }
       else if (inByte == 0xAD) // Принимаем информацию о гаджетах с мастера
       {

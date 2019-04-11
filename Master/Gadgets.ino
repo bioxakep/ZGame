@@ -427,6 +427,7 @@ void gameOver()
   if (game)
   {
     sendByte(0xBB);
+    delay(50);
     printEvent("Game Over", true);
     lcd.clear();
     lcd.setCursor(0, 0); // X, Y

@@ -49,11 +49,14 @@ void playGame()
           passedGadgets[i] = 3;
           long passedTime = t.getPassedTime() - lastPassedTime;
           lastPassedTime = passedTime + lastPassedTime;
+          passedTimes[i] = getTime(hours(passedTime), minutes(passedTime), seconds(passedTime));
+          
+          print("Gadget "); print(i); print(" skipped at ");
+          print(passedTimes[i]);
+          print(", LastPassedTime="); println(str(lastPassedTime));
           //print("Total game time: "); println(gameTime);
           //print("Elapsed time: "); println(t.getElapsedTime());
           //print("Passed by time: "); println(passedTime);
-          passedTimes[i] = getTime(hours(passedTime), minutes(passedTime), seconds(passedTime));
-          //println("Skipped at " + passedTimes[i]);
         }
         operPressed[i] = true;
         sendToBridge = true;
@@ -78,10 +81,10 @@ void playGame()
           passedGadgets[14] = 3;
           long passedTime = t.getPassedTime() - lastPassedTime;
           lastPassedTime = passedTime + lastPassedTime;
-          //print("Total game time: "); println(gameTime);
-          //print("Elapsed time: "); println(t.getElapsedTime());
-          //print("Passed by time: "); println(passedTime);
           passedTimes[14] = getTime(hours(passedTime), minutes(passedTime), seconds(passedTime));
+          print("Gadget "); print(14); print(" skipped at ");
+          print(passedTimes[14]);
+          print(", LastPassedTime="); println(str(lastPassedTime));
           //println("Skipped at " + passedTimes[i]);
         }
         operPressed[14] = true;
@@ -95,11 +98,10 @@ void playGame()
           passedGadgets[15] = 3;
           long passedTime = t.getPassedTime() - lastPassedTime;
           lastPassedTime = passedTime + lastPassedTime;
-          //print("Total game time: "); println(gameTime);
-          //print("Elapsed time: "); println(t.getElapsedTime());
-          //print("Passed by time: "); println(passedTime);
           passedTimes[15] = getTime(hours(passedTime), minutes(passedTime), seconds(passedTime));
-          //println("Skipped at " + passedTimes[i]);
+          print("Gadget "); print(15); print(" skipped at ");
+          print(passedTimes[15]);
+          print(", LastPassedTime="); println(str(lastPassedTime));
         }
         operPressed[15] = true;
         sendToBridge = true;
@@ -153,17 +155,18 @@ void playGame()
           passedGadgets[i] = 5;
           long passedTime = t.getPassedTime() - lastPassedTime;
           lastPassedTime = passedTime + lastPassedTime;
-          
-          print("Gadget ");
-          print(i);
-          print(" done by player at ");
-          
           passedTimes[i] = getTime(hours(passedTime), minutes(passedTime), seconds(passedTime));
-          println(passedTimes[i]);
+          print("Gadget "); print(i); print(" done by player at ");
+          print(passedTimes[i]);
+          print(", LastPassedTime="); println(str(lastPassedTime));
         }
       }
     } else if (fromBridge.equals("masterConnected")) resetGame();
-    else if (fromBridge.equals("Stopgame")) t.stop();
+    else if (fromBridge.equals("Stopgame")) 
+    {
+      t.stop();
+      println("Stop Game");
+    }
   }
 
   if (sendToBridge)
