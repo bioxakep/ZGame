@@ -44,19 +44,19 @@ void playGame()
       if (game_started && mouseX > r1x + mar + (i%5) * (gadW + off) && mouseX < r1x + mar + (i%5) * (gadW + off) + gadW 
         && mouseY > r1y + r_txt_h + mar + h_off + (i/5) * (gadH + off) && mouseY < r1y + r_txt_h + mar + h_off + (i/5) * (gadH + off) + gadH)
       {
-        if (passedGadgets[i] < 1) 
+        if (passedGadgets[i] < 1)
         {
           passedGadgets[i] = 3;
-          long passedTime = t.getPassedTime() - lastPassedTime;
-          lastPassedTime = passedTime + lastPassedTime;
+          long now = t.getPassedTime();
+          long passedTime = now - lastPassedTime;
+          lastPassedTime = now;
           passedTimes[i] = getTime(hours(passedTime), minutes(passedTime), seconds(passedTime));
-          
-          print("Gadget "); print(i); print(" skipped at ");
+          print("Gadget "); 
+          print(i); 
+          print(" skipped at ");
           print(passedTimes[i]);
-          print(", LastPassedTime="); println(str(lastPassedTime));
-          //print("Total game time: "); println(gameTime);
-          //print("Elapsed time: "); println(t.getElapsedTime());
-          //print("Passed by time: "); println(passedTime);
+          print(", LastPassedTime="); 
+          println(str(lastPassedTime));
         }
         operPressed[i] = true;
         sendToBridge = true;
@@ -77,36 +77,41 @@ void playGame()
       && mouseY > r1y + r_txt_h + mar + h_off + 3 * (gadH + off) && mouseY < r1y + r_txt_h + mar + h_off + 3 * (gadH + off) + gadH) // first rect
     {
       if (passedGadgets[14] < 1) 
-        {
-          passedGadgets[14] = 3;
-          long now = t.getPassedTime();
-          long passedTime = now - lastPassedTime;
-          lastPassedTime = now;
-          passedTimes[14] = getTime(hours(passedTime), minutes(passedTime), seconds(passedTime));
-          print("Gadget "); print(14); print(" skipped at ");
-          print(passedTimes[14]);
-          print(", LastPassedTime="); println(str(lastPassedTime));
-          //println("Skipped at " + passedTimes[i]);
-        }
-        operPressed[14] = true;
-        sendToBridge = true;
+      {
+        passedGadgets[14] = 3;
+        long now = t.getPassedTime();
+        long passedTime = now - lastPassedTime;
+        lastPassedTime = now;
+        passedTimes[14] = getTime(hours(passedTime), minutes(passedTime), seconds(passedTime));
+        print("Gadget "); 
+        print(14); 
+        print(" skipped at ");
+        print(passedTimes[14]);
+        print(", LastPassedTime="); 
+        println(str(lastPassedTime));
+      }
+      operPressed[14] = true;
+      sendToBridge = true;
     }
     if (mouseX > r1x + mar + 4 * (gadW + off) && mouseX < r1x + mar + 4 * (gadW + off) + gadW 
       && mouseY > r1y + r_txt_h + mar + h_off + 3 * (gadH + off) && mouseY < r1y + r_txt_h + mar + h_off + 3 * (gadH + off) + gadH) // second rect
     {
       if (passedGadgets[15] < 1) 
-        {
-          passedGadgets[15] = 3;
-          long now = t.getPassedTime();
-          long passedTime = now - lastPassedTime;
-          lastPassedTime = now;
-          passedTimes[15] = getTime(hours(passedTime), minutes(passedTime), seconds(passedTime));
-          print("Gadget "); print(15); print(" skipped at ");
-          print(passedTimes[15]);
-          print(", LastPassedTime="); println(str(lastPassedTime));
-        }
-        operPressed[15] = true;
-        sendToBridge = true;
+      {
+        passedGadgets[15] = 3;
+        long now = t.getPassedTime();
+        long passedTime = now - lastPassedTime;
+        lastPassedTime = now;
+        passedTimes[15] = getTime(hours(passedTime), minutes(passedTime), seconds(passedTime));
+        print("Gadget "); 
+        print(15); 
+        print(" skipped at ");
+        print(passedTimes[15]);
+        print(", LastPassedTime="); 
+        println(str(lastPassedTime));
+      }
+      operPressed[15] = true;
+      sendToBridge = true;
     }
   }
 
@@ -148,26 +153,28 @@ void playGame()
   {
     if (fromBridge.startsWith("BD") && fromBridge.endsWith("FF"))
     {
+
       for (int i = 0; i < fromBridge.length() - 4; i++)
       {
         //print(fromBridge.charAt(i));
         int data = Integer.parseInt(String.valueOf(fromBridge.charAt(i+2)));
-        if (data == 5)
+        if (data == 5 && passedGadgets[i] < 3)
         {
           passedGadgets[i] = 5;
           long now = t.getPassedTime();
           long passedTime = now - lastPassedTime;
           lastPassedTime = now;
-          // ST-------------|-------------------|-------------------|----
-          //               pT
           passedTimes[i] = getTime(hours(passedTime), minutes(passedTime), seconds(passedTime));
-          print("Gadget "); print(i); print(" done by player at ");
+          print("Gadget "); 
+          print(i);
+          print(" done by player at ");
           print(passedTimes[i]);
-          print(", LastPassedTime="); println(str(lastPassedTime));
+          print(", LastPassedTime="); 
+          println(str(lastPassedTime));
         }
       }
     } else if (fromBridge.equals("masterConnected")) resetGame();
-    else if (fromBridge.equals("Stopgame")) 
+    else if (fromBridge.equals("Stopgame"))
     {
       t.stop();
       println("Stop Game");
