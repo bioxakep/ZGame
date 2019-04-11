@@ -65,7 +65,7 @@ void Start(long t)
       startLevel++;
       lcd.setCursor(0, 0);
       lcd.print("Pre-Start Done !");
-      delay(300);
+      delay(800);
     }
     startRFWait = true;
   }
@@ -426,6 +426,7 @@ void gameOver()
 {
   if (game)
   {
+    delay(100);
     sendByte(0xBB);
     delay(50);
     printEvent("Game Over", true);
