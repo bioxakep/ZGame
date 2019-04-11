@@ -41,7 +41,7 @@ void waitMaster(String data)
   if (data.equals("masterConnected"))
   {
     master_connect = true;
-    resetStates();
+    resetGame();
     wait(1);
   }
 }
@@ -55,12 +55,6 @@ void waitRun(String data)
   if (data.equals("Rungame"))
   {
     game_started = true;
-    for (int g = 0; g < gCount; g++)
-    {
-      passedGadgets[g] = 0;
-      operPressed[g] = false;
-      passedTimes[g] = "";
-    }
     t.start();
     println("Running game");
     //sendStart(); // DEBUG
