@@ -16,7 +16,7 @@ void loop()
   else if (level == 34) Shelf();
   else if (level == 35) Emp();
   else if (level == 36) World();
-  else if (level == 37) Flare()
+  else if (level == 37) Flare();
   else if (level == 38) Zombie();
   else if (level == 50) gameOver();
   sendGStates();

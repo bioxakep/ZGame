@@ -37,6 +37,7 @@ boolean gStates[16];
 boolean playerGDone[16];
 
 bool ok1 = false;
+boolean game = false;
 int phoneOUT = 5;  // R+B- WIRE
 
 //int boxIN = 9;

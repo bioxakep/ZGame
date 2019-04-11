@@ -153,6 +153,9 @@ void loop()
       else if (inByte == 0xAA) {
         Serial.println("Rungame"); //  старт игры
       }
+      else if (inByte == 0xBB) {
+        Serial.println("Stopgame"); //  старт игры
+      }
       else if (inByte == 0xAD) // Принимаем информацию о гаджетах с мастера
       {
         byte input[gCount];
@@ -181,13 +184,13 @@ void loop()
         }
       }
       while (masterSerial.available()) masterSerial.read();
-    }
-    if (tick - mLastSync > mConnTimeOut) // при отсутствии контрольного сигнала переподключаемся к мастеру
-    {
-      digitalWrite(RSTXCNTRL, HIGH);  // Init Transmitter
-      masterSerial.write(0xBC);
-      delay(15);
-      digitalWrite(RSTXCNTRL, LOW);  // Stop Transmitter
+      if (tick - mLastSync > mConnTimeOut) // при отсутствии контрольного сигнала переподключаемся к мастеру
+      {
+        digitalWrite(RSTXCNTRL, HIGH);  // Init Transmitter
+        masterSerial.write(0xBC);
+        delay(15);
+        digitalWrite(RSTXCNTRL, LOW);  // Stop Transmitter
+      }
     }
   }
 }

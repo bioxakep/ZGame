@@ -107,7 +107,7 @@ void setup()
     passedTimes[i] = "";
   }
   t = new StopWatchTimer();
-  gameTime = t.setStartTime(1, 30, 0);
+  gameTime = t.setStartTime(1, 0, 0);
   command_name = "___";
 }
 

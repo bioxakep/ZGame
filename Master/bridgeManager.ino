@@ -63,6 +63,8 @@ void sendGStates() // Проверяем прошел ли игрок какой
       else if (gStates[d] && playerGDone[d]) Serial.print('5');
       else Serial.print('1');
     }
+    Serial.println();
+    delay(5);
     Serial1.write(0xFF);
     delay(25);
     digitalWrite(RSTXCNTRL, LOW);  // Stop Transmitter

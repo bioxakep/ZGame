@@ -1,11 +1,11 @@
-// START > RADIO > GEN/FUEL > GEN/RUN > METER > CODE  >   FUSES  >  DOOR   >  WINDOW  > GAS     >  SHELF  > E.M.P. > MAP  >  FLARE  >  ZOMBIE    
+// START > RADIO > GEN/FUEL > GEN/RUN > METER > CODE  >   FUSES  >  DOOR   >  WINDOW  > GAS     >  SHELF  > E.M.P. > MAP  >  FLARE  >  ZOMBIE
 // ROOM1---radioIN |          |         |       |         |         |         |       |         |         |        |         |         |
 // ROOM2-----------generIN-1  |         |       |         |         |         |       |         |         |        |         |         |
 //                            generIN-2 |       |         |         |         |       |         |         |        |         |         |
 //                                      meterIN |         |         |         |       |         |         |        |         |         |
 //                                              fusesIN-1 |         |         |       |         |         |        |         |         |
 // ROOM3--------------------------------------------------fusesIN-2 |         |       |         |         |        |         |         |
-//                                                                  fusesIN-3 |       |         |         |        |         |         |                            
+//                                                                  fusesIN-3 |       |         |         |        |         |         |
 //                                                                            alleyIN |         |         |        |         |         |
 //                                                                                    shelfIN-1 |         |        |         |         |
 //                                                                                              shelfIN-2 |        |         |         |
@@ -49,6 +49,7 @@ void Start(long t)
       lcd.print("Level 1 Done");
       delay(50);
       sendByte(0xAA);
+      game = true;
       delay(50);
       lcd.setCursor(0, 1); // X, Y
       lcd.print("Send Start to M");
@@ -423,20 +424,23 @@ void Zombie()
 
 void gameOver()
 {
-  printEvent("Game Over", true);
-  lcd.clear();
-  lcd.setCursor(0, 0); // X, Y
-  lcd.print("Game Over");
-  delay(50);
-  level = 0;
-  startLevel = 0;
+  if (game)
+  {
+    sendByte(0xBB);
+    printEvent("Game Over", true);
+    lcd.clear();
+    lcd.setCursor(0, 0); // X, Y
+    lcd.print("Game Over");
+    delay(50);
+    game = false;
+  }
+  else
+  {;}
 }
-
-
 
 void Head()
 {
-  if(operSkips[head]) 
+  if (operSkips[head])
   {
     sendHLms(headOUT, 250);
     operSkips[head] = false;
@@ -445,8 +449,8 @@ void Head()
 
 void Hatch()
 {
-// if signal from hatchIN the signal to hatchOUT, or skip  
-// 250ms signal to hatchOUT  
+  // if signal from hatchIN the signal to hatchOUT, or skip
+  // 250ms signal to hatchOUT
   if ((!digitalRead(hatchIN) || operSkips[hatch]) && gStates[fuses])
   {
     sendHLms(hatchOUT, 250);

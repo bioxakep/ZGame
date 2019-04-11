@@ -162,7 +162,8 @@ void playGame()
           println(passedTimes[i]);
         }
       }
-    } else if (fromBridge.equals("masterConnected")) resetStates();
+    } else if (fromBridge.equals("masterConnected")) resetGame();
+    else if (fromBridge.equals("Stopgame")) t.stop();
   }
 
   if (sendToBridge)
@@ -180,10 +181,10 @@ void playGame()
   }
 }
 
-void resetStates()
+void resetGame()
 {
   t = new StopWatchTimer();
-  gameTime = t.setStartTime(1, 20, 0);
+  gameTime = t.setStartTime(1, 0, 0);
   game_started = false;
   for (int g = 0; g < gCount; g++)
   {
@@ -191,4 +192,6 @@ void resetStates()
     operPressed[g] = false;
     passedTimes[g] = "";
   }
+  command_name = "___";
+  //serverConnect();
 }
