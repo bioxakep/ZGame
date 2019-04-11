@@ -17,8 +17,6 @@
 // [HATCH] unlock ladder works anywhere
 
 
-
-
 void Start(long t)
 {
   if (t - lastRFIDCheck > 100)
@@ -26,8 +24,6 @@ void Start(long t)
     lastRFIDCheck = t;
     if (startRFWait) startRFWait = !getStartRFID();
   }
-  //startRFWait = false;
-  //startLevel++;
   if (!startRFWait)
   {
     if (startLevel == 1)
@@ -90,11 +86,11 @@ void Radio()
     sendHLms(video2, 100);
     mp3Set(1);
     mp3_play(2);
+    delay(10);
     mp3Set(2);
     mp3_play(2);
-    //digitalWrite(lightR1,  LOW);  // OFF
+    delay(10);
     digitalWrite(phoneOUT, LOW);  // turn off the phone
-    ///  events delayed for 25 seconds
     digitalWrite(door2,   HIGH);  //open door 2
     digitalWrite(lightR2A, LOW);  // ON LIGHT under door 2
     digitalWrite(lightR2B, LOW); // OFF LIGHT under door 3
@@ -156,8 +152,11 @@ void Meter()
     if (operSkips[meter]) sendHLms(meterOUT, 250);
     else playerGDone[meter] = true;
     sendHLms(video1, 100);
-    //mp3Set(1);
-    //mp3_play(3);
+    mp3Set(1);
+    mp3_set_volume(15);
+    delay(10);
+    mp3_play(3);
+    delay(10);
     digitalWrite(lightR1, LOW);
     digitalWrite(lightR2B, HIGH);
     sendHLms(alleyOUT, 250);
@@ -188,7 +187,8 @@ void Code()
     digitalWrite(door3A, LOW);
     sendHLms(video3, 100);
     //mp3Set(1);
-    //mp3_play(2);
+    mp3_play(2);
+    delay(10);
     printEvent("Code OK", true);
     lcd.clear();
     lcd.setCursor(0, 0); // X, Y
@@ -207,14 +207,15 @@ void Fuses()
   //                                                     mp3_player1 track3
   //                                                     turn on lightR3A and lightR3B
   //                                                     turn on neopixel 1-3 red
-  if ((!digitalRead(fusesIN) || operSkips[fuses2]) && !gStates[fuses2])
+  if ((!digitalRead(fusesIN) || operSkips[fuses]) && !gStates[fuses])
   {
-    if (operSkips[fuses2]) sendHLms(fusesOUT, 250);
-    else playerGDone[fuses2] = true;
+    if (operSkips[fuses]) sendHLms(fusesOUT, 250);
+    else playerGDone[fuses] = true;
     sendHLms(video1, 100);
     sendHLms(video2, 100);
     //mp3Set(1);
-    //mp3_play(3);
+    mp3_play(3);
+    delay(10);
     digitalWrite(lightR3A, HIGH);
     digitalWrite(lightR3B, HIGH);
     for (int i = 0; i < 3; i++) strip.setPixelColor(i, strip.Color(0, 200, 0));
@@ -225,25 +226,6 @@ void Fuses()
     lcd.print("Fuses2 OK");
     delay(50);
     level = 31;
-  }
-}
-
-void Head()
-{
-  if(operSkips[head]) 
-  {
-    sendHLms(headOUT, 250);
-    operSkips[head] = false;
-  }
-}
-
-void Hatch()
-{
-// if signal from hatchIN the signal to hatchOUT, or skip  
-// 250ms signal to hatchOUT  
-  if ((!digitalRead(hatchIN) || operSkips[hatch]) && gStates[fuses2])
-  {
-    sendHLms(hatchOUT, 250);
   }
 }
 
@@ -265,21 +247,22 @@ void Door(long t)
   if (!fusesStates[0] && fusesStates[1]) fusesSigStart = t;
   if (!fusesStates[1] && fusesStates[0]) fusesSigStop = t;
   fusesStates[1] = fusesStates[0];
-  if ((t - fusesSigStart > 3000 && fusesSigStart - fusesSigStop > 0 || operSkips[fuses3]) && !gStates[fuses3])
+  if ((t - fusesSigStart > 3000 && fusesSigStart - fusesSigStop > 0 || operSkips[door]) && !gStates[door])
   {
-    if (!operSkips[fuses3]) playerGDone[fuses3] = true;
+    if (!operSkips[door]) playerGDone[door] = true;
     digitalWrite(door3B, HIGH);
     strip.setPixelColor(0, greenColor);
     strip.show();
-    printEvent("Fuses3 OK", true);
+    printEvent("Door OK", true);
     lcd.clear();
     lcd.setCursor(0, 0); // X, Y
-    lcd.print("Fuses3 OK");
+    lcd.print("Door OK");
     delay(50);
     level = 32;
     // What else if skip or player
   }
 }
+
 void Window(long t)
 {
   windowStates[0] = debounce(alleyIN, windowStates[1]);
@@ -292,7 +275,7 @@ void Window(long t)
     sendHLms(video2, 100);
     strip.setPixelColor(1, greenColor);
     strip.show();
-    printEvent("Alley OK", true);
+    printEvent("Window OK", true);
     lcd.clear();
     lcd.setCursor(0, 0); // X, Y
     lcd.print("Window OK");
@@ -301,16 +284,17 @@ void Window(long t)
     // What else if skip or player
   }
 }
-void Gus()
+
+void Gas()
 {
-  if ((!digitalRead(shelfIN) || operSkips[shelf1]) && !gStates[shelf1])
+  if ((!digitalRead(shelfIN) || operSkips[gas]) && !gStates[gas])
   {
-    if (operSkips[shelf1]) sendHLms(shelfOUT, 250);
-    else playerGDone[shelf1] = true;
-    printEvent("Shelf1 OK", true);
+    if (operSkips[gas]) sendHLms(shelfOUT, 250);
+    else playerGDone[gas] = true;
+    printEvent("Gas OK", true);
     lcd.clear();
     lcd.setCursor(0, 0); // X, Y
-    lcd.print("Shelf1 OK");
+    lcd.print("Gas OK");
     delay(50);
     level = 34;
   }
@@ -318,17 +302,17 @@ void Gus()
 
 void Shelf()
 {
-  if ((!digitalRead(shelfIN) || operSkips[shelf2]) && !gStates[shelf2] && gStates[shelf1])
+  if ((!digitalRead(shelfIN) || operSkips[shelf]) && !gStates[shelf] && gStates[gas])
   {
-    if (operSkips[shelf2]) sendHLms(shelfOUT, 250);
-    else playerGDone[shelf2] = true;
-    printEvent("Shelf2 OK", true);
+    if (operSkips[shelf]) sendHLms(shelfOUT, 250);
+    else playerGDone[shelf] = true;
     strip.setPixelColor(2, greenColor);
     strip.show();
     sendHLms(video3, 100);
+    printEvent("shelf OK", true);
     lcd.clear();
     lcd.setCursor(0, 0); // X, Y
-    lcd.print("Shelf2 OK");
+    lcd.print("Shelf OK");
     delay(50);
     level = 35;
   }
@@ -352,7 +336,8 @@ void Emp()
     sendHLms(zombiOUT, 250);
     sendHLms(video2, 100);
     //mp3Set(1);
-    //mp3_play(4);
+    mp3_play(4);
+    delay(10);
     printEvent("EMP OK", true);
     lcd.clear();
     lcd.setCursor(0, 0); // X, Y
@@ -362,7 +347,7 @@ void Emp()
   }
 }
 
-void Crate() // Duplicate
+void World() // Duplicate
 {
   // ROOM 3 "MAP" / CRATE
   //                wait for first signal from crateIN   >> if skipped send signal to crateOUT
@@ -370,22 +355,26 @@ void Crate() // Duplicate
   //                                                     signal to Video player 2,
   //                                                     signal to Video player 2,
   //                                                     open crateHD
-  if ((!digitalRead(crateIN) || operSkips[crate1]) && !gStates[crate1])
+  if ((!digitalRead(crateIN) || operSkips[world]) && !gStates[world])
   {
-    if (operSkips[crate1]) sendHLms(crateOUT, 250);
-    else playerGDone[crate1] = true;
+    if (operSkips[world]) sendHLms(crateOUT, 250);
+    else playerGDone[world] = true;
     digitalWrite(crateHD, LOW);
     printEvent("Crate1 OK", true);
     lcd.clear();
     lcd.setCursor(0, 0); // X, Y
     lcd.print("Crate1 OK");
     delay(50);
+    level = 37;
   }
+}
 
-  if ((!digitalRead(crateIN) || operSkips[crate2]) && !gStates[crate2] && gStates[crate1])
+void Flare()
+{
+  if ((!digitalRead(crateIN) || operSkips[flare]) && !gStates[flare] && gStates[world])
   {
-    if (operSkips[crate2]) sendHLms(crateOUT, 250);
-    else playerGDone[crate2] = true;
+    if (operSkips[flare]) sendHLms(crateOUT, 250);
+    else playerGDone[flare] = true;
     sendHLms(video4, 100);
     sendHLms(video2, 100);
     sendHLms(video2, 100);
@@ -396,7 +385,7 @@ void Crate() // Duplicate
     lcd.setCursor(0, 0); // X, Y
     lcd.print("Crate2 OK");
     delay(50);
-    level = 37;
+    level = 38;
   }
 }
 
@@ -416,8 +405,11 @@ void Zombie()
     else playerGDone[zombie] = true;
     sendHLms(video3, 100);
     sendHLms(video2, 100);
-    //mp3Set(2);
-    //mp3_play(3);
+    mp3Set(2);
+    mp3_set_volume(15);
+    delay(10);
+    mp3_play(3);
+    delay(10);
     //sendHLms(ladder, 250); ???????
     digitalWrite(door4, LOW);
     printEvent("Zombie OK", true);
@@ -438,4 +430,25 @@ void gameOver()
   delay(50);
   level = 0;
   startLevel = 0;
+}
+
+
+
+void Head()
+{
+  if(operSkips[head]) 
+  {
+    sendHLms(headOUT, 250);
+    operSkips[head] = false;
+  }
+}
+
+void Hatch()
+{
+// if signal from hatchIN the signal to hatchOUT, or skip  
+// 250ms signal to hatchOUT  
+  if ((!digitalRead(hatchIN) || operSkips[hatch]) && gStates[fuses])
+  {
+    sendHLms(hatchOUT, 250);
+  }
 }
