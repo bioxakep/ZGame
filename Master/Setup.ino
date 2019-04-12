@@ -23,7 +23,7 @@ void setup()
   lcd.print("They are coming!");
   delay(3000);
 
-  Serial.println("TAC Master 10/APR/2019 38400bps");
+  Serial.println("TAC Master 11/APR/2019 38400bps");
   cpz1 = new ArdCPZ(PIN_CPZ1);
 
   // ---- props ----
@@ -144,7 +144,7 @@ void setup()
   redColor = strip.Color(0, 150, 0);
 
   mp3Set(1);
-  mp3_set_volume(15);
+  mp3_set_volume(25);
   delay(100);
   printEvent("Setup OK", true);
   lcd.clear();
@@ -154,36 +154,15 @@ void setup()
 
 void checkStates() {
   lcd.setCursor(0, 1);
-//  printEvent("Scan gadgets:", true);
-//  Serial.println("radio = " + String(digitalRead(radioIN) ? "HIGH" : "LOW"));
   lcd.print(String(digitalRead(radioIN) ? " r_" : " R_"));
-//  delay(10);
-//  Serial.println("gener = " + String(digitalRead(generIN) ? "HIGH" : "LOW"));
   lcd.print(String(digitalRead(generIN) ? "g" : "G"));
-//  delay(10);
-//  Serial.println("meter = " + String(digitalRead(meterIN) ? "HIGH" : "LOW"));
   lcd.print(String(digitalRead(meterIN) ? "m" : "M"));
-//  delay(10);
-//  Serial.println("alley = " + String(digitalRead(alleyIN) ? "HIGH" : "LOW"));
   lcd.print(String(digitalRead(alleyIN) ? "a_" : "A_"));
-//  delay(10);
-//  Serial.println("fuses = " + String(digitalRead(fusesIN) ? "HIGH" : "LOW"));
   lcd.print(String(digitalRead(fusesIN) ? "f" : "F"));
-//  delay(10);
-//  Serial.println("shelf = " + String(digitalRead(shelfIN) ? "HIGH" : "LOW"));
   lcd.print(String(digitalRead(shelfIN) ? "s" : "S"));
-//  delay(10);
-//  Serial.println("crate = " + String(digitalRead(crateIN) ? "HIGH" : "LOW"));
   lcd.print(String(digitalRead(crateIN) ? "c" : "C"));
-//  delay(10);
-//  Serial.println("tripl = " + String(digitalRead(triplIN) ? "HIGH" : "LOW"));
   lcd.print(String(digitalRead(triplIN) ? "t_" : "T_"));
-//  delay(10);
-//  Serial.println("zombi = " + String(digitalRead(zombiIN) ? "HIGH" : "LOW"));
   lcd.print(String(digitalRead(zombiIN) ? "z" : "Z"));
-  lcd.print(String(digitalRead(hatchIN) ? "_h" : "_H"));
-//  delay(10);
-  //Serial.println("door3 = "+String(digitalRead(door3IN) ? "HIGH" : "LOW"));
+  lcd.print(String(digitalRead(hatchIN) ? "_h " : "_H "));
   delay(10);
-//  Serial.println("------------------------------" + String(millis()));
 }

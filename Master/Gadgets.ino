@@ -244,11 +244,12 @@ void Door(long t)
   //                if all done level completed
 
   // permanent signal waiting
-  fusesStates[0] = debounce(fusesIN, fusesStates[1]);
-  if (!fusesStates[0] && fusesStates[1]) fusesSigStart = t;
-  if (!fusesStates[1] && fusesStates[0]) fusesSigStop = t;
-  fusesStates[1] = fusesStates[0];
-  if ((t - fusesSigStart > 3000 && fusesSigStart - fusesSigStop > 0 || operSkips[door]) && !gStates[door])
+  //fusesStates[0] = debounce(fusesIN, fusesStates[1]);
+  //if (!fusesStates[0] && fusesStates[1]) fusesSigStart = t;
+  //if (!fusesStates[1] && fusesStates[0]) fusesSigStop = t;
+  //fusesStates[1] = fusesStates[0];
+  //if ((t - fusesSigStart > 3000 && fusesSigStart - fusesSigStop > 0 || operSkips[door]) && !gStates[door])
+  if ((!digitalRead(fusesIN) || operSkips[door]) && !gStates[door])
   {
     if (!operSkips[door]) playerGDone[door] = true;
     digitalWrite(door3B, HIGH);
@@ -266,11 +267,12 @@ void Door(long t)
 
 void Window(long t)
 {
-  windowStates[0] = debounce(alleyIN, windowStates[1]);
-  if (!windowStates[0] && windowStates[1]) windowSigStart = t;
-  if (!windowStates[1] && windowStates[0]) windowSigStop = t;
-  windowStates[1] = windowStates[0];
-  if ((t - windowSigStart > 3000 && windowSigStart - windowSigStop > 0 || operSkips[window]) && !gStates[window])
+  //windowStates[0] = debounce(alleyIN, windowStates[1]);
+  //if (!windowStates[0] && windowStates[1]) windowSigStart = t;
+  //if (!windowStates[1] && windowStates[0]) windowSigStop = t;
+  //windowStates[1] = windowStates[0];
+  //if ((t - windowSigStart > 3000 && windowSigStart - windowSigStop > 0 || operSkips[window]) && !gStates[window])
+  if ((!digitalRead(alleyIN) || operSkips[window]) && !gStates[window])
   {
     if (!operSkips[window]) playerGDone[window] = true;
     sendHLms(video2, 100);
