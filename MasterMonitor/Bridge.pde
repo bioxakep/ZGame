@@ -57,7 +57,7 @@ void waitRun(String data)
     game_started = true;
     t.start();
     println("Running game");
-    //sendStart(); // DEBUG
+    sendStart(); // DEBUG
   }
 }
 

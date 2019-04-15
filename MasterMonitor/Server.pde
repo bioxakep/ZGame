@@ -2,7 +2,7 @@ void serverConnect()
 {
   if (!server_connect)
   {
-    GetRequest testGet = new GetRequest("http://127.0.0.1:8484/rst");
+    GetRequest testGet = new GetRequest(server_addr + "rst");
     testGet.send();
     long start_connect = millis();
     while (!server_connect && millis() - start_connect < server_connect_timeout)
@@ -25,7 +25,7 @@ void serverConnect()
 
 void waitName()
 {
-  GetRequest getName = new GetRequest("http://127.0.0.1:8484/getname");
+  GetRequest getName = new GetRequest(server_addr + "getname");
   getName.send();
   String resp = getName.getContent();
   if (resp.equals("SERVER_WAIT_NAME"))
@@ -37,7 +37,7 @@ void waitName()
 
 void sendStart()
 {
-  GetRequest startGet = new GetRequest("http://127.0.0.1:8484/startgame");
+  GetRequest startGet = new GetRequest(server_addr + "startgame");
   startGet.send();
   String resp = startGet.getContent();
   if (resp.equals("OK"))

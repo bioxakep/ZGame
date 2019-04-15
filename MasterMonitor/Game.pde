@@ -142,7 +142,7 @@ void playGame()
   else fill(red);
   ellipse(r3x + 3 * mar + masterTWidth, r3y + r3h - mar - 92, 25, 25);
   prevMouseState = currMouseState;
-
+  
   String fromBridge = getInput(true);
   if (!game_started)
   {
@@ -194,6 +194,7 @@ void playGame()
     println("OK");
     sendToBridge = false;
   }
+  
 }
 
 void resetGame()
@@ -208,5 +209,5 @@ void resetGame()
     passedTimes[g] = "";
   }
   command_name = "___";
-  //serverConnect();
+  serverConnect();
 }
