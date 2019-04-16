@@ -80,7 +80,7 @@ def endgame():
 		try:
 			g_data = list(request.form['gdata'].split(','))
 			total_scores = request.form['scores']
-			if len(g_data) == 10:
+			if len(g_data) == 14:
 				data_list = list()
 				data_list.append(str(curr_id))
 				data_list.append(total_scores)
@@ -91,7 +91,8 @@ def endgame():
 					connect.commit()
 					curr_id = -1
 					STATE = SHOW_RECS
-					print('SERVER GO TO WAITSTART STATE')
+					
+					print('SERVER GO TO SHOW_RECS STATE')
 				return 'game stop'
 			else:
 				e_print('WRONG GADGETS DATA RECIEVED')
