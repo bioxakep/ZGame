@@ -156,6 +156,7 @@ void playGame()
     {
       t.stop();
       println("Stop Game");
+      sendEnd();
     }
   }
 

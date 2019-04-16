@@ -66,9 +66,10 @@ def prepare():
 	global STATE
 	if STATE == WAIT_NAME or STATE == WAIT_START:
 		STATE = PLAYING
-		e_print('SERVER GO TO WAITNAME STATE')
+		e_print('SERVER GO TO PLAYING STATE')
 		return 'OK'
 	else:
+		e_print('ERROR WHILE START GAME')
 		return 'errorPost'
 
 @app.route('/endgame', methods = ['POST'])
