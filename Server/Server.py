@@ -71,29 +71,32 @@ def prepare():
 	else:
 		return 'errorPost'
 
-@app.route('/endgame', methods = ['GET'])
+@app.route('/endgame', methods = ['POST'])
 def endgame():
 	global curr_id
 	global STATE
 	if curr_id > -1 and STATE == PLAYING:
-		g_data = list(request.form['gdata'].split(','))
-		total_scores = request.form['scores']
-		if len(g_data) == 10:
-			data_list = list()
-			data_list.append(str(curr_id))
-			data_list.append(total_scores)
-			data_list.extend(g_data)
-			with sqlite3.connect("play.db") as connect:
-				c = connect.cursor()
-				c.execute("""INSERT INTO Scores VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",data_list)
-				connect.commit()
-				curr_id = -1
-				STATE = SHOW_RECS
-				print('SERVER GO TO WAITSTART STATE')
-			return 'game stop'
-		else:
-			e_print('WRONG GADGETS DATA RECIEVED')
-			return 'wrong gdata'
+		try:
+			g_data = list(request.form['gdata'].split(','))
+			total_scores = request.form['scores']
+			if len(g_data) == 10:
+				data_list = list()
+				data_list.append(str(curr_id))
+				data_list.append(total_scores)
+				data_list.extend(g_data)
+				with sqlite3.connect("play.db") as connect:
+					c = connect.cursor()
+					c.execute("""INSERT INTO Scores VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",data_list)
+					connect.commit()
+					curr_id = -1
+					STATE = SHOW_RECS
+					print('SERVER GO TO WAITSTART STATE')
+				return 'game stop'
+			else:
+				e_print('WRONG GADGETS DATA RECIEVED')
+				return 'wrong gdata'
+		except Exception as e:
+			print(e)
 	else:
 		e_print('GAME NOT RUNNING')
 		return 'wrong method'
@@ -137,7 +140,7 @@ def setname():
 					STATE = WAIT_START
 					print('CMD NAME: {}, WAIT START FROM MASTER'.format(cName))
 			except Exception as e:
-				e_print('SET_NAME_ERROR: ' + e)
+				e_print('SET_NAME_ERROR: {}'.format(e))
 			return 'SERVER_SET_CMDNAME_OK'
 		else:
 			e_print('SERVER_SET_CMDNAME_ERROR')
@@ -169,4 +172,5 @@ def getstate():
 	return 'ERROR'
 
 if __name__ == '__main__':
+	print('START SERVER OF ZGAME')
 	app.run(debug=False, host = '0.0.0.0', port=int('8484'))

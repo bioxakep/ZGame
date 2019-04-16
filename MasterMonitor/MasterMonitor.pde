@@ -9,12 +9,12 @@ PrintWriter data;
 PFont startFont, gadFont, timerFont, digitalFont;
 
 String[] gadgetNames = {"RADIO", "GEN/FUEL", "GEN/RUN", "METER", "CODE", "FUSES", "DOOR", "WINDOW", "GAS", "SHELF", "E.M.P", "MAP", "FLARE", "ZOMBIE"};
-String[] passedTimes = new String[16];
+String[] passedTimes = new String[14];
+int[] gTimes = new int[14];
 byte[] passedGadgets = new byte[16];
 boolean[] operPressed = new boolean[16];
 boolean game_started = false;
 boolean sendToBridge = false;
-int[] gTimes = new int[16];
 int total_scores = 0;
 int getStateTime = 0;
 long lastPassedTime = 0;
