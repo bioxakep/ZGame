@@ -21,6 +21,9 @@ void loop()
   else if (level == 50) gameOver();
   sendGStates();
 
+  if (shake) shakeIt();
+
+
   if (tick - lastSyncTime > 10000)
   {
     sendByte(0xA9);

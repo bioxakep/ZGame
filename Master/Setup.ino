@@ -23,7 +23,7 @@ void setup()
   lcd.print("They are coming!");
   delay(3000);
 
-  Serial.println("TAC Master 11/APR/2019 38400bps");
+  Serial.println("TAC Master 15/APR/2019 late version");
   cpz1 = new ArdCPZ(PIN_CPZ1);
 
   // ---- props ----

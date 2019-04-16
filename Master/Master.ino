@@ -28,6 +28,13 @@ uint32_t greenColor, redColor;
 boolean bridgeConnected = false;
 int level = 0;
 
+bool shake       = false;
+bool locked      = false;
+long lockTime    = 0; 
+long lockDelay   = 0; 
+long unlockTime  = 0; 
+long unlockDelay = 0; 
+
 byte startLevel = 0;
 long lastRFIDCheck = 0;
 boolean startRFWait = true;
@@ -41,7 +48,7 @@ boolean game = false;
 int phoneOUT = 5;  // R+B- WIRE
 
 //int boxIN = 9;
-//int boxHD = 36;
+  //int boxHD = 36;
 
 int radioIN  = 53; // wire 33
 int radioOUT = 51;
