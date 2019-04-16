@@ -104,7 +104,11 @@ void setup()
   {
     passedGadgets[i] = 0;
     operPressed[i] = false;
-    passedTimes[i] = "";
+  }
+  for (int j = 0; j < gCount-2; j++)
+  {
+    passedTimes[j] = "";
+    gTimes[j] = 0;
   }
   t = new StopWatchTimer();
   gameTime = t.setStartTime(1, 0, 0);

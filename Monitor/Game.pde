@@ -156,7 +156,6 @@ void playGame()
     {
       t.stop();
       println("Stop Game");
-      
     }
   }
 
@@ -184,7 +183,11 @@ void resetGame()
   {
     passedGadgets[g] = 0;
     operPressed[g] = false;
-    passedTimes[g] = "";
+  }
+  for (int j = 0; j < gCount-2; j++)
+  {
+    passedTimes[j] = "";
+    gTimes[j] = 0;
   }
   command_name = "___";
   //serverConnect();
