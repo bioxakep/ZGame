@@ -17,6 +17,7 @@ void serverConnect()
       {
         println(e);
       }
+      wait(1);
     }
     if (server_connect) println("Server connected");
     else println("Server unreachable");

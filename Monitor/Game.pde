@@ -130,7 +130,6 @@ void playGame()
   {
     if (fromBridge.startsWith("BD") && fromBridge.endsWith("FF"))
     {
-
       for (int i = 0; i < fromBridge.length() - 4; i++)
       {
         //print(fromBridge.charAt(i));
