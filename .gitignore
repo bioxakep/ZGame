@@ -7,3 +7,5 @@ Master/.DS_Store
 .DS_Store
 .DS_Store
 Server/server.service
+Server/run.sh
+Server/log.log

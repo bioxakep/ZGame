@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
 import os
 from datetime import datetime
 from flask import Flask
@@ -9,15 +11,6 @@ WAIT_START = 0x03
 PLAYING = 0x04
 
 STATE = SHOW_RECS
-'''
-Запросы
-
-Присваиваем записи данные
-cursor.execute("""UPDATE ODB SET Family = ?, Name = ?, FathName = ?, Birthdate = ? WHERE id = ?""", [man_lastname, man_name, man_fathname, man_bdate, str(tmp_objID)]) # добавляем объект
-
-Добавляем запись в БД
-cursor.execute("""INSERT INTO Phones VALUES (?,?,?)""", [str(tmp_objID), man_phone, ''])
-'''
 
 app = Flask(__name__)
 conn = sqlite3.connect("play.db")
