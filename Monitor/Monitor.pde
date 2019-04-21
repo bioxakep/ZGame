@@ -19,7 +19,7 @@ int total_scores = 0;
 int getStateTime = 0;
 long lastPassedTime = 0;
 int gCount = 16;
-String server_addr = "http://192.168.0.39:8484/";
+String server_addr = "http://192.168.0.44:8484/";
 
 boolean server_connect = false;
 boolean bridge_connect = false;
@@ -53,8 +53,8 @@ int hintDec = 500;
 
 void setup()
 {
-  fullScreen();
-  //size(1200, 600);
+  //fullScreen();
+  size(1200, 600);
   background(0);
   fill(100);
   stroke(255);
@@ -62,8 +62,6 @@ void setup()
   portName = "COM3";//"COM4"; // COM3 or /dev/tty.wchusbserial1410 or /dev/tty.wchusbserial1420
   //portName = "/dev/cu.usbmodem14141";
   bridgeConnect();
-  serverConnect();
-
   startFont = createFont("Arial", 10);//Silom
   gadFont = createFont("Arial", 14); //MyanmarMN
   timerFont = createFont("Arial", 14); //MyanmarMN

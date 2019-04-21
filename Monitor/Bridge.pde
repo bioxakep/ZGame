@@ -42,7 +42,7 @@ void waitMaster(String data)
   {
     master_connect = true;
     resetGame();
-    wait(1);
+    println("Master Connected OK");
   }
 }
 

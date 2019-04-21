@@ -21,7 +21,7 @@ void serverConnect()
     }
     if (server_connect) println("Server connected");
     else println("Server unreachable");
-  } else println("Server connected");
+  } else println("Server allready connected");
 }
 
 void waitName()

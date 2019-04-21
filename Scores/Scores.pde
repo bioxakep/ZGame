@@ -13,7 +13,7 @@ byte SHOW_RESULT = 3;
 boolean server_connect = false;
 boolean can_send = false;
 long lastUpdate = 0;
-String server_addr = "http://192.168.1.42:8484/";
+String server_addr = "http://192.168.0.44:8484/";
 
 void setup()
 {

@@ -120,10 +120,11 @@ void playGame()
   ellipse(r3x + 3 * mar + masterTWidth, r3y + r3h - mar - 92, 25, 25);
   prevMouseState = currMouseState;
 
-  String fromBridge = getInput(true);
+  String fromBridge = getInput(false);
   if (!game_started)
   {
     if (server_connect && command_name.equals("___")) waitName();
+    else if(!server_connect) serverConnect();
     if (master_connect) waitRun(fromBridge);
     else waitMaster(fromBridge);
   } else
@@ -190,6 +191,5 @@ void resetGame()
     gTimes[j] = 0;
   }
   command_name = "___";
-  server_connect = false;
-  serverConnect();
+  while(!server_connect) serverConnect();
 }

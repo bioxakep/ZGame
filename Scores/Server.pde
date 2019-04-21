@@ -2,16 +2,28 @@ void connectToServer()
 {
   if (!server_connect)
   {
-      GetRequest getConnect = new GetRequest(server_addr+"connect");
+    GetRequest getConnect = new GetRequest(server_addr+"connect");
+    try {
       getConnect.send();
-      while (!server_connect)
-      {
+    }
+    catch(Exception e)
+    {
+      println(e);
+    }
+    while (!server_connect)
+    {
+      try {
         String resp = getConnect.getContent();
         if (resp.equals("OK")) server_connect = true;
         else getConnect.send();
-        wait(1);
       }
-    
+      catch(Exception e)
+      {
+        println(e);
+      }
+
+      wait(1);
+    }
     println("Server connected");
   } else println("Server connected");
 }
