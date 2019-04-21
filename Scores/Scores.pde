@@ -13,7 +13,7 @@ byte SHOW_RESULT = 3;
 boolean server_connect = false;
 boolean can_send = false;
 long lastUpdate = 0;
-String server_addr = "http://127.0.0.1:8484/";
+String server_addr = "http://192.168.1.42:8484/";
 
 void setup()
 {
@@ -33,10 +33,14 @@ void setup()
 void draw()
 {
   background(0);
-  if (STATE == ENTER_NAME) printName();
-  else if (STATE == SHOW_RECORD) showRecord();
-  else if (STATE == SHOW_RESULT) showResult();
-  updateState();
+
+  if (server_connect) 
+  {
+    updateState();
+    if (STATE == ENTER_NAME) printName();
+    else if (STATE == SHOW_RECORD) showRecord();
+    else if (STATE == SHOW_RESULT) showResult();
+  } else connectToServer();
 }
 
 String toStr(char[] a)
@@ -48,12 +52,4 @@ String toStr(char[] a)
     ret += a[i];
   }
   return ret;
-}
-
-void showStat()
-{
-  fill(255);
-  textAlign(CENTER);
-  text("Show scores while playing...",width/2,height/2);
-  //
 }

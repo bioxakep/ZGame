@@ -2,20 +2,16 @@ void connectToServer()
 {
   if (!server_connect)
   {
-    GetRequest getConnect = new GetRequest(server_addr+"connect");
-    getConnect.send();
-    while (!server_connect)
-    {
-      try {
+      GetRequest getConnect = new GetRequest(server_addr+"connect");
+      getConnect.send();
+      while (!server_connect)
+      {
         String resp = getConnect.getContent();
         if (resp.equals("OK")) server_connect = true;
         else getConnect.send();
+        wait(1);
       }
-      catch (Exception e) {
-        println(e);
-      }
-      wait(1);
-    }
+    
     println("Server connected");
   } else println("Server connected");
 }
@@ -65,5 +61,7 @@ void updateState()
 void wait(int secs)
 {
   long t = millis();
-  while(millis() - t < secs * 1000) {;}
+  while (millis() - t < secs * 1000) {
+    ;
+  }
 }

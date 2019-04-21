@@ -12,8 +12,12 @@ PLAYING = 0x04
 
 STATE = SHOW_RECS
 
+BASE_PATH = '/home/pi/Server/play.db'
+dirname, filename = os.path.split(os.path.abspath(__file__))
+EXEC_PATH = dirname
+BASE_PATH = EXEC_PATH + '/play.db'
 app = Flask(__name__)
-conn = sqlite3.connect("play.db")
+conn = sqlite3.connect(BASE_PATH)
 c = conn.cursor()
 curr_id = -1
 
@@ -78,7 +82,7 @@ def endgame():
 				data_list.append(str(curr_id))
 				data_list.append(total_scores)
 				data_list.extend(g_data)
-				with sqlite3.connect("play.db") as connect:
+				with sqlite3.connect(BASE_PATH) as connect:
 					c = connect.cursor()
 					c.execute("""INSERT INTO Scores VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",data_list)
 					connect.commit()
@@ -101,7 +105,7 @@ def endgame():
 def getname():
 	global curr_id
 	if STATE == WAIT_START:
-		with sqlite3.connect("play.db") as connect:
+		with sqlite3.connect(BASE_PATH) as connect:
 			com = Command(curr_id, connect)
 			if len(com.name) > 0:
 				e_print('NAME SEND TO MASTEROPERATOR: {}'.format(com.name))
@@ -120,7 +124,7 @@ def setname():
 		dt = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 		if len(cName) > 0:
 			try:
-				with sqlite3.connect("play.db") as connect:
+				with sqlite3.connect(BASE_PATH) as connect:
 					c = connect.cursor()
 					res = c.execute("""SELECT * from Commands""").fetchall()
 					next_id = -1
@@ -148,7 +152,7 @@ def setname():
 def getscores():
 	if request.method == 'GET' and STATE == WAITSTART:
 		get_id = request.args.get('id')
-		with sqlite3.connect("play.db") as conn:
+		with sqlite3.connect(BASE_PATH) as conn:
 			command = Command(get_id, conn)
 			return command.to_string()
 
