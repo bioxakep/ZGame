@@ -9,3 +9,12 @@ Master/.DS_Store
 Server/server.service
 Server/run.sh
 Server/log.log
+Scores/arcadeclassic.zip
+Scores/arcadeclassic/ARCADECLASSIC.TTF
+Scores/arcadeclassic/pizzadudedotdk.txt
+Scores/data/arcade1.ttf
+Scores/zombie.json
+Server/GetScores.py
+Server/logger.py
+Server/Zombie.csv
+Server/zombie.db

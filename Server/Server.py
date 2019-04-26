@@ -5,6 +5,9 @@ from datetime import datetime
 from flask import Flask
 from flask import request
 import sqlite3
+import logging
+import pandas as pd
+
 SHOW_RECS = 0x01
 WAIT_NAME = 0x02
 WAIT_START = 0x03
@@ -12,42 +15,70 @@ PLAYING = 0x04
 
 STATE = SHOW_RECS
 
-BASE_PATH = '/home/pi/Server/play.db'
 dirname, filename = os.path.split(os.path.abspath(__file__))
-EXEC_PATH = dirname
-BASE_PATH = EXEC_PATH + '/play.db'
-app = Flask(__name__)
-conn = sqlite3.connect(BASE_PATH)
-c = conn.cursor()
-curr_id = -1
+BASE_PATH = dirname + '/gamedata.db'
+# 'Dropbox/Rafael/ZGame/Server/gamedata.db'
 
-class Command:
-	def __init__(self, id, connect):
-		self.id = id
-		c = connect.cursor()
-		res = c.execute("""SELECT * FROM Commands WHERE id=?""", [self.id]).fetchall()
-		if len(res) > 0:
-			self.dt = str(res[0][1])
-			self.name = str(res[0][2])
-		res = c.execute("""SELECT * FROM Scores WHERE id=?""", [self.id]).fetchall()
-		if len(res) > 0:
-			res = res[0]
-			self.scores = str(res[1])
-			self.times = res[2:]
-	def to_string(self):
-		return '|'.join([self.dt,self.name,self.scores])
+#0	  1 	2		3		4		5		6		7		8	  9		10	  11	 12		13	  14	 15	  16	 17 	 18
+#ID, DATE, NAME, SCORES, RADIO, GEN/FUEL, GEN/RUN, METER, CODE, FUSES, DOOR, WINDOW, GAS, SHELF, E.M.P, MAP, FLARE, ZOMBIE, TOTAL_TIME
+app = Flask(__name__)
+curr_id = -1
+games = ['Zombie', 'Room', 'Graphics']
+monitorLogger = logging.getLogger('monitorLogger')
+scoresLogger = logging.getLogger('scoresLogger')
 
 def e_print(text):
 	dt = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 	print('{}: {}'.format(dt, text), end='\n')
+
+def clean_base():
+	with sqlite3.connect(BASE_PATH) as connect:
+		c = connect.cursor()
+		game_results = c.execute("""SELECT * FROM Zombie""")
+		for r in game_results:
+			if r[3] == 0:
+				c.execute("""DELETE FROM Zombie WHERE id=?""", [r[0]])
+				connect.commit()
+
+def get_game_scores(game_name):
+	scores = pd.DataFrame(columns={"Name","Time"})
+	with sqlite3.connect(BASE_PATH) as connect:
+		c = connect.cursor()
+		results = c.execute("""SELECT * from {name}""".format(name = game_name)).fetchall()
+		while results:
+			r = results.pop()
+			c = Command(r)
+			scores = scores.append(c.to_view(), ignore_index=True)
+		scores = scores.sort_values(by='Time')
+		uns = scores.to_json(orient='records')
+		if uns:
+			return uns
+		else:
+			return None
+
+class Command:
+	def __init__(self, data):
+		self.id = data[0]
+		self.dt = data[1]
+		self.name = data[2]
+		self.total_time = data[3]
+		self.gadget_time = data[4:]
+		self.all_data = data
+	def to_view(self):
+		return dict({"Name":self.name, "Time":self.total_time})
+	def all_to_csv(self):
+		if self.all_data:
+			return self.all_data
+
 
 @app.errorhandler(404)
 def not_found(error):
     return 'error'
 
 @app.route('/connect')
-def test():
+def connect():
 	return 'OK'
+
 # ========================= MASTER ROUTES =========================
 @app.route('/rst', methods = ['GET'])
 def reset():
@@ -79,43 +110,69 @@ def endgame():
 			total_scores = request.form['scores']
 			if len(g_data) == 14:
 				data_list = list()
-				data_list.append(str(curr_id))
-				data_list.append(total_scores)
 				data_list.extend(g_data)
+				data_list.append(total_scores)
+				data_list.append(str(curr_id))
 				with sqlite3.connect(BASE_PATH) as connect:
 					c = connect.cursor()
-					c.execute("""INSERT INTO Scores VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",data_list)
+					c.execute("""UPDATE Zombie SET RADIO = ?, FUEL = ?, RUN = ?, METER = ?, CODE = ?, FUSES = ?, DOOR = ?, \
+						WINDOW = ?, GAS = ?, SHELF = ?, EMP = ?, MAP = ?, FLARE = ?, ZOMBIE = ?, TOTAL_TIME = ? WHERE ID == ?""",data_list)
+					print('Command data updated')
 					connect.commit()
 					curr_id = -1
 					STATE = SHOW_RECS
-					
 					print('SERVER GO TO SHOW_RECS STATE')
 				return 'game stop'
 			else:
 				e_print('WRONG GADGETS DATA RECIEVED')
-				return 'wrong gdata'
+				return 'WRONG GADGETS DATA RECIEVED'
 		except Exception as e:
 			print(e)
 	else:
 		e_print('GAME NOT RUNNING')
-		return 'wrong method'
+		return 'GAME NOT RUNNING'
 
 
-@app.route('/getname')
+@app.route('/getname', methods = ['GET'])
 def getname():
 	global curr_id
 	if STATE == WAIT_START:
 		with sqlite3.connect(BASE_PATH) as connect:
-			com = Command(curr_id, connect)
-			if len(com.name) > 0:
-				e_print('NAME SEND TO MASTEROPERATOR: {}'.format(com.name))
-				return com.name
+			c = connect.cursor()
+			cmd_res = c.execute("""SELECT NAME FROM Zombie WHERE id=?""", [curr_id])
+			name = cmd_res[0][0]
+			if len(name) > 0:
+				e_print('NAME SEND TO MASTEROPERATOR: {}'.format(name))
+				return name
 	elif STATE == WAIT_NAME:
 		e_print('SERVER WAIT NAME FROM SCORES')
 		return 'SERVER_WAIT_NAME'
-# ========================= VIEW ROUTES =========================
 
-@app.route('/sendname', methods = ['POST'])
+@app.route('/savetocsv')
+def savetocsv():
+	with sqlite3.connect(BASE_PATH) as connect:
+			try:
+				c = connect.cursor()
+				fields = c.execute("""pragma table_info('Zombie')""").fetchall()
+				fields = [f[1] for f in fields]
+				results = pd.DataFrame(columns=fields)
+				gRes = c.execute("""SELECT * FROM Zombie""").fetchall()
+				while gRes:
+					c = gRes.pop()
+					results = results.append(dict(zip(fields,c)), ignore_index = True)
+				if not os.path.exists('FTP'):
+					os.mkdir('FTP')
+				results.to_csv('FTP/Zombie.csv', sep = ';', index = False)
+				return 'Saved'
+			except Exception as e:
+				e_print(e)
+				return 'Error: ' + e
+	return 'Error while connect to base'
+			
+
+# ========================= SCORES ROUTES =========================
+
+@app.route('/setname', methods = ['POST'])
 def setname():
 	global curr_id
 	global STATE
@@ -126,14 +183,14 @@ def setname():
 			try:
 				with sqlite3.connect(BASE_PATH) as connect:
 					c = connect.cursor()
-					res = c.execute("""SELECT * from Commands""").fetchall()
+					res = c.execute("""SELECT * from Zombie""").fetchall()
 					next_id = -1
 					if len(res) > 0:
 						for r in res:
 							if r[0] > next_id:
 								next_id = r[0]
 					next_id += 1
-					c.execute("""INSERT INTO Commands VALUES (?,?,?)""",[next_id,dt,cName])
+					c.execute("""INSERT INTO Zombie VALUES (?,?,?,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)""",[next_id, dt, cName])
 					connect.commit()
 					curr_id = next_id
 					STATE = WAIT_START
@@ -148,15 +205,47 @@ def setname():
 		e_print('SERVER_ERROR_REQUEST')
 		return 'SERVER_ERROR_REQUEST'
 
-@app.route('/getscores', methods = ['GET'])
-def getscores():
-	if request.method == 'GET' and STATE == WAITSTART:
-		get_id = request.args.get('id')
-		with sqlite3.connect(BASE_PATH) as conn:
-			command = Command(get_id, conn)
-			return command.to_string()
+@app.route('/setdata', methods = ['POST'])
+def setdata():
+	if request.method == 'POST':
+		gInd = request.form['gnum']
+		gName = games[int(gInd)]
+		cName = request.form['cname']
+		cTime = request.form['ctime']
+		cDate = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+		with sqlite3.connect(BASE_PATH) as connect:	
+			c = connect.cursor()
+			res = c.execute("""SELECT * from {}""".format(gName)).fetchall()
+			next_id = -1
+			if len(res) > 0:
+				for r in res:
+					if r[0] > next_id:
+						next_id = r[0]
+			next_id += 1
+			c.execute("""INSERT INTO {} VALUES (?,?,?,?)""".format(gName),[next_id, cDate, cName, cTime])
+			connect.commit()
+		e_print('SERVER_ADD_DATA_OK')
+		return 'SERVER_ADD_DATA_OK'
+	else:
+		e_print('ERROR')
+		return 'ERROR'
 
-@app.route('/getstate')
+
+@app.route('/getscores')
+def getscores():
+	game_name = request.args.get('game')
+	if game_name in games:
+		uns = get_game_scores(game_name)
+		if uns:
+			return uns
+		else:
+			e_print('NO_SCORES_FOR_GAME')
+			return 'NO_SCORES_FOR_GAME'
+	else:
+		e_print('ERROR_GAME_NAME')
+		return 'ERROR_GAME_NAME'
+
+@app.route('/getstate', methods = ['GET'])
 def getstate():
 	if STATE == WAIT_NAME:
 		return 'WAIT_NAME'
@@ -172,4 +261,8 @@ def getstate():
 
 if __name__ == '__main__':
 	print('START SERVER OF ZGAME')
+	try:
+		clean_base()
+	except Exception as e:
+		e_print('CLEAN BASE:' + e)
 	app.run(debug=False, host = '0.0.0.0', port=int('8484'))

@@ -81,3 +81,16 @@ void sendEnd()
     println(e);
   }
 }
+
+void sendSave()
+{
+  PostRequest saveGet = new PostRequest(server_addr + "savetocsv");
+  saveGet.send();
+  String resp = saveGet.getContent();
+  if (resp.equals("OK"))
+  {
+    println("Data saved");
+  }
+  else println("Error while saving data");
+  
+}

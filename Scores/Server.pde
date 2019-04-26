@@ -21,7 +21,6 @@ void connectToServer()
       {
         println(e);
       }
-
       wait(1);
     }
     println("Server connected");
@@ -31,7 +30,7 @@ void connectToServer()
 
 void sendName(String commandName)
 {
-  PostRequest startPost = new PostRequest(server_addr + "sendname");
+  PostRequest startPost = new PostRequest(server_addr + "setname");
   startPost.addData("cname", commandName);
   try {
     startPost.send();
@@ -45,8 +44,43 @@ void sendName(String commandName)
       println("SERVER UNSW:" + resp);
     }
     STATE = SHOW_RECORD;
-    for (int n = 0; n < 3; n++) cmd_name[n] = '*';
+    for (int c = 0; c < 3; c++) 
+    {
+      cmd_name[c] = '*';
+      char_ix[c] = 0;
+    }
   } 
+  catch (Exception e) {
+    println(e);
+  }
+}
+
+
+void sendData(String cName, int cTime)
+{
+  PostRequest dataPost = new PostRequest(server_addr + "setdata");
+  String gnum = str(INPUT_GAME);
+  String ctime = str(cTime);
+  dataPost.addData("gnum", gnum);
+  dataPost.addData("cname", cName);
+  println("CMD_NAME_ADD:" + cName);
+  dataPost.addData("ctime", ctime);
+  try {
+    dataPost.send();
+    String resp = dataPost.getContent();
+    println("SERVER UNSW:" + resp);
+    while (!resp.equals("SERVER_ADD_DATA_OK"))
+    {
+      wait(1);
+      dataPost.addData("gnum", gnum);
+      dataPost.addData("cname", cName);
+      dataPost.addData("ctime", ctime);
+      dataPost.send();
+      resp = dataPost.getContent();
+      println("SERVER UNSW:" + resp);
+    }
+    STATE = SHOW_RECORD;
+  }
   catch (Exception e) {
     println(e);
   }
@@ -54,15 +88,20 @@ void sendName(String commandName)
 
 void updateState()
 {
-  if (millis() - lastUpdate > 1000)
+  if (millis() - last_update_time > 1000)
   {
     GetRequest getState = new GetRequest(server_addr+"getstate");
     getState.send();
     try {
       String Response = getState.getContent();
-      lastUpdate = millis();
-      if (Response.equals("WAIT_NAME")) STATE = ENTER_NAME;
-      else STATE = SHOW_RECORD;
+      last_update_time = millis();
+      if (Response.equals("WAIT_NAME")) 
+      {
+        STATE = ENTER_NAME;
+        INPUT_GAME = 0;
+        enter_name = true;
+        for (int c = 0; c < 3; c++) cmd_name[c] = '*';
+      } else STATE = SHOW_RECORD;
     }
     catch (Exception e) {
       println(e);
