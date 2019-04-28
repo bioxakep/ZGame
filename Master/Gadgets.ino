@@ -24,6 +24,7 @@ void Start(long t)
     lastRFIDCheck = t;
     if (startRFWait) startRFWait = !getStartRFID();
   }
+  startRFWait = digitalRead(7);
   if (!startRFWait)
   {
     if (startLevel == 1)
@@ -117,7 +118,7 @@ void Generator()
     if (operSkips[gener1]) sendHLms(generOUT, 250);
     else playerGDone[gener1] = true;
     sendHLms(headOUT, 100);
-    printEvent("Generator-1 OK", true);
+    printEvent("Gen/FUEL OK", true);
     lcd.clear();
     lcd.setCursor(0, 0); // X, Y
     lcd.print("Gen/FUEL");
@@ -128,7 +129,7 @@ void Generator()
     if (operSkips[gener2]) sendHLms(generOUT, 250);
     else playerGDone[gener2] = true;
     //    sendHLms(headOUT, 100);  //removed 15/APR
-    printEvent("Generator-2 OK", true);
+    printEvent("Gen/RUN OK", true);
     lcd.clear();
     lcd.setCursor(0, 0); // X, Y
     lcd.print("Gen/RUN ");
@@ -205,7 +206,7 @@ void Fuses()
     digitalWrite(lightR3B, HIGH);
     for (int i = 0; i < 3; i++) strip.setPixelColor(i, strip.Color(200, 0, 0));
     strip.show();
-    printEvent("Fuses2 OK", true);
+    printEvent("Fuses OK", true);
     lcd.clear();
     lcd.setCursor(0, 0); // X, Y
     lcd.print("Fuses OK");
@@ -319,7 +320,7 @@ void Shelf()
     strip.setPixelColor(0, greenColor);
     strip.show();
     sendHLms(video3, 100);
-    printEvent("shelf OK", true);
+    printEvent("Shelf OK", true);
     lcd.clear();
     lcd.setCursor(0, 0); // X, Y
     lcd.print("Shelf OK");
@@ -360,7 +361,7 @@ void World() // Duplicate
     if (operSkips[world]) sendHLms(crateOUT, 250);
     else playerGDone[world] = true;
     digitalWrite(crateHD, LOW);
-    printEvent("Crate1 OK", true);
+    printEvent("MAP OK", true);
     lcd.clear();
     lcd.setCursor(0, 0); // X, Y
     lcd.print("MAP OK");
@@ -385,7 +386,7 @@ void Flare()
 
     // Light and video commands
     digitalWrite(crateHD, LOW);
-    printEvent("Crate2 OK", true);
+    printEvent("Flare OK", true);
     lcd.clear();
     lcd.setCursor(0, 0); // X, Y
     lcd.print("Flare OK");

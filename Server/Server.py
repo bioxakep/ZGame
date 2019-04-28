@@ -111,7 +111,7 @@ def endgame():
 			if len(g_data) == 14:
 				data_list = list()
 				data_list.extend(g_data)
-				data_list.append(total_scores)
+				data_list.append(str(sum([int(g) for g in g_data])))
 				data_list.append(str(curr_id))
 				with sqlite3.connect(BASE_PATH) as connect:
 					c = connect.cursor()
@@ -128,6 +128,7 @@ def endgame():
 				return 'WRONG GADGETS DATA RECIEVED'
 		except Exception as e:
 			print(e)
+			return 'ERROR_WHILE_DB_WRITE'
 	else:
 		e_print('GAME NOT RUNNING')
 		return 'GAME NOT RUNNING'
@@ -139,7 +140,7 @@ def getname():
 	if STATE == WAIT_START:
 		with sqlite3.connect(BASE_PATH) as connect:
 			c = connect.cursor()
-			cmd_res = c.execute("""SELECT NAME FROM Zombie WHERE id=?""", [curr_id])
+			cmd_res = c.execute("""SELECT NAME FROM Zombie WHERE id=?""", [curr_id]).fetchall()
 			name = cmd_res[0][0]
 			if len(name) > 0:
 				e_print('NAME SEND TO MASTEROPERATOR: {}'.format(name))

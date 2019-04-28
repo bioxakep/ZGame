@@ -30,20 +30,21 @@ void connectToServer()
 
 void sendName(String commandName)
 {
+  println("SENDING NAME");
   PostRequest startPost = new PostRequest(server_addr + "setname");
   startPost.addData("cname", commandName);
   try {
     startPost.send();
     String resp = startPost.getContent();
-    println("SERVER UNSW:" + resp);
+    println("SERVER SN UNSW:" + resp);
     while (!resp.equals("SERVER_SET_CMDNAME_OK"))
     {
       wait(1);
       startPost.send();
       resp = startPost.getContent();
-      println("SERVER UNSW:" + resp);
+      println("SERVER SN UNSW:" + resp);
     }
-    STATE = SHOW_RECORD;
+    STATE = PLAYING;
     for (int c = 0; c < 3; c++) 
     {
       cmd_name[c] = '*';
@@ -68,7 +69,7 @@ void sendData(String cName, int cTime)
   try {
     dataPost.send();
     String resp = dataPost.getContent();
-    println("SERVER UNSW:" + resp);
+    println("SERVER SD UNSW:" + resp);
     while (!resp.equals("SERVER_ADD_DATA_OK"))
     {
       wait(1);
@@ -95,13 +96,18 @@ void updateState()
     try {
       String Response = getState.getContent();
       last_update_time = millis();
-      if (Response.equals("WAIT_NAME")) 
+      if (Response.equals("WAIT_NAME") && STATE == SHOW_RECORD) 
       {
         STATE = ENTER_NAME;
         INPUT_GAME = 0;
         enter_name = true;
         for (int c = 0; c < 3; c++) cmd_name[c] = '*';
-      } else STATE = SHOW_RECORD;
+      }
+      if(Response.equals("SHOW_RECS") && STATE == PLAYING)
+      {
+        score_loaded = false;
+        STATE = SHOW_RECORD;
+      }
     }
     catch (Exception e) {
       println(e);

@@ -28,7 +28,7 @@ void drawScores()
 {
   for (int g = 0; g < 3; g++)
   {
-    if (!scrore_loaded)
+    if (!score_loaded)
     {
       try
       {
@@ -54,7 +54,7 @@ void drawScores()
       text(name, g*game_width + game_width/2 + 180 - team_width/2, game_width/2 - 180 + 100 + header_size + 5 + (c+1)*text_size);
     }
   }
-  scrore_loaded = true;
+  score_loaded = true;
 }
 
 void enterName(int game)
@@ -88,6 +88,7 @@ void enterName(int game)
   }
   cmd_name_width = cmd_name_offset;
   name_ok = canSend;
+  //println("name_OK:" + str(name_ok));
 }
 
 void enterTime(int game)

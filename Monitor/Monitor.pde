@@ -59,8 +59,7 @@ void setup()
   fill(100);
   stroke(255);
   textSize(20);
-  portName = "COM3";//"COM4"; // COM3 or /dev/tty.wchusbserial1410 or /dev/tty.wchusbserial1420
-  //portName = "/dev/cu.usbmodem14141";
+  portName = "COM3";//"COM4"; or /dev/tty.wchusbserial1410 or /dev/tty.wchusbserial1420
   bridgeConnect();
   startFont = createFont("Arial", 10);//Silom
   gadFont = createFont("Arial", 14); //MyanmarMN
