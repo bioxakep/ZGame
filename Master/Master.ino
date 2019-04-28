@@ -1,4 +1,4 @@
-//           15/APR/2019 late version
+//           27/APR/2019 
 //TAC_Master 05/MAR/2019 Beta
 //           21/MAR/2019 organized / pins tested
 //           02/04/2019 Works until end of game
@@ -109,10 +109,10 @@ int hatchOUT = A11; // RELAY 8 wire 37 SPK roof
 int triplIN  =  8;
 int triplOUT = 12;
 
-int video1   = A0;
-int video2   = A1;
-int video3   = A2;
-int video4   = A3;
+int video3   = A0;  // third 
+int video1   = A1;  // first
+int video2   = A2;  //second
+int video4   = A3;  // fourth
 
 byte radio  =  0;
 byte gener1 =  1;
@@ -123,14 +123,14 @@ byte fuses =   5;
 byte door =    6;
 byte window =  7;
 byte gas =     8;
-byte shelf =  9;
-byte emp =    10;
-byte world = 11;
-byte flare = 12;
-byte zombie = 13;
-byte head =   14;
-byte hatch =  15;
-byte gCount = 16;
+byte shelf =   9;
+byte emp =     10;
+byte world =   11;
+byte flare =   12;
+byte zombie =  13;
+byte head =    14;
+byte hatch =   15;
+byte gCount =  16;
 /*
 0. PRE-START   >>> ALL DOORS  (2,3,4) LOCK
 1. RFID for start / start button   >>> DOOR 1 LOCK  >>> SEND SIGNAL TO VIDEO PLAYER 1

@@ -20,8 +20,8 @@ void loop()
   else if (level == 38) Zombie();
   else if (level == 50) gameOver();
   sendGStates();
-
-  if (shake) shakeIt();
+  checkStates();
+  // if (shake) shakeIt();
 
 
   if (tick - lastSyncTime > 10000)

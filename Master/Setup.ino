@@ -5,25 +5,17 @@ void setup()
   Serial1.begin(38400); // RS-485
   Serial2.begin(9600); // mp3player A
   Serial3.begin(9600); // mp3player B
-  /*
-    mp3_set_serial(Serial2);
-    delay(100);
-    mp3_set_volume (29);
-    delay(100);
-    mp3_play(4); // test hint sound
-    delay(200);
-  */
 
   strip.begin();
 
   lcd.init();
   lcd.backlight();
-  lcd.print("   TEST MODE");
+  lcd.print("   TEST MODE    ");
   lcd.setCursor(0, 1);
   lcd.print("They are coming!");
   delay(3000);
 
-  Serial.println("TAC Master 15/APR/2019 late version");
+  Serial.println("TAC Master 27/APR/2019 ");
   cpz1 = new ArdCPZ(PIN_CPZ1);
 
   // ---- props ----
@@ -106,15 +98,17 @@ void setup()
 
   digitalWrite (phoneOUT,  HIGH);  // HIGH = ON
 
+  digitalWrite (hatchOUT,  LOW);  // LOW = Closed
+
   digitalWrite (radioOUT,  LOW);
   digitalWrite (generOUT,  LOW);
   digitalWrite (meterOUT,  LOW);
   digitalWrite (headOUT,   LOW);
   digitalWrite (alleyOUT,  LOW);
   digitalWrite (shelfOUT,  LOW);
-  digitalWrite (crateOUT,  LOW);
-  digitalWrite (crateHD,   LOW);
-  digitalWrite (gunBox,    LOW);
+  digitalWrite (crateOUT,  LOW); 
+  digitalWrite (crateHD,   HIGH); //open
+  digitalWrite (gunBox,    HIGH); //open
   digitalWrite (zombiOUT,  LOW);
 
   digitalWrite (boxed,     HIGH); // LOW=CLOSED
@@ -124,7 +118,6 @@ void setup()
   digitalWrite(door3A    , LOW);  // open
   digitalWrite(door3B    , LOW);  // open
   digitalWrite(door4     , LOW);  // open
-  digitalWrite(gunBox    , LOW);
 
   digitalWrite(RSTXCNTRL, LOW);
 
@@ -140,12 +133,21 @@ void setup()
     playerGDone[i] = false;
   }
 
-  greenColor = strip.Color(150, 0, 0);
-  redColor = strip.Color(0, 150, 0);
+  greenColor = strip.Color(0, 150, 0);
+  redColor   = strip.Color(150, 0, 0);
 
   mp3Set(1);
   mp3_set_volume(25);
+  mp3_stop();
+//  delay(100);
+//  mp3_play(1);
   delay(100);
+  mp3Set(2);
+  mp3_set_volume(25);
+  delay(100);
+  mp3_stop();
+//  mp3_play(1);
+//  delay(100);
   printEvent("Setup OK", true);
   lcd.clear();
   checkStates();
@@ -153,7 +155,7 @@ void setup()
 }
 
 void checkStates() {
-  lcd.setCursor(0, 1);
+  lcd.setCursor(0, 1); // lower row
   lcd.print(String(digitalRead(radioIN) ? " r_" : " R_"));
   lcd.print(String(digitalRead(generIN) ? "g" : "G"));
   lcd.print(String(digitalRead(meterIN) ? "m" : "M"));
