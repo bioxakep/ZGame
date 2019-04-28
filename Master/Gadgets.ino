@@ -50,7 +50,7 @@ void Start(long t)
       delay(100);
       mp3_play(1);
       delay(100);
-     delay(3000);
+      delay(3000);
       digitalWrite(phoneOUT, HIGH);  // turn on the phone after 3 seconds
 
     }
@@ -60,7 +60,7 @@ void Start(long t)
       mp3Set(1);
       mp3_play(1); // start ambiance sound
       delay(15);
-  
+
       digitalWrite(door2, HIGH);
       digitalWrite(door4, LOW);
       digitalWrite(door3A, HIGH);  //LOCKED
@@ -69,7 +69,7 @@ void Start(long t)
       digitalWrite (boxed,     LOW); // LOW=CLOSED
       digitalWrite(phoneOUT, LOW);  // turn off the phone
 
-    //  digitalWrite(door3B, LOW); 
+      //  digitalWrite(door3B, LOW);
       strip.setPixelColor(2, 0, 0, 0);
       printEvent("Level 1 Start 1 OK", true);
       startLevel++;
@@ -128,7 +128,7 @@ void Generator()
   {
     if (operSkips[gener1]) sendHLms(generOUT, 250);
     else playerGDone[gener1] = true;
- //   sendHLms(video2, 100);
+    //   sendHLms(video2, 100);
     printEvent("Generator-1 OK", true);
     lcd.setCursor(0, 0); // X, Y
     lcd.print("   Gen/FUEL   ");
@@ -143,7 +143,7 @@ void Generator()
     //    sendHLms(headOUT, 100);  //removed 15/APR
     printEvent("Generator-2 OK", true);
     sendHLms(alleyOUT, 100);
-  //  sendHLms(video3, 100);
+    //  sendHLms(video3, 100);
     lcd.setCursor(0, 0); // X, Y
     lcd.print("    Gen/RUN     ");
     strip.setPixelColor(1, 0, 50, 0);
@@ -163,7 +163,7 @@ void Meter()
     else playerGDone[meter] = true;
     lcd.setCursor(0, 0);
     lcd.print("    Meter OK    ");
- //   sendHLms(video1, 100);
+    //   sendHLms(video1, 100);
     mp3Set(1);
     //mp3_set_volume(25);
     //delay(10);
@@ -199,9 +199,9 @@ void Code()
     else playerGDone[code] = true;
     lcd.setCursor(0, 0); lcd.print("    Code OK     ");
 
-//    digitalWrite(lightR1, HIGH);
+    //    digitalWrite(lightR1, HIGH);
     digitalWrite(door3A, LOW); // UNLOCKED
- 
+
     strip.setPixelColor(0, 0, 0, 0);
     strip.setPixelColor(1, 0, 0, 0);
     strip.setPixelColor(2, 0, 0, 0);
@@ -212,7 +212,7 @@ void Code()
     //delay(10);
 
     printEvent("Code OK", true);
-  
+
     delay(50);
     level = 30;
   }
@@ -274,22 +274,19 @@ void Door(long t)
 }
 
 void shakeIt() {
-  if (locked == false) {
-    if ((unlockTime + unlockDelay) < millis()) {
-      lockDelay = random(20, 200);
-      lockTime = millis();
-      digitalWrite(door3A, HIGH);
-      locked = true;
-    }
+  if (millis() - lockStart > lockDelay && locked)
+  {
+    locked = false;
+    unlockStart = millis();
+    unlockDelay = random(20, 2000);
+    digitalWrite(door3A, LOW);
   }
-
-  if (locked == true) {
-    if ((lockTime + lockDelay) < millis()) {
-      digitalWrite(door3A, LOW);
-      unlockDelay = random(20, 2000);
-      unlockTime = millis();
-      locked = false;
-    }
+  if (millis() - unlockStart > unlockDelay && !locked)
+  {
+    locked = true;
+    lockStart = millis();
+    lockDelay = random(20, 2000);
+    digitalWrite(door3A, HIGH);
   }
 }
 
@@ -438,7 +435,7 @@ void Zombie()
     mp3Set(2);
     delay(10);
     mp3_stop();
-//    mp3_play(3);
+    //    mp3_play(3);
     mp3Set(1);
     delay(10);
     mp3_stop();

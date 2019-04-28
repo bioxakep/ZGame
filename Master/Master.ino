@@ -30,9 +30,9 @@ int level = 0;
 
 bool shake       = false;
 bool locked      = false;
-long lockTime    = 0; 
+long lockStart    = 0; 
 long lockDelay   = 0; 
-long unlockTime  = 0; 
+long unlockStart  = 0; 
 long unlockDelay = 0; 
 
 byte startLevel = 0;
