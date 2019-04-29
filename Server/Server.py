@@ -6,7 +6,8 @@ from flask import Flask
 from flask import request
 import sqlite3
 import logging
-import pandas as pd
+import json
+import csv
 
 SHOW_RECS = 0x01
 WAIT_NAME = 0x02
@@ -41,16 +42,15 @@ def clean_base():
 				connect.commit()
 
 def get_game_scores(game_name):
-	scores = pd.DataFrame(columns={"Name","Time"})
+	scores = list()
 	with sqlite3.connect(BASE_PATH) as connect:
 		c = connect.cursor()
 		results = c.execute("""SELECT * from {name}""".format(name = game_name)).fetchall()
 		while results:
 			r = results.pop()
-			c = Command(r)
-			scores = scores.append(c.to_view(), ignore_index=True)
-		scores = scores.sort_values(by='Time')
-		uns = scores.to_json(orient='records')
+			scores.append(dict(zip(["Name","Time"],[r[2],r[3]])))
+		scores = sorted(scores, key=lambda k: k['Time']) 
+		uns = json.dumps(scores)
 		if uns:
 			return uns
 		else:
@@ -156,18 +156,22 @@ def savetocsv():
 				c = connect.cursor()
 				fields = c.execute("""pragma table_info('Zombie')""").fetchall()
 				fields = [f[1] for f in fields]
-				results = pd.DataFrame(columns=fields)
+				print(fields)
+				results = []
 				gRes = c.execute("""SELECT * FROM Zombie""").fetchall()
 				while gRes:
 					c = gRes.pop()
-					results = results.append(dict(zip(fields,c)), ignore_index = True)
+					results.append(c)
 				if not os.path.exists('FTP'):
 					os.mkdir('FTP')
-				results.to_csv('FTP/Zombie.csv', sep = ';', index = False)
-				return 'Saved'
+				with open('FTP/Zombie.csv', "w") as f:
+					writer = csv.writer(f)
+					writer.writerow(fields)
+					writer.writerows(results)
+					return 'Saved'
 			except Exception as e:
 				e_print(e)
-				return 'Error: ' + e
+				return 'Error'
 	return 'Error while connect to base'
 			
 
