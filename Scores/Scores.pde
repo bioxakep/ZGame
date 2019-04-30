@@ -5,7 +5,7 @@ int total_scores = 0;
 String alpha = "ABCDEFGJHIJKLMNOPQRSTUVWXYZ1234567890";
 String rank, time, team;
 String[] gameNames = {"Zombie", "Room", "Graphics"};
-String server_addr = "//http://192.168.0.44:8484/"; 
+String server_addr = "http://127.0.0.1:8484/"; //0.39
 String spaces;
 JSONArray[] gameData = new JSONArray[3];
 

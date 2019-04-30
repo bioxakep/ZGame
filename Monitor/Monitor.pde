@@ -19,7 +19,7 @@ int total_scores = 0;
 int getStateTime = 0;
 long lastPassedTime = 0;
 int gCount = 16;
-String server_addr = "http://192.168.0.44:8484/";
+String server_addr = "http://192.168.0.39:8484/";
 
 boolean server_connect = false;
 boolean bridge_connect = false;
@@ -60,6 +60,8 @@ void setup()
   stroke(255);
   textSize(20);
   portName = "COM3";//"COM4"; or /dev/tty.wchusbserial1410 or /dev/tty.wchusbserial1420
+  //portName = "/dev/cu.usbmodem14131";
+  //server_addr = "http://127.0.0.1:8484/";
   bridgeConnect();
   startFont = createFont("Arial", 10);//Silom
   gadFont = createFont("Arial", 14); //MyanmarMN

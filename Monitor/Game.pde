@@ -191,5 +191,6 @@ void resetGame()
     gTimes[j] = 0;
   }
   command_name = "___";
-  while(!server_connect) serverConnect();
+  server_connect = false;
+  serverConnect();
 }

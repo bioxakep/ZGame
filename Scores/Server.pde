@@ -103,6 +103,13 @@ void updateState()
         enter_name = true;
         for (int c = 0; c < 3; c++) cmd_name[c] = '*';
       }
+      if(Response.equals("PLAYING") && STATE == ENTER_NAME) 
+      {
+        STATE = SHOW_RECORD;
+        INPUT_GAME = 0;
+        enter_name = false;
+        for (int c = 0; c < 3; c++) cmd_name[c] = '*';
+      }
       if(Response.equals("SHOW_RECS") && STATE == PLAYING)
       {
         score_loaded = false;
