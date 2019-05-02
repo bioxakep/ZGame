@@ -18,10 +18,10 @@ void sendHLms(int pin, int ms)
 
 void mp3Set(byte n)
 {
-  delay(100);
+  delay(50);
   if (n == 1) mp3_set_serial(Serial2);
   else if (n == 2) mp3_set_serial(Serial3);
-  delay(100);
+  delay(50);
 }
 
 void printEvent(String e, boolean endline)

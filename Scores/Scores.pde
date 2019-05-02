@@ -22,6 +22,7 @@ boolean time_ok = false;
 
 long last_update_time = 0;
 long start_draw_error_rect = 0;
+long ic_col_change = 0;
 
 PFont arcade_font;
 
@@ -30,7 +31,8 @@ PImage r_logo;
 PImage g_logo;
 color red = color(200,10,10);
 color white = color(200);
-color rect_color;
+color yellow = color(250,210,160);
+color ic_color;
 float cmd_name_width;
 float game_width, game_logo_width, game_logo_height;
 float rank_width, time_width, team_width, space_width, header_width;
@@ -43,7 +45,8 @@ boolean enter_time = false;
 
 void setup()
 {
-  size(1400, 600);
+  //size(1400, 900);
+  fullScreen();
   background(0);
   fill(0);
   stroke(255);
@@ -53,12 +56,12 @@ void setup()
   for (int c = 0; c < 3; c++) cmd_name[c] = '*';
   STATE = SHOW_RECORD;
   game_width = width/3;
-  game_logo_width = 360;
-  game_logo_height = 100;
+  game_logo_width = 9*game_width/10;
+  game_logo_height = 150;
   
   z_logo = loadImage("Zombie.jpg");
-  r_logo = loadImage("Zombie.jpg");
-  g_logo = loadImage("Zombie.jpg");
+  r_logo = loadImage("Jack.jpg");
+  g_logo = loadImage("Dragons.jpg");
   
   for (int g = 0; g < 3; g++) gameData[g] = new JSONArray();
   
@@ -67,14 +70,14 @@ void setup()
   team = "TEAM";
   spaces = "     ";
   
-  rect_color = white;
+  ic_color = white;
   arcade_font = createFont("arcade.ttf", 20);
   textFont(arcade_font);
   
   //Calculate Text Size
   header_size = 0;
   header_width = rank_width + time_width + team_width + space_width;
-  while (header_width < 360)
+  while (header_width < game_logo_width)
   {
     header_size++;
     textSize(header_size);

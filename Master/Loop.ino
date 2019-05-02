@@ -9,7 +9,7 @@ void loop()
   else if (level == 21) Generator();
   else if (level == 22) Meter();
   else if (level == 23) Code();
-  else if (level == 30) Fuses();
+  else if (level == 30) Fuses(); 
   else if (level == 31) Door(tick);
   else if (level == 32) Window(tick);
   else if (level == 33) Gas();
@@ -19,10 +19,27 @@ void loop()
   else if (level == 37) Flare();
   else if (level == 38) Zombie();
   else if (level == 50) gameOver();
+
+  if (level > 34 && level < 50) shakeIt();
+  
   sendGStates();
   checkStates();
   // if (shake) shakeIt();
 
+ if (radioTimer > 0 && ((millis() - radioTimer) > radioDelay))
+  {
+    digitalWrite(door2,   HIGH);  //open door 2
+    delay(200);
+    digitalWrite(lightR2A, LOW);  // ON LIGHT under door 2
+    delay(200);
+    digitalWrite(lightR2B, LOW); // OFF LIGHT under door 3
+    delay(200);
+    digitalWrite(lightR3A, LOW); // OFF LIGHT ROOM 3
+    delay(200);
+    digitalWrite(lightR3B, LOW); // OFF LIGHT ROOM 3
+    delay(200);
+    radioTimer = 0;
+  }
 
   if (tick - lastSyncTime > 10000)
   {
@@ -30,6 +47,8 @@ void loop()
     printEvent("Send Sync signal", true);
     lastSyncTime = tick;
   }
+
+}
 
   //----------------------------------------------------------------------------------------
   // first start  >>  lock the doors
@@ -114,4 +133,3 @@ void loop()
   //                                                     turn off door4
   //-----------------------------------------------------------------------------------------
   // GAME OVER
-}

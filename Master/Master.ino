@@ -1,4 +1,4 @@
-//           27/APR/2019 
+//           01/MAY/2019 
 //TAC_Master 05/MAR/2019 Beta
 //           21/MAR/2019 organized / pins tested
 //           02/04/2019 Works until end of game
@@ -30,9 +30,9 @@ int level = 0;
 
 bool shake       = false;
 bool locked      = false;
-long lockStart    = 0; 
+long lockTime    = 0; 
 long lockDelay   = 0; 
-long unlockStart  = 0; 
+long unlockTime  = 0; 
 long unlockDelay = 0; 
 
 byte startLevel = 0;
@@ -105,6 +105,7 @@ int boxed    =  A9; // RELAY 6 WIRE 35 (+)(-)
 
 int hatchIN  =  9;   // button
 int hatchOUT = A11; // RELAY 8 wire 37 SPK roof
+bool hatchSW = false;
 
 int triplIN  =  8;
 int triplOUT = 12;
@@ -131,6 +132,13 @@ byte zombie =  13;
 byte head =    14;
 byte hatch =   15;
 byte gCount =  16;
+
+bool ambiance = false;
+
+unsigned long radioTimer = 0;
+unsigned long radioDelay = 20000;
+
+
 /*
 0. PRE-START   >>> ALL DOORS  (2,3,4) LOCK
 1. RFID for start / start button   >>> DOOR 1 LOCK  >>> SEND SIGNAL TO VIDEO PLAYER 1

@@ -10,6 +10,7 @@ void setup()
 
   lcd.init();
   lcd.backlight();
+  lcd.setCursor(0, 0);
   lcd.print("   TEST MODE    ");
   lcd.setCursor(0, 1);
   lcd.print("They are coming!");
@@ -136,20 +137,24 @@ void setup()
   greenColor = strip.Color(0, 150, 0);
   redColor   = strip.Color(150, 0, 0);
 
+
+  delay(50);
   mp3Set(1);
+  delay(50);
   mp3_set_volume(25);
+  delay(50);
   mp3_stop();
-//  delay(100);
-//  mp3_play(1);
-  delay(100);
+  delay(50);
   mp3Set(2);
-  mp3_set_volume(25);
-  delay(100);
+  delay(50);
+  mp3_set_volume(30);
+  delay(50);
   mp3_stop();
-//  mp3_play(1);
-//  delay(100);
+  delay(50);
+  
   printEvent("Setup OK", true);
   lcd.clear();
+
   checkStates();
   connectToBridge();
 }

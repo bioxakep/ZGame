@@ -8,20 +8,32 @@ void drawFrames()
 
 void drawHeaders()
 {
-  image(z_logo, game_width/2 - 180, game_width/2 - 180, 360, 100);
-  image(r_logo, game_width + game_width/2 - 180, game_width/2 - 180, 360, 100);
-  image(g_logo, 2*game_width + game_width/2 - 180, game_width/2 - 180, 360, 100);
+  image(z_logo, game_width/2 - game_logo_width/2, game_width/2 - game_logo_width/2, game_logo_width, game_logo_height);
+  image(r_logo, game_width + game_width/2 - game_logo_width/2, game_width/2 - game_logo_width/2, game_logo_width, game_logo_height);
+  image(g_logo, 2*game_width + game_width/2 - game_logo_width/2, game_width/2 - game_logo_width/2, game_logo_width, game_logo_height);
   fill(255);
   textSize(text_size);
   for (int i = 0; i < 3; i++) 
   {
     textAlign(LEFT);
-    text(rank, i*game_width + game_width/2 - 180, game_width/2 - 180 + 100 + header_size + 5);
+    text(rank, i*game_width + game_width/2 - game_logo_width/2, game_width/2 - game_logo_width/2 + game_logo_height + header_size + 5);
     textAlign(CENTER);
-    text(time, i*game_width + game_width/2, game_width/2 - 180 + 100 + header_size + 5);
+    text(time, i*game_width + game_width/2, game_width/2 - game_logo_width/2 + game_logo_height + header_size + 5);
     textAlign(RIGHT);
-    text(team, i*game_width + game_width/2 + 180, game_width/2 - 180 + 100 + header_size + 5);
+    text(team, i*game_width + game_width/2 + game_logo_width/2, game_width/2 - game_logo_width/2 + game_logo_height + header_size + 5);
   }
+  textAlign(CENTER);
+  if(millis() - ic_col_change > 1000) 
+  {
+    if(ic_color == white) ic_color = yellow;
+    else ic_color = white;
+    ic_col_change = millis();
+  }
+  fill(ic_color);
+  text("INCERT COIN", width/2, height - text_size/2);
+  textAlign(RIGHT);
+  fill(255);
+  text("CREDIT: 00", width - 10, height - text_size/2);
 }
 
 void drawScores()
@@ -48,10 +60,10 @@ void drawScores()
       Integer time = co.getInt("Time");
       textAlign(CENTER);
       textSize(text_size);
-      text(str(c+1), g*game_width + game_width/2 - 180 + rank_width/2, game_width/2 - 180 + 100 + header_size + 5 + (c+1)*text_size);
+      text(str(c+1), g*game_width + game_width/2 - game_logo_width/2 + rank_width/2, game_width/2 - game_logo_width/2 + game_logo_height + header_size + 5 + (c+1)*text_size);
       String timestr = getTime(hours(Integer.valueOf(time)), minutes(Integer.valueOf(time)), seconds(Integer.valueOf(time)));
-      text(timestr, g*game_width + game_width/2, game_width/2 - 180 + 100 + header_size + 5 + (c+1)*text_size);
-      text(name, g*game_width + game_width/2 + 180 - team_width/2, game_width/2 - 180 + 100 + header_size + 5 + (c+1)*text_size);
+      text(timestr, g*game_width + game_width/2, game_width/2 - game_logo_width/2 + game_logo_height + header_size + 5 + (c+1)*text_size);
+      text(name, g*game_width + game_width/2 + game_logo_width/2 - team_width/2, game_width/2 - game_logo_width/2 + game_logo_height + header_size + 5 + (c+1)*text_size);
     }
   }
   score_loaded = true;
@@ -66,23 +78,25 @@ void enterName(int game)
   for (int i = 0; i < 3; i++)
   {
     textAlign(LEFT);
+    
+    if (char_pos == i && enter_name)
+    {
+      fill(200);
+      strokeWeight(0);
+      rect(game_width/2 + game*game_width + game_logo_width/2 - team_width/2 - 1.5*textWidth(cmd_name[i]) + cmd_name_offset, game_width/2 - game_logo_width/2 + game_logo_height + header_size + 10 + (min(5,gameData[game].size())+1)*text_size, textWidth(cmd_name[i]), 5);
+      fill(0);
+    }
+    fill(255);
     if (cmd_name[i] == '*' ) 
     {
       if(millis() - start_draw_error_rect < 2000) 
       {
         fill(red);
-        rect(game_width/2 + game*game_width + 180 - team_width/2 - 1.5*textWidth(cmd_name[i]) + cmd_name_offset, game_width/2 - 100 + header_size + (min(5,gameData[game].size())+1)*text_size - 3, textWidth(cmd_name[i]), text_size/2);
+        //rect(game_width/2 + game*game_width + game_logo_width/2 - team_width/2 - 1.5*textWidth(cmd_name[i]) + cmd_name_offset, game_width/2 - game_logo_width/2 + game_logo_height + header_size + 10 + (min(5,gameData[game].size())+1)*text_size, textWidth(cmd_name[i]), 10);
       }
       canSend = false;
     }
-    if (char_pos == i && enter_name)
-    {
-      fill(200);
-      strokeWeight(0);
-      rect(game_width/2 + game*game_width + 180 - team_width/2 - 1.5*textWidth(cmd_name[i]) + cmd_name_offset, game_width/2 - 100 + header_size + (min(5,gameData[game].size())+1)*text_size - 3, textWidth(cmd_name[i]), text_size/2);
-      fill(0);
-    } else fill(255);
-    text(cmd_name[i], game_width/2 + game*game_width + 180 - team_width/2 - 1.5*textWidth(cmd_name[i]) + cmd_name_offset, game_width/2 - 180 + 100 + header_size + 5 + (min(5,gameData[game].size())+1)*text_size);
+    text(cmd_name[i], game_width/2 + game*game_width + game_logo_width/2 - team_width/2 - 1.5*textWidth(cmd_name[i]) + cmd_name_offset, game_width/2 - game_logo_width/2 + game_logo_height + header_size + 5 + (min(5,gameData[game].size())+1)*text_size);
     cmd_name_offset += textWidth(cmd_name[i]);
     cmd_name_str += cmd_name[i];
   }
@@ -96,7 +110,7 @@ void enterTime(int game)
   String timestr = getTime(hours(Integer.valueOf(cmd_time)), minutes(Integer.valueOf(cmd_time)), seconds(Integer.valueOf(cmd_time)));
   fill(255);
   textAlign(CENTER);
-  text(timestr, game*game_width + game_width/2, game_width/2 - 180 + 100 + header_size + 5 + (min(5,gameData[game].size())+1)*text_size);
+  text(timestr, game*game_width + game_width/2, game_width/2 - game_logo_width/2 + game_logo_height + header_size + 5 + (min(5,gameData[game].size())+1)*text_size);
 }
 
 String getTime(int h, int m, int s)
