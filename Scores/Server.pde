@@ -97,7 +97,7 @@ void updateState()
     try {
       String Response = getState.getContent();
       last_update_time = millis();
-      if (Response.equals("WAIT_NAME") && STATE == SHOW_RECORD) 
+      if (Response.equals("WAIT_NAME") && STATE != ENTER_NAME) 
       {
         STATE = ENTER_NAME;
         BLOCK_TAB = true;
