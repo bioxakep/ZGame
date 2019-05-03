@@ -19,6 +19,7 @@ int INPUT_GAME = 0;
 boolean server_connect = false;
 boolean name_ok = false;
 boolean time_ok = false;
+boolean BLOCK_TAB = false;
 
 long last_update_time = 0;
 long start_draw_error_rect = 0;

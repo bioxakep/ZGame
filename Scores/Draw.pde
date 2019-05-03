@@ -13,7 +13,7 @@ void drawHeaders()
   image(g_logo, 2*game_width + game_width/2 - game_logo_width/2, game_width/2 - game_logo_width/2, game_logo_width, game_logo_height);
   fill(255);
   textSize(text_size);
-  for (int i = 0; i < 3; i++) 
+  for (int i = 0; i < 3; i++)
   {
     textAlign(LEFT);
     text(rank, i*game_width + game_width/2 - game_logo_width/2, game_width/2 - game_logo_width/2 + game_logo_height + header_size + 5);

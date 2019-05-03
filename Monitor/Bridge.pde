@@ -56,6 +56,7 @@ void waitRun(String data)
   {
     game_started = true;
     t.start();
+    last_passed_time = 0;
     println("Running game");
     sendStart(); // DEBUG
   }

@@ -11,13 +11,13 @@ PFont startFont, gadFont, timerFont, digitalFont;
 String[] gadgetNames = {"RADIO", "GEN/FUEL", "GEN/RUN", "METER", "CODE", "FUSES", "DOOR", "WINDOW", "GAS", "SHELF", "E.M.P", "MAP", "FLARE", "ZOMBIE"};
 String[] passedTimes = new String[14];
 int[] gTimes = new int[14];
-byte[] passedGadgets = new byte[16];
+byte[] passed_gadgets = new byte[16];
 boolean[] operPressed = new boolean[16];
 boolean game_started = false;
 boolean sendToBridge = false;
 int total_scores = 0;
 int getStateTime = 0;
-long lastPassedTime = 0;
+long last_passed_time = 0;
 int gCount = 16;
 String server_addr = "http://192.168.0.39:8484/";
 
@@ -101,7 +101,7 @@ void setup()
   th = 25;
   for (int i = 0; i < gCount; i++) 
   {
-    passedGadgets[i] = 0;
+    passed_gadgets[i] = 0;
     operPressed[i] = false;
   }
   for (int j = 0; j < gCount-2; j++)

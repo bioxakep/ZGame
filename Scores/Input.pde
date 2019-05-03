@@ -6,13 +6,13 @@ void keyPressed()
 {
   println(keyCode);
   // 37 - left, 38 - up, 39 - right, 40 - down
-  if (keyCode == 9 && STATE == SHOW_RECORD) // TAB
+  if (keyCode == 9 && !BLOCK_TAB) // TAB
   {
     INPUT_GAME = (INPUT_GAME + 1) % 3;
     println("INPUT_GAME:" + str(INPUT_GAME));
     enter_name = true;
     enter_time = false;
-    for (int c = 0; c < 3; c++) 
+    for (int c = 0; c < 3; c++)
     {
       cmd_name[c] = '*';
       char_ix[c] = 0;

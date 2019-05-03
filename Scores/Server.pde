@@ -45,6 +45,7 @@ void sendName(String commandName)
       println("SERVER SN UNSW:" + resp);
     }
     STATE = PLAYING;
+    BLOCK_TAB = false;
     for (int c = 0; c < 3; c++) 
     {
       cmd_name[c] = '*';
@@ -99,6 +100,7 @@ void updateState()
       if (Response.equals("WAIT_NAME") && STATE == SHOW_RECORD) 
       {
         STATE = ENTER_NAME;
+        BLOCK_TAB = true;
         INPUT_GAME = 0;
         enter_name = true;
         for (int c = 0; c < 3; c++) cmd_name[c] = '*';
