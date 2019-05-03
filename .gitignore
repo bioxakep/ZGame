@@ -18,3 +18,8 @@ Server/GetScores.py
 Server/logger.py
 Server/Zombie.csv
 Server/zombie.db
+Master-Bridge.fzz
+Monitor.png
+Scores.png
+Master and Bridge RS-485.png
+Server/gamedata.db
