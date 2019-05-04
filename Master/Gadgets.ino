@@ -24,7 +24,6 @@ void Start(long t)
     lastRFIDCheck = t;
     if (startRFWait) startRFWait = !getStartRFID();
   }
-  
   if (!startRFWait)
   {
     if (startLevel == 1)
@@ -35,7 +34,6 @@ void Start(long t)
       digitalWrite(door2, LOW); // close second door
       digitalWrite(door4, LOW); // close last door
       sendHLms(video1, 100);  // first monitor
-      sendHLms(alleyOUT, 100);  // first monitor
       printEvent("Start 2 OK", true);
       strip.setPixelColor(1, 0, 0, 0);
       strip.show();
@@ -44,13 +42,7 @@ void Start(long t)
       lcd.setCursor(0, 0); lcd.print("   START Done   ");
       sendByte(0xAA);
       game = true;
-      mp3Set(2);
-      mp3_set_volume(15);
-      delay(50);
-      mp3_play(1); // start ambiance in room #2
-      delay(3000);
-      digitalWrite(phoneOUT, HIGH);  // turn on the phone after 3 seconds
-
+      startTimer = millis();
     }
     else if (startLevel == 0)
     {
@@ -86,20 +78,9 @@ void Radio()
   {
     if (operSkips[radio]) sendHLms(radioOUT, 250);
     else playerGDone[radio] = true;
-    sendHLms(video1, 100);
     radioTimer = millis();
     digitalWrite(phoneOUT, LOW);  // turn off the phone
     delay(200);
-//    digitalWrite(door2,   HIGH);  //open door 2
-//    delay(200);
-//    digitalWrite(lightR2A, LOW);  // ON LIGHT under door 2
-//    delay(200);
-//    digitalWrite(lightR2B, LOW); // OFF LIGHT under door 3
-//    delay(200);
-//    digitalWrite(lightR3A, LOW); // OFF LIGHT ROOM 3
-//    delay(200);
-//    digitalWrite(lightR3B, LOW); // OFF LIGHT ROOM 3
-//    delay(200);
     strip.setPixelColor(0, 0, 0, 0);
     strip.show();
     printEvent("Radio OK", true);
@@ -131,7 +112,7 @@ void Generator()
     if (operSkips[gener2]) sendHLms(generOUT, 250);
     else playerGDone[gener2] = true;
     printEvent("Generator-2 OK", true);
-    sendHLms(alleyOUT, 200);
+    sendHLms(alleyOUT, 250);
     lcd.setCursor(0, 0); // X, Y
     lcd.print("    Gen/RUN     ");
     strip.setPixelColor(1, 0, 50, 0);
@@ -161,7 +142,7 @@ void Meter()
     digitalWrite(lightR2B, HIGH);
     strip.setPixelColor(0, 0, 50, 0);
     strip.show();
-    sendHLms(alleyOUT, 250);
+//    sendHLms(alleyOUT, 250);
     printEvent("Meter OK", true);
     sendHLms(fusesOUT, 250);
     delay(50);
@@ -245,6 +226,7 @@ void Fuses()
 
 void Door(long t)
 {
+
   if ((digitalRead(fusesIN) == LOW || operSkips[door]) && !gStates[door])
   {
     if (!operSkips[door]) playerGDone[door] = true;
@@ -304,8 +286,7 @@ void Gas()
     delay(250);
     level = 34;
     digitalWrite(lightR3B, HIGH);
-    delay(250);
-    digitalWrite(lightR3B, HIGH);
+//    delay(250);
   }
 }
 
@@ -340,11 +321,11 @@ void Emp()
     shake = true;
     if (!operSkips[emp]) playerGDone[emp] = true;
     digitalWrite (boxed,     HIGH); // LOW=CLOSED
-//    digitalWrite(gunBox, HIGH); // temporal, later will be opened by timer after helicopter pilot message
-    sendHLms(zombiOUT, 350);
-    //sendHLms(video2, 100);
-    //mp3Set(1);
-    //mp3_play(4);
+    //    digitalWrite(gunBox, HIGH); // temporal, later will be opened by timer after helicopter pilot message
+    //    sendHLms(zombiOUT, 350);
+    //    sendHLms(video2, 100);
+    //    mp3Set(1);
+    //    mp3_play(4);
     delay(10);
     printEvent("EMP OK", true);
     lcd.setCursor(0, 0); // X, Y
@@ -370,6 +351,12 @@ void World() // Duplicate
     lcd.print("    MAP OK    ");
     delay(50);
     level = 37;
+     if (!ambiance) {
+      digitalWrite(hatchOUT, HIGH);
+      mp3Set(1);
+      mp3_play(5);
+      ambiance = true;
+    }
   }
 }
 
@@ -381,23 +368,16 @@ void Flare()
   {
     if (operSkips[flare]) sendHLms(crateOUT, 250); else playerGDone[flare] = true;
 
-    sendHLms(video4, 100);
+    sendHLms(video4, 100); //flare lauched and helicopter arrives
+    flareTimer = millis();
 
-
-    // Light and video commands
-    // digitalWrite(crateHD, LOW);
     printEvent("Flare OK", true);
-    lcd.setCursor(0, 0);  lcd.print("   Flare OK   ");
+    lcd.setCursor(0, 0);  
+    lcd.print("   Flare OK   ");
     level = 38;
     delay(1500);
-    digitalWrite(lightR3A, LOW); // OFF LIGHT ROOM 3
-    delay(250);
-    digitalWrite(lightR3B, LOW); // OFF LIGHT ROOM 3
-    delay(1200);
-    digitalWrite(lightR3A, HIGH); // ON LIGHT ROOM 3
-    delay(600);
-    digitalWrite(lightR3B, HIGH); // ON LIGHT ROOM 3
-
+    lcd.setCursor(0, 0);  
+    lcd.print("   Flare DONE ");
   }
 }
 
@@ -409,21 +389,22 @@ void Zombie()
   {
     if (operSkips[zombie]) sendHLms(zombiOUT, 250);
     else playerGDone[zombie] = true;
-    // sendHLms(video1, 100);
-    mp3Set(2);
-    delay(10);
-    mp3_stop();
-//    mp3_play(3);
-    mp3Set(1);
-    delay(10);
-    mp3_stop();
 
-    delay(500);
-    digitalWrite(door4, LOW);
+    mp3Set(2);
+    mp3_stop();
+    mp3Set(1);
+    mp3_stop();
+    delay(50);
+
     printEvent("Zombie OK", true);
-    lcd.setCursor(0, 0);  lcd.print("   Zombie OK    ");
-    delay(500);
+    lcd.setCursor(0, 0);  
+    lcd.print("   Zombie OK    ");
+    delay(2500);
+
+    sendHLms(video1, 100);  // first monitor : Victory message !
     level = 50;
+    delay(5000);
+    digitalWrite(door4, LOW);
   }
 }
 
@@ -438,6 +419,13 @@ void gameOver()
     lcd.print("    Game Over    ");
     delay(50);
     game = false;
+    delay(10000);
+    digitalWrite(lightR3A, HIGH); // ON LIGHT ROOM 3
+    delay(250);
+    digitalWrite(lightR3B, HIGH); // ON LIGHT ROOM 3
+    digitalWrite(door4     , HIGH);  // open
+
+  
   }
 }
 
@@ -458,7 +446,7 @@ void Hatch()
     if (!ambiance) {
     digitalWrite(hatchOUT, HIGH);
     mp3Set(1);
-    mp3_set_volume(25);
+   // mp3_set_volume(25);
     delay(50);
     mp3_play(5);
     ambiance = true;

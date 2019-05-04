@@ -26,11 +26,21 @@ void loop()
   checkStates();
   // if (shake) shakeIt();
 
+ if (startTimer > 0 && ((millis() - startTimer) > startDelay))
+  {
+    digitalWrite(phoneOUT, HIGH);  // turn on the phone after 3 seconds
+    mp3Set(2);
+    mp3_set_volume(25);
+    delay(50);
+    mp3_play(1); // start ambiance in room #2
+    startTimer = 0;
+  }
+
  if (radioTimer > 0 && ((millis() - radioTimer) > radioDelay))
   {
-    digitalWrite(door2,   HIGH);  //open door 2
-    delay(200);
-    digitalWrite(lightR2A, LOW);  // ON LIGHT under door 2
+    sendHLms(video1, 100);
+    digitalWrite(phoneOUT, LOW);  // turn off the phone
+    digitalWrite(lightR2A, LOW);  // ON LIGHT under door 2 and EXIT sign in room 1
     delay(200);
     digitalWrite(lightR2B, LOW); // OFF LIGHT under door 3
     delay(200);
@@ -38,7 +48,60 @@ void loop()
     delay(200);
     digitalWrite(lightR3B, LOW); // OFF LIGHT ROOM 3
     delay(200);
+    digitalWrite(door2,   HIGH);  //open door 2
     radioTimer = 0;
+  }
+
+ if (flareTimer > 0 && ((millis() - flareTimer) > flareDelay))
+  {
+    sendHLms(video1, 100);  // first monitor pulse message
+    flareTimer = 0;
+    witchTimer = millis();
+    lcd.setCursor(0, 0);  
+    lcd.print("  pilot MSG #1  ");
+
+  }
+
+ if (witchTimer > 0 && ((millis() - witchTimer) > witchDelay))
+  {
+    delay(500);
+    digitalWrite(gunBox, HIGH);
+    delay(2300);
+    mp3Set(1);
+    mp3_play(6);
+    delay(200);
+    digitalWrite(lightR3A, LOW); 
+    delay(150);
+    digitalWrite(lightR3B, LOW); 
+    delay(250);
+    digitalWrite(lightR3A, HIGH);
+    delay(150);
+  
+    digitalWrite(lightR3B, HIGH);
+  
+    delay(200);
+    digitalWrite(lightR3A, LOW); 
+    delay(100);
+    digitalWrite(lightR3B, LOW); 
+    delay(250);
+    digitalWrite(lightR3B, HIGH);
+    delay(50);
+    digitalWrite(lightR3A, HIGH);
+    delay(150);
+    digitalWrite(lightR3A, LOW); 
+    digitalWrite(lightR3B, LOW);   
+   
+    
+    sendHLms(zombiOUT, 350);
+    lcd.setCursor(0, 0);  
+    lcd.print(" Witch out  ");
+
+    delay(5000);
+    delay(12000);
+    sendHLms(video1, 100);  // first monitor breach message
+    witchTimer = 0;
+    lcd.setCursor(0, 0);  
+    lcd.print(" Breach MSG  ");
   }
 
   if (tick - lastSyncTime > 10000)

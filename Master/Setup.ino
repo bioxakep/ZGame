@@ -16,7 +16,7 @@ void setup()
   lcd.print("They are coming!");
   delay(3000);
 
-  Serial.println("TAC Master 27/APR/2019 ");
+  Serial.println("TAC Master 3/MAY/2019 ");
   cpz1 = new ArdCPZ(PIN_CPZ1);
 
   // ---- props ----
@@ -77,9 +77,9 @@ void setup()
   pinMode(video2    , OUTPUT);
   pinMode(video3    , OUTPUT);
   pinMode(video4    , OUTPUT);
-  
+
   pinMode(RSTXCNTRL, OUTPUT);
-  //pinMode(7, INPUT_PULLUP);
+
   digitalWrite(lightR1   , OUTPUT);
   digitalWrite(lightR2A  , OUTPUT);
   digitalWrite(lightR2B  , OUTPUT);
@@ -134,19 +134,15 @@ void setup()
     playerGDone[i] = false;
   }
 
-  greenColor = strip.Color(0, 150, 0);
-  redColor   = strip.Color(150, 0, 0);
+  greenColor = strip.Color(0, 10, 0);
+  redColor   = strip.Color(10, 0, 0);
 
 
-  delay(50);
   mp3Set(1);
-  delay(50);
   mp3_set_volume(25);
   delay(50);
   mp3_stop();
-  delay(50);
   mp3Set(2);
-  delay(50);
   mp3_set_volume(30);
   delay(50);
   mp3_stop();
@@ -154,7 +150,7 @@ void setup()
   
   printEvent("Setup OK", true);
   lcd.clear();
-
+   
   checkStates();
   connectToBridge();
 }
