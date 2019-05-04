@@ -114,7 +114,7 @@ void playGame()
   if(!master_connect || !server_connect) text("CONNECTING", r3x + 2*mar + status_width, r3y + r3h - mar - 120);
   else if(command_name == "___") text("WAIT TEAM NAME", r3x + 2*mar + status_width, r3y + r3h - mar - 120);
   else if(!game_started) text("WAIT MASTER START", r3x + 2*mar + status_width, r3y + r3h - mar - 120);
-  else if(!game_done) text("PLAYING", r3x + 2*mar + status_width, r3y + r3h - mar - 120);
+  else if(!game_over) text("PLAYING", r3x + 2*mar + status_width, r3y + r3h - mar - 120);
   else text("GAME OVER", r3x + 2*mar + status_width, r3y + r3h - mar - 120);
   ellipseMode(CENTER);
   if (master_connect) fill(green);
@@ -195,6 +195,7 @@ void resetGame()
     gTimes[j] = 0;
   }
   command_name = "___";
+  game_over = false;
   server_connect = false;
   serverConnect();
 }

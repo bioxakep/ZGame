@@ -67,7 +67,7 @@ void sendEnd()
   String gData = join(nf(gTimes, 0), ","); 
   endGet.addData("gdata", gData);
   endGet.addData("scores", str(currScores));
-  game_done = true;
+  game_over = true;
   endGet.send();
   try {
     String resp = endGet.getContent();
