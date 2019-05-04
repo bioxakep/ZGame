@@ -96,9 +96,13 @@ def reset():
 @app.route('/startgame', methods = ['GET'])
 def prepare():
 	global STATE
-	if STATE == WAIT_NAME or STATE == WAIT_START:
-		e_print('GAME START, {}'.format('NAME OK' if STATE == WAIT_START else 'WITHOUT NAME'))
+	if STATE == WAIT_START:
+		e_print('GAME START')
 		STATE = PLAYING
+		return 'OK'
+	elif STATE == WAIT_NAME:
+		e_print('GAME START WITHOUT NAME')
+		STATE = IDLE
 		return 'OK'
 	else:
 		if STATE == PLAYING:
@@ -111,7 +115,7 @@ def prepare():
 def endgame():
 	global STATE
 	global CMD_NAME
-	if STATE == PLAYING:
+	if STATE == PLAYING and len(CMD_NAME) > 0:
 		times = list(request.form['gdata'].split(','))
 		total_scores = request.form['scores']
 		if len(times) == 14:

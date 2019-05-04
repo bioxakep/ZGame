@@ -112,10 +112,20 @@ void playGame()
   text("STATUS: ", r3x + mar, r3y + r3h - mar - 120);
   float status_width = textWidth("STATUS: ");
   if(!master_connect || !server_connect) text("CONNECTING", r3x + 2*mar + status_width, r3y + r3h - mar - 120);
-  else if(command_name == "___") text("WAIT TEAM NAME", r3x + 2*mar + status_width, r3y + r3h - mar - 120);
-  else if(!game_started) text("WAIT MASTER START", r3x + 2*mar + status_width, r3y + r3h - mar - 120);
-  else if(!game_over) text("PLAYING", r3x + 2*mar + status_width, r3y + r3h - mar - 120);
-  else text("GAME OVER", r3x + 2*mar + status_width, r3y + r3h - mar - 120);
+  else
+  {
+    if(game_started) 
+    {
+      if(game_over) text("GAME OVER", r3x + 2*mar + status_width, r3y + r3h - mar - 120);
+      else text("PLAYING", r3x + 2*mar + status_width, r3y + r3h - mar - 120);
+    }
+    else 
+    {
+      if(command_name == "___") text("WAIT TEAM NAME", r3x + 2*mar + status_width, r3y + r3h - mar - 120);
+      else text("WAIT MASTER START", r3x + 2*mar + status_width, r3y + r3h - mar - 120);
+    }
+  }
+  
   ellipseMode(CENTER);
   if (master_connect) fill(green);
   else fill(red);
