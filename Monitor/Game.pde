@@ -115,7 +115,7 @@ void playGame()
   else if(command_name == "___") text("WAIT TEAM NAME", r3x + 2*mar + status_width, r3y + r3h - mar - 120);
   else if(!game_started) text("WAIT MASTER START", r3x + 2*mar + status_width, r3y + r3h - mar - 120);
   else if(!game_done) text("PLAYING", r3x + 2*mar + status_width, r3y + r3h - mar - 120);
-  else text("GAME DONE", r3x + 2*mar + status_width, r3y + r3h - mar - 120);
+  else text("GAME OVER", r3x + 2*mar + status_width, r3y + r3h - mar - 120);
   ellipseMode(CENTER);
   if (master_connect) fill(green);
   else fill(red);

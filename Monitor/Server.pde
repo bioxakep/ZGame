@@ -67,14 +67,11 @@ void sendEnd()
   String gData = join(nf(gTimes, 0), ","); 
   endGet.addData("gdata", gData);
   endGet.addData("scores", str(currScores));
+  game_done = true;
   endGet.send();
   try {
     String resp = endGet.getContent();
-    if (resp.equals("OK"))
-    {
-      game_done = true;
-      println("SERVER UNSW:" + resp);
-    }
+    if (resp.equals("OK")) println("SERVER UNSW:" + resp);
   }
   catch(Exception e)
   {
