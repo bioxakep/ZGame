@@ -24,6 +24,7 @@ void Start(long t)
     lastRFIDCheck = t;
     if (startRFWait) startRFWait = !getStartRFID();
   }
+  
   if (!startRFWait)
   {
     if (startLevel == 1)
@@ -244,7 +245,6 @@ void Fuses()
 
 void Door(long t)
 {
-
   if ((digitalRead(fusesIN) == LOW || operSkips[door]) && !gStates[door])
   {
     if (!operSkips[door]) playerGDone[door] = true;
@@ -365,7 +365,7 @@ void World() // Duplicate
     if (operSkips[world]) sendHLms(crateOUT, 250);
     else playerGDone[world] = true;
     digitalWrite(crateHD, HIGH);  //open
-    printEvent("Crate1 OK", true);
+    printEvent("Map OK", true);
     lcd.setCursor(0, 0); // X, Y
     lcd.print("    MAP OK    ");
     delay(50);
@@ -386,7 +386,7 @@ void Flare()
 
     // Light and video commands
     // digitalWrite(crateHD, LOW);
-    printEvent("Crate2 OK", true);
+    printEvent("Flare OK", true);
     lcd.setCursor(0, 0);  lcd.print("   Flare OK   ");
     level = 38;
     delay(1500);

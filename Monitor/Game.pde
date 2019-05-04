@@ -56,8 +56,6 @@ void playGame()
           print(i); 
           print(" skipped at ");
           print(passedTimes[i]);
-          print(", last_passed_time="); 
-          println(str(last_passed_time));
         }
         operPressed[i] = true;
         sendToBridge = true;
@@ -111,6 +109,13 @@ void playGame()
   text("MASTER: ", r3x + mar, r3y + r3h - mar - 40);
   //float serverTWidth = textWidth("SERVER: ");
   text("SERVER: ", r3x + mar, r3y + r3h - mar - 80);
+  text("STATUS: ", r3x + mar, r3y + r3h - mar - 120);
+  float status_width = textWidth("STATUS: ");
+  if(!master_connect || !server_connect) text("CONNECTING", r3x + 2*mar + status_width, r3y + r3h - mar - 120);
+  else if(command_name == "___") text("WAIT TEAM NAME", r3x + 2*mar + status_width, r3y + r3h - mar - 120);
+  else if(!game_started) text("WAIT MASTER START", r3x + 2*mar + status_width, r3y + r3h - mar - 120);
+  else if(!game_done) text("PLAYING", r3x + 2*mar + status_width, r3y + r3h - mar - 120);
+  else text("GAME DONE", r3x + 2*mar + status_width, r3y + r3h - mar - 120);
   ellipseMode(CENTER);
   if (master_connect) fill(green);
   else fill(red);
@@ -162,7 +167,6 @@ void playGame()
 
   if (sendToBridge)
   {
-    print("...sending to bridge...");
     arduino.write("CD");
     for (int s = 0; s < gCount; s++)
     {
@@ -170,8 +174,8 @@ void playGame()
       operPressed[s] = false;
     }
     arduino.write("FF\n");
-    println("OK");
     sendToBridge = false;
+    println(", sent to master");
   }
 }
 

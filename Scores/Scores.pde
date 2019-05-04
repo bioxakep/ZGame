@@ -4,22 +4,26 @@ int[] gTimes = new int[10];
 int total_scores = 0;
 String alpha = "ABCDEFGJHIJKLMNOPQRSTUVWXYZ1234567890";
 String rank, time, team;
-String[] gameNames = {"Zombie", "Room", "Graphics"};
+String[] game_names = {"Zombie", "Room", "Graphics"};
+char[][] cmd_names = {{'*','*','*'},{'*','*','*'},{'*','*','*'}};
+int[][] char_ix = {{0,0,0},{0,0,0},{0,0,0}};
+int[] cmd_times = {0,0,0};
+int[] char_pos = {0,0,0};
+
 String server_addr = "http://127.0.0.1:8484/"; //0.39
 String spaces;
 JSONArray[] gameData = new JSONArray[3];
 
 byte STATE = 0;
-byte ENTER_NAME = 1;
-byte SHOW_RECORD = 2;
-byte PLAYING = 3;
+byte ZOMBIE_NAME = 1;
+byte PLAYING = 2;
+byte SHOW_SCORES = 3;
 
 int INPUT_GAME = 0;
 
 boolean server_connect = false;
-boolean name_ok = false;
-boolean time_ok = false;
-boolean BLOCK_TAB = false;
+boolean[] name_ok = {false,false,false};
+boolean[] time_ok = {false,false,false};
 
 long last_update_time = 0;
 long start_draw_error_rect = 0;
@@ -38,11 +42,11 @@ float cmd_name_width;
 float game_width, game_logo_width, game_logo_height;
 float rank_width, time_width, team_width, space_width, header_width;
 int header_size, text_size;
-int cmd_time = 0;
+
 
 boolean score_loaded = false;
-boolean enter_name = false;
-boolean enter_time = false;
+boolean[] enter_name = {false,false,false};
+boolean[] enter_time = {false,false,false};
 
 void setup()
 {
@@ -52,10 +56,8 @@ void setup()
   fill(0);
   stroke(255);
   strokeWeight(2);
-  cmd_name = new char[3];
-  char_ix = new int[3];
-  for (int c = 0; c < 3; c++) cmd_name[c] = '*';
-  STATE = SHOW_RECORD;
+  
+  STATE = SHOW_SCORES;
   game_width = width/3;
   game_logo_width = 9*game_width/10;
   game_logo_height = 150;
@@ -99,17 +101,16 @@ void draw()
   drawFrames();
   drawHeaders();
   drawScores();
-  if (STATE == ENTER_NAME) enterName(0);
-  else if (INPUT_GAME > 0) 
+  if (STATE == PLAYING || STATE == ZOMBIE_NAME) enterName(0);
+  if (INPUT_GAME > 0 && STATE != ZOMBIE_NAME)
   {
-    if (enter_name) enterName(INPUT_GAME);
-    if (enter_time) 
+    if (enter_name[INPUT_GAME]) enterName(INPUT_GAME);
+    if (enter_time[INPUT_GAME])
     {
       enterName(INPUT_GAME);
       enterTime(INPUT_GAME);
     }
   }
-  
   if (server_connect) updateState(); 
   else connectToServer();
 }

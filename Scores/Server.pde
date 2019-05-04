@@ -45,12 +45,6 @@ void sendName(String commandName)
       println("SERVER SN UNSW:" + resp);
     }
     STATE = PLAYING;
-    BLOCK_TAB = false;
-    for (int c = 0; c < 3; c++) 
-    {
-      cmd_name[c] = '*';
-      char_ix[c] = 0;
-    }
   } 
   catch (Exception e) {
     println(e);
@@ -81,7 +75,6 @@ void sendData(String cName, int cTime)
       resp = dataPost.getContent();
       println("SERVER UNSW:" + resp);
     }
-    STATE = SHOW_RECORD;
   }
   catch (Exception e) {
     println(e);
@@ -97,25 +90,58 @@ void updateState()
     try {
       String Response = getState.getContent();
       last_update_time = millis();
-      if (Response.equals("WAIT_NAME") && STATE != ENTER_NAME) 
+      // IDLE -> WAIT_NAME : to ZOMBIE_NAME
+      // WAIT_START -> PLAYING : to show Scores with current Name
+      // ? -> IDLE : load scores
+
+      if (Response.equals("WAIT_NAME") && STATE != ZOMBIE_NAME) 
       {
-        STATE = ENTER_NAME;
-        BLOCK_TAB = true;
+        println("WAIT NAME START");
+        STATE = ZOMBIE_NAME;
         INPUT_GAME = 0;
-        enter_name = true;
-        for (int c = 0; c < 3; c++) cmd_name[c] = '*';
+        enter_name[INPUT_GAME] = true;
+        enter_time[INPUT_GAME] = false;
+        for (int c = 0; c < 3; c++)
+        {
+          cmd_names[0][c] = '*';
+          char_ix[0][c] = 0;
+        }
       }
-      if(Response.equals("PLAYING") && STATE == ENTER_NAME) 
+      if (Response.equals("PLAYING") && STATE == ZOMBIE_NAME) 
       {
-        STATE = SHOW_RECORD;
+        println("START PLAY");
+        STATE = PLAYING;
         INPUT_GAME = 0;
-        enter_name = false;
-        for (int c = 0; c < 3; c++) cmd_name[c] = '*';
+        enter_name[INPUT_GAME] = false;
+        for (int c = 0; c < 3; c++) 
+        {
+          cmd_names[0][c] = '*';
+          char_ix[0][c] = 0;
+        }
       }
-      if(Response.equals("SHOW_RECS") && STATE == PLAYING)
+      if (Response.equals("IDLE") && STATE == PLAYING)
       {
+        println("STOP PLAY, UPDATE SCORES");
         score_loaded = false;
-        STATE = SHOW_RECORD;
+        STATE = SHOW_SCORES;
+        for (int c = 0; c < 3; c++) 
+        {
+          cmd_names[0][c] = '*';
+          char_ix[0][c] = 0;
+        }
+      }
+      if (Response.equals("IDLE") && STATE != PLAYING)
+      {
+        // Reset Scores
+        println("RESET SCORES");
+        STATE = SHOW_SCORES;
+        enter_name[INPUT_GAME] = false;
+        enter_time[INPUT_GAME] = false;
+        for (int c = 0; c < 3; c++) 
+        {
+          cmd_names[0][c] = '*';
+          char_ix[0][c] = 0;
+        }
       }
     }
     catch (Exception e) {

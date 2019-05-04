@@ -37,7 +37,7 @@ void waitMaster(String data)
   fill(orange);
   textFont(startFont, 24);
   textAlign(CENTER); 
-  text("WAIT MASTER CONNECT", scrW/2 - scrW/6, scrH/2 + scrH/4);
+  //text("WAIT MASTER CONNECT", scrW/2 - scrW/6, scrH/2 + scrH/4);
   if (data.equals("masterConnected"))
   {
     master_connect = true;
@@ -51,7 +51,7 @@ void waitRun(String data)
   fill(orange);
   textFont(startFont, 24);
   textAlign(CENTER);
-  text("WAIT START FROM MASTER", scrW/2 - scrW/6, scrH/2 + scrH/4);
+  //text("READY TO START", scrW/2 - scrW/6, scrH/2 + scrH/4);
   if (data.equals("Rungame"))
   {
     game_started = true;

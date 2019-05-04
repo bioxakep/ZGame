@@ -14,6 +14,7 @@ int[] gTimes = new int[14];
 byte[] passed_gadgets = new byte[16];
 boolean[] operPressed = new boolean[16];
 boolean game_started = false;
+boolean game_done = false;
 boolean sendToBridge = false;
 int total_scores = 0;
 int getStateTime = 0;
@@ -60,7 +61,7 @@ void setup()
   stroke(255);
   textSize(20);
   portName = "COM3";//"COM4"; or /dev/tty.wchusbserial1410 or /dev/tty.wchusbserial1420
-  //portName = "/dev/cu.usbmodem14131";
+  //portName = "/dev/cu.usbmodem14141";
   //server_addr = "http://127.0.0.1:8484/";
   bridgeConnect();
   startFont = createFont("Arial", 10);//Silom

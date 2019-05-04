@@ -1,5 +1,9 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
+'''
+СОСТОЯНИЕ	СЕРВЕР	ОПЕРАТОР	ОЧКИ	МАСТЕР	МОСТ
+1. Ждем 
+'''
 import os
 from datetime import datetime
 from flask import Flask
@@ -9,12 +13,12 @@ import logging
 import json
 import csv
 
-SHOW_RECS = 0x01
+IDLE = 0x01
 WAIT_NAME = 0x02
 WAIT_START = 0x03
 PLAYING = 0x04
 
-STATE = SHOW_RECS
+STATE = IDLE
 
 dirname, filename = os.path.split(os.path.abspath(__file__))
 BASE_PATH = dirname + '/gamedata.db'
@@ -23,7 +27,7 @@ BASE_PATH = dirname + '/gamedata.db'
 #0	  1 	2		3		4		5		6		7		8	  9		10	  11	 12		13	  14	 15	  16	 17 	 18
 #ID, DATE, NAME, SCORES, RADIO, GEN/FUEL, GEN/RUN, METER, CODE, FUSES, DOOR, WINDOW, GAS, SHELF, E.M.P, MAP, FLARE, ZOMBIE, TOTAL_TIME
 app = Flask(__name__)
-curr_id = -1
+CMD_NAME = ''
 games = ['Zombie', 'Room', 'Graphics']
 monitorLogger = logging.getLogger('monitorLogger')
 scoresLogger = logging.getLogger('scoresLogger')
@@ -79,56 +83,69 @@ def not_found(error):
 def connect():
 	return 'OK'
 
-# ========================= MASTER ROUTES =========================
-@app.route('/rst', methods = ['GET'])
+# ========================= MONITOR ROUTES =========================
+@app.route('/monitor', methods = ['GET'])
 def reset():
 	global STATE
-	global curr_id
+	global CMD_NAME
 	STATE = WAIT_NAME
-	curr_id = -1
-	e_print('MASTEROPERATOR ONLINE, WAIT RUN GAME FROM MASTER')
+	CMD_NAME = ''
+	e_print('MASTER WORKS, WAIT NAME AND START')
 	return 'OK'
 
 @app.route('/startgame', methods = ['GET'])
 def prepare():
 	global STATE
 	if STATE == WAIT_NAME or STATE == WAIT_START:
+		e_print('GAME START, {}'.format('NAME OK' if STATE == WAIT_START else 'WITHOUT NAME'))
 		STATE = PLAYING
-		e_print('SERVER GO TO PLAYING STATE')
 		return 'OK'
 	else:
-		e_print('ERROR WHILE START GAME')
+		if STATE == PLAYING:
+			e_print('START GAME ERROR: GAME IN PLAY')
+		if STATE == IDLE:
+			e_print('START GAME ERROR: SERVER IN IDLE')
 		return 'errorPost'
 
 @app.route('/endgame', methods = ['POST'])
 def endgame():
-	global curr_id
 	global STATE
-	if curr_id > -1 and STATE == PLAYING:
-		try:
-			g_data = list(request.form['gdata'].split(','))
-			total_scores = request.form['scores']
-			if len(g_data) == 14:
-				data_list = list()
-				data_list.extend(g_data)
-				data_list.append(str(sum([int(g) for g in g_data])))
-				data_list.append(str(curr_id))
-				with sqlite3.connect(BASE_PATH) as connect:
-					c = connect.cursor()
-					c.execute("""UPDATE Zombie SET RADIO = ?, FUEL = ?, RUN = ?, METER = ?, CODE = ?, FUSES = ?, DOOR = ?, \
-						WINDOW = ?, GAS = ?, SHELF = ?, EMP = ?, MAP = ?, FLARE = ?, ZOMBIE = ?, TOTAL_TIME = ? WHERE ID == ?""",data_list)
-					print('Command data updated')
-					connect.commit()
-					curr_id = -1
-					STATE = SHOW_RECS
-					print('SERVER GO TO SHOW_RECS STATE')
-				return 'game stop'
-			else:
-				e_print('WRONG GADGETS DATA RECIEVED')
-				return 'WRONG GADGETS DATA RECIEVED'
-		except Exception as e:
-			print(e)
-			return 'ERROR_WHILE_DB_WRITE'
+	global CMD_NAME
+	if STATE == PLAYING:
+		times = list(request.form['gdata'].split(','))
+		total_scores = request.form['scores']
+		if len(times) == 14:
+			with sqlite3.connect(BASE_PATH) as connect:
+				c = connect.cursor()
+				NEXT_ID = -1
+				res = c.execute("""SELECT * FROM Zombie""").fetchall()
+				if len(res) > 0:
+					ids = [r[0] for r in res]
+					print('IDS from BASE {}'.format(ids))
+					max_id = max(ids) # в случае присутствия всех по порядку соблюдается max_id = res.count() - 1
+					if max_id > len(ids) - 1: # 1 4 5 6 10 т.е. есть пропуски индексов
+						for i in range(max_id):
+							if i not in ids:
+								NEXT_ID = i
+				else:
+					NEXT_ID = 0
+				DT = datetime.now().strftime("%Y-%m-%d %H:%M")
+				DATA = list()
+				DATA.append(str(NEXT_ID))
+				DATA.append(DT)
+				DATA.append(CMD_NAME)
+				DATA.append(str(sum([int(g) for g in times]))) # TOTAL_TIME
+				DATA.extend(times) # TIMES
+				c.execute("""INSERT INTO Zombie VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",DATA)
+				print('RESULTS WROTE OK')
+				connect.commit()
+				CMD_NAME = ''
+				STATE = IDLE
+				print('SERVER GO TO SHOW_RECS STATE')
+			return 'game stop'
+		else:
+			e_print('WRONG GADGETS DATA RECIEVED')
+			return 'WRONG GADGETS DATA RECIEVED'
 	else:
 		e_print('GAME NOT RUNNING')
 		return 'GAME NOT RUNNING'
@@ -136,17 +153,11 @@ def endgame():
 
 @app.route('/getname', methods = ['GET'])
 def getname():
-	global curr_id
+	global CMD_NAME
 	if STATE == WAIT_START:
-		with sqlite3.connect(BASE_PATH) as connect:
-			c = connect.cursor()
-			cmd_res = c.execute("""SELECT NAME FROM Zombie WHERE id=?""", [curr_id]).fetchall()
-			name = cmd_res[0][0]
-			if len(name) > 0:
-				e_print('NAME SEND TO MASTEROPERATOR: {}'.format(name))
-				return name
+		return CMD_NAME
 	elif STATE == WAIT_NAME:
-		e_print('SERVER WAIT NAME FROM SCORES')
+		e_print('SERVER WAITING NAME FROM SCORES')
 		return 'SERVER_WAIT_NAME'
 
 @app.route('/savetocsv')
@@ -176,32 +187,15 @@ def savetocsv():
 			
 
 # ========================= SCORES ROUTES =========================
-
 @app.route('/setname', methods = ['POST'])
 def setname():
-	global curr_id
 	global STATE
-	if request.method == 'POST' and curr_id == -1 and STATE == WAIT_NAME:
-		cName = request.form['cname']
-		dt = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-		if len(cName) > 0:
-			try:
-				with sqlite3.connect(BASE_PATH) as connect:
-					c = connect.cursor()
-					res = c.execute("""SELECT * from Zombie""").fetchall()
-					next_id = -1
-					if len(res) > 0:
-						for r in res:
-							if r[0] > next_id:
-								next_id = r[0]
-					next_id += 1
-					c.execute("""INSERT INTO Zombie VALUES (?,?,?,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)""",[next_id, dt, cName])
-					connect.commit()
-					curr_id = next_id
-					STATE = WAIT_START
-					print('CMD NAME: {}, WAIT START FROM MASTER'.format(cName))
-			except Exception as e:
-				e_print('SET_NAME_ERROR: {}'.format(e))
+	global CMD_NAME
+	if request.method == 'POST' and STATE == WAIT_NAME:
+		CMD_NAME = request.form['cname']
+		if len(CMD_NAME) > 0:
+			STATE = WAIT_START
+			print('CMD NAME: {}, WAIT START FROM MASTER'.format(CMD_NAME))
 			return 'SERVER_SET_CMDNAME_OK'
 		else:
 			e_print('SERVER_SET_CMDNAME_ERROR')
@@ -235,7 +229,6 @@ def setdata():
 		e_print('ERROR')
 		return 'ERROR'
 
-
 @app.route('/getscores')
 def getscores():
 	game_name = request.args.get('game')
@@ -258,8 +251,8 @@ def getstate():
 		return 'PLAYING'
 	elif STATE == WAIT_START:
 		return 'WAIT_START'
-	elif STATE == SHOW_RECS:
-		return 'SHOW_RECS'
+	elif STATE == IDLE:
+		return 'IDLE'
 	else:
 		return 'ERROR'
 	return 'ERROR'

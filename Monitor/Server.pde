@@ -2,7 +2,7 @@ void serverConnect()
 {
   if (!server_connect)
   {
-    GetRequest testGet = new GetRequest(server_addr + "rst");
+    GetRequest testGet = new GetRequest(server_addr + "monitor");
     testGet.send();
     long start_connect = millis();
     while (!server_connect && millis() - start_connect < server_connect_timeout)
@@ -72,7 +72,7 @@ void sendEnd()
     String resp = endGet.getContent();
     if (resp.equals("OK"))
     {
-      wait(2);
+      game_done = true;
       println("SERVER UNSW:" + resp);
     }
   }

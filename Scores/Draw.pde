@@ -44,13 +44,13 @@ void drawScores()
     {
       try
       {
-        gameData[g] = loadJSONArray(server_addr+"getscores?game=" + gameNames[g]);
-        println("Game Data from " + gameNames[g] + " recieved: " + str(gameData[g].size())+ " commands");
+        gameData[g] = loadJSONArray(server_addr+"getscores?game=" + game_names[g]);
+        println("Game Data from " + game_names[g] + " recieved: " + str(gameData[g].size())+ " commands");
       }
       catch (Exception e)
       {
         println(e);
-        println("Game Data from " + gameNames[g] + " not recieved");
+        println("Game Data from " + game_names[g] + " not recieved");
       }
     }
     for (int c = 0; c < gameData[g].size() && c < 5; c++)
@@ -78,39 +78,33 @@ void enterName(int game)
   for (int i = 0; i < 3; i++)
   {
     textAlign(LEFT);
-    
-    if (char_pos == i && enter_name)
+    if (char_pos[game] == i && enter_name[game])
     {
       fill(200);
       strokeWeight(0);
-      rect(game_width/2 + game*game_width + game_logo_width/2 - team_width/2 - 1.5*textWidth(cmd_name[i]) + cmd_name_offset, game_width/2 - game_logo_width/2 + game_logo_height + header_size + 10 + (min(5,gameData[game].size())+1)*text_size, textWidth(cmd_name[i]), 5);
+      rect(game_width/2 + game*game_width + game_logo_width/2 - team_width/2 - 1.5*textWidth(cmd_names[game][i]) + cmd_name_offset, game_width/2 - game_logo_width/2 + game_logo_height + header_size + 10 + (min(5,gameData[game].size())+1)*text_size, textWidth(cmd_names[game][i]), 5);
       fill(0);
     }
     fill(255);
-    if (cmd_name[i] == '*' ) 
+    if (cmd_names[game][i] == '*') 
     {
-      if(millis() - start_draw_error_rect < 2000) 
-      {
-        fill(red);
-        //rect(game_width/2 + game*game_width + game_logo_width/2 - team_width/2 - 1.5*textWidth(cmd_name[i]) + cmd_name_offset, game_width/2 - game_logo_width/2 + game_logo_height + header_size + 10 + (min(5,gameData[game].size())+1)*text_size, textWidth(cmd_name[i]), 10);
-      }
+      if (millis() - start_draw_error_rect < 2000) fill(red);
       canSend = false;
     }
-    text(cmd_name[i], game_width/2 + game*game_width + game_logo_width/2 - team_width/2 - 1.5*textWidth(cmd_name[i]) + cmd_name_offset, game_width/2 - game_logo_width/2 + game_logo_height + header_size + 5 + (min(5,gameData[game].size())+1)*text_size);
-    cmd_name_offset += textWidth(cmd_name[i]);
-    cmd_name_str += cmd_name[i];
+    text(cmd_names[game][i], game_width/2 + game*game_width + game_logo_width/2 - team_width/2 - 1.5*textWidth(cmd_names[game][i]) + cmd_name_offset, game_width/2 - game_logo_width/2 + game_logo_height + header_size + 5 + (min(5,gameData[game].size())+1)*text_size);
+    cmd_name_offset += textWidth(cmd_names[game][i]);
+    cmd_name_str += cmd_names[game][i];
   }
   cmd_name_width = cmd_name_offset;
-  name_ok = canSend;
-  //println("name_OK:" + str(name_ok));
+  name_ok[game] = canSend;
 }
 
 void enterTime(int game)
 {
-  String timestr = getTime(hours(Integer.valueOf(cmd_time)), minutes(Integer.valueOf(cmd_time)), seconds(Integer.valueOf(cmd_time)));
+  String timestr = getTime(hours(Integer.valueOf(cmd_times[game])), minutes(Integer.valueOf(cmd_times[game])), seconds(Integer.valueOf(cmd_times[game])));
   fill(255);
   textAlign(CENTER);
-  text(timestr, game*game_width + game_width/2, game_width/2 - game_logo_width/2 + game_logo_height + header_size + 5 + (min(5,gameData[game].size())+1)*text_size);
+  text(timestr, INPUT_GAME*game_width + game_width/2, game_width/2 - game_logo_width/2 + game_logo_height + header_size + 5 + (min(5,gameData[INPUT_GAME].size())+1)*text_size);
 }
 
 String getTime(int h, int m, int s)

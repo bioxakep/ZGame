@@ -77,9 +77,9 @@ void setup()
   pinMode(video2    , OUTPUT);
   pinMode(video3    , OUTPUT);
   pinMode(video4    , OUTPUT);
-
+  
   pinMode(RSTXCNTRL, OUTPUT);
-
+  //pinMode(7, INPUT_PULLUP);
   digitalWrite(lightR1   , OUTPUT);
   digitalWrite(lightR2A  , OUTPUT);
   digitalWrite(lightR2B  , OUTPUT);
