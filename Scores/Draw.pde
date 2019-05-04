@@ -1,9 +1,11 @@
 void drawFrames()
 {
   fill(0);
+  stroke(255);
+  strokeWeight(2);
   rect(0, 0, width-2, height-2);
-  line(game_width, 0, game_width, height);
-  line(2*game_width, 0, 2*game_width, height);
+  //line(game_width, 0, game_width, height);
+  //line(2*game_width, 0, 2*game_width, height);
 }
 
 void drawHeaders()
@@ -11,7 +13,7 @@ void drawHeaders()
   image(z_logo, game_width/2 - game_logo_width/2, game_width/2 - game_logo_width/2, game_logo_width, game_logo_height);
   image(r_logo, game_width + game_width/2 - game_logo_width/2, game_width/2 - game_logo_width/2, game_logo_width, game_logo_height);
   image(g_logo, 2*game_width + game_width/2 - game_logo_width/2, game_width/2 - game_logo_width/2, game_logo_width, game_logo_height);
-  fill(255);
+  fill(green);
   textSize(text_size);
   for (int i = 0; i < 3; i++)
   {
@@ -25,14 +27,14 @@ void drawHeaders()
   textAlign(CENTER);
   if(millis() - ic_col_change > 1000) 
   {
-    if(ic_color == white) ic_color = yellow;
-    else ic_color = white;
+    if(ic_color == yellow) ic_color = orange;
+    else ic_color = yellow;
     ic_col_change = millis();
   }
   fill(ic_color);
   text("INCERT COIN", width/2, height - text_size/2);
   textAlign(RIGHT);
-  fill(255);
+  fill(orange);
   text("CREDIT: 00", width - 10, height - text_size/2);
 }
 
@@ -60,6 +62,7 @@ void drawScores()
       Integer time = co.getInt("Time");
       textAlign(CENTER);
       textSize(text_size);
+      fill(green);
       text(str(c+1), g*game_width + game_width/2 - game_logo_width/2 + rank_width/2, game_width/2 - game_logo_width/2 + game_logo_height + header_size + 5 + (c+1)*text_size);
       String timestr = getTime(hours(Integer.valueOf(time)), minutes(Integer.valueOf(time)), seconds(Integer.valueOf(time)));
       text(timestr, g*game_width + game_width/2, game_width/2 - game_logo_width/2 + game_logo_height + header_size + 5 + (c+1)*text_size);
@@ -85,7 +88,7 @@ void enterName(int game)
       rect(game_width/2 + game*game_width + game_logo_width/2 - team_width/2 - 1.5*textWidth(cmd_names[game][i]) + cmd_name_offset, game_width/2 - game_logo_width/2 + game_logo_height + header_size + 10 + (min(5,gameData[game].size())+1)*text_size, textWidth(cmd_names[game][i]), 5);
       fill(0);
     }
-    fill(255);
+    fill(blue);
     if (cmd_names[game][i] == '*') 
     {
       if (millis() - start_draw_error_rect < 2000) fill(red);
@@ -102,7 +105,7 @@ void enterName(int game)
 void enterTime(int game)
 {
   String timestr = getTime(hours(Integer.valueOf(cmd_times[game])), minutes(Integer.valueOf(cmd_times[game])), seconds(Integer.valueOf(cmd_times[game])));
-  fill(255);
+  fill(blue);
   textAlign(CENTER);
   text(timestr, INPUT_GAME*game_width + game_width/2, game_width/2 - game_logo_width/2 + game_logo_height + header_size + 5 + (min(5,gameData[INPUT_GAME].size())+1)*text_size);
 }

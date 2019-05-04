@@ -37,6 +37,9 @@ PImage g_logo;
 color red = color(200,10,10);
 color white = color(200);
 color yellow = color(250,210,160);
+color green = color(10,200,10);
+color blue = color(10,10,200);
+color orange = color(250,150,0);
 color ic_color;
 float cmd_name_width;
 float game_width, game_logo_width, game_logo_height;
@@ -73,7 +76,7 @@ void setup()
   team = "TEAM";
   spaces = "     ";
   
-  ic_color = white;
+  ic_color = orange;
   arcade_font = createFont("arcade.ttf", 20);
   textFont(arcade_font);
   

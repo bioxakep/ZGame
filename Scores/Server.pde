@@ -130,7 +130,7 @@ void updateState()
           char_ix[0][c] = 0;
         }
       }
-      if (Response.equals("IDLE") && STATE != PLAYING)
+      if (Response.equals("IDLE") && STATE == ZOMBIE_NAME)
       {
         // Reset Scores
         println("RESET SCORES");
