@@ -71,6 +71,7 @@ void sendGStates() // Проверяем прошел ли игрок какой
     digitalWrite(RSTXCNTRL, LOW);  // Stop Transmitter
     printEvent(", level = " + String(level), true); // DEBUG
   }
+  delay(125);
 }
 
 void connectToBridge()

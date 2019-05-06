@@ -424,8 +424,6 @@ void gameOver()
     delay(250);
     digitalWrite(lightR3B, HIGH); // ON LIGHT ROOM 3
     digitalWrite(door4     , HIGH);  // open
-
-  
   }
 }
 

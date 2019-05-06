@@ -52,7 +52,7 @@ void keyPressed()
     }
     if (keyCode == 38) 
     {
-      char_ix[INPUT_GAME][char_pos[INPUT_GAME]] = max(0, char_ix[INPUT_GAME][char_pos[INPUT_GAME]]+1);
+      char_ix[INPUT_GAME][char_pos[INPUT_GAME]] = min(alpha.length()-1, char_ix[INPUT_GAME][char_pos[INPUT_GAME]]+1);
       cmd_names[INPUT_GAME][char_pos[INPUT_GAME]] = alpha.charAt(char_ix[INPUT_GAME][char_pos[INPUT_GAME]]);
     }
     if (keyCode == 10)

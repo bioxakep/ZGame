@@ -131,6 +131,8 @@ def endgame():
 						for i in range(max_id):
 							if i not in ids:
 								NEXT_ID = i
+					else:
+						NEXT_ID = max_id + 1
 				else:
 					NEXT_ID = 0
 				DT = datetime.now().strftime("%Y-%m-%d %H:%M")
