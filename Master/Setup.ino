@@ -16,7 +16,7 @@ void setup()
   lcd.print("They are coming!");
   delay(3000);
 
-  Serial.println("TAC Master 3/MAY/2019 ");
+  Serial.println("TAC Master 5/MAY/2019 ");
   cpz1 = new ArdCPZ(PIN_CPZ1);
 
   // ---- props ----

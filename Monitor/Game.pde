@@ -125,7 +125,6 @@ void playGame()
       else text("WAIT MASTER START", r3x + 2*mar + status_width, r3y + r3h - mar - 120);
     }
   }
-  
   ellipseMode(CENTER);
   if (master_connect) fill(green);
   else fill(red);

@@ -146,7 +146,7 @@ def endgame():
 				CMD_NAME = ''
 				STATE = IDLE
 				print('SERVER GO TO SHOW_RECS STATE')
-			return 'game stop'
+			return 'OK'
 		else:
 			e_print('WRONG GADGETS DATA RECIEVED')
 			return 'WRONG GADGETS DATA RECIEVED'

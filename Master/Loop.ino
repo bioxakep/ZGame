@@ -24,7 +24,7 @@ void loop()
   
   sendGStates();
   checkStates();
-  // if (shake) shakeIt();
+  if (shake) shakeIt();
 
  if (startTimer > 0 && ((millis() - startTimer) > startDelay))
   {
@@ -38,9 +38,10 @@ void loop()
 
  if (radioTimer > 0 && ((millis() - radioTimer) > radioDelay))
   {
-    sendHLms(video1, 100);
     digitalWrite(phoneOUT, LOW);  // turn off the phone
     digitalWrite(lightR2A, LOW);  // ON LIGHT under door 2 and EXIT sign in room 1
+    digitalWrite(door2,   HIGH);  //open door 2
+    sendHLms(video1, 200);
     delay(200);
     digitalWrite(lightR2B, LOW); // OFF LIGHT under door 3
     delay(200);
@@ -48,7 +49,6 @@ void loop()
     delay(200);
     digitalWrite(lightR3B, LOW); // OFF LIGHT ROOM 3
     delay(200);
-    digitalWrite(door2,   HIGH);  //open door 2
     radioTimer = 0;
   }
 

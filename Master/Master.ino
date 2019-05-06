@@ -1,4 +1,4 @@
-//           03/MAY/2019 
+//           05/MAY/2019 
 //TAC_Master 05/MAR/2019 Beta
 //           21/MAR/2019 organized / pins tested
 //           02/04/2019 Works until end of game
@@ -136,7 +136,7 @@ byte gCount =  16;
 bool ambiance = false;
 
 unsigned long radioTimer = 0;
-unsigned long radioDelay = 46000;
+unsigned long radioDelay = 44500;
 
 unsigned long flareTimer = 0;
 unsigned long flareDelay = 12000;
