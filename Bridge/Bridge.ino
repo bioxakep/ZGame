@@ -1,5 +1,3 @@
-// 29.03.2019 Bridge in ZGame
-// 02/04/2019 Big Update
 #include <SoftwareSerial.h>
 #define RSTXCNTRL 10
 //0xAA from Master to Bridge

@@ -222,11 +222,10 @@ void Fuses()
 }
 
 
-// ROOM 3 "Door"
+// ROOM 3 "WinDoor"
 
-void Door(long t)
+void WinDoor(long t)
 {
-
   if ((digitalRead(fusesIN) == LOW || operSkips[door]) && !gStates[door])
   {
     if (!operSkips[door]) playerGDone[door] = true;
@@ -239,18 +238,9 @@ void Door(long t)
     lcd.setCursor(0, 0); // X, Y
     lcd.print("    Door OK    ");
     delay(50);
-    level = 32;
     // What else if skip or player
   }
-}
 
-
-
-
-// ROOM 3 "Window"
-
-void Window(long t)
-{
   if ((digitalRead(alleyIN) == LOW || operSkips[window]) && !gStates[window])
   {
     if (!operSkips[window]) playerGDone[window] = true;
@@ -264,9 +254,9 @@ void Window(long t)
     lcd.setCursor(0, 0); // X, Y
     lcd.print("   Window OK   ");
     delay(50);
-    level = 33;
     // What else if skip or player
   }
+  if (gStates[door] && gStates[window]) level = 33;
 }
 
 // ROOM 3 "Gas"
