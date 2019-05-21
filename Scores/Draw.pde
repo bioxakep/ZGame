@@ -32,7 +32,7 @@ void drawHeaders()
     ic_col_change = millis();
   }
   fill(ic_color);
-  text("INCERT COIN", width/2, height - text_size/2);
+  text("INSERT COIN", width/2, height - text_size/2);
   textAlign(RIGHT);
   fill(orange);
   text("CREDIT: 00", width - 10, height - text_size/2);
