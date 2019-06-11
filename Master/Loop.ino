@@ -9,13 +9,14 @@ void loop()
   else if (level == 21) Generator();
   else if (level == 22) Meter();
   else if (level == 23) Code();
-  else if (level == 30) Fuses();
-  else if (level == 31) WinDoorGasShelf(tick);
-  else if (level == 32) PlayNext();
-  else if (level == 33) Emp();
-  else if (level == 34) World();
-  else if (level == 35) Flare();
-  else if (level == 36) Zombie();
+  else if (level == 30) Fuses(); 
+  else if (level == 31) WinDoor(tick);
+  else if (level == 33) Gas();
+  else if (level == 34) Shelf();
+  else if (level == 35) Emp();
+  else if (level == 36) World();
+  else if (level == 37) Flare();
+  else if (level == 38) Zombie();
   else if (level == 50) gameOver();
 
   if (level > 34 && level < 50) shakeIt();
@@ -36,18 +37,26 @@ void loop()
 
  if (radioTimer > 0 && ((millis() - radioTimer) > radioDelay))
   {
+    sendHLms(video1, 100);
     digitalWrite(phoneOUT, LOW);  // turn off the phone
     digitalWrite(lightR2A, LOW);  // ON LIGHT under door 2 and EXIT sign in room 1
     digitalWrite(door2,   HIGH);  //open door 2
-    sendHLms(video1, 200);
-    delay(200);
+   // delay(200);
+    digitalWrite (xmonitor, LOW);  // HIGH = ON
     digitalWrite(lightR2B, LOW); // OFF LIGHT under door 3
     delay(200);
     digitalWrite(lightR3A, LOW); // OFF LIGHT ROOM 3
-    delay(200);
     digitalWrite(lightR3B, LOW); // OFF LIGHT ROOM 3
     delay(200);
     radioTimer = 0;
+  }
+
+ if (shelfTimer > 0 && ((millis() - shelfTimer) > shelfDelay))
+  {
+    mp3Set(1);
+    mp3_play(44); // last window secured
+    delay(50);
+    shelfTimer = 0;
   }
 
  if (flareTimer > 0 && ((millis() - flareTimer) > flareDelay))
@@ -55,6 +64,8 @@ void loop()
     sendHLms(video1, 100);  // first monitor pulse message
     flareTimer = 0;
     witchTimer = millis();
+    digitalWrite(lightR2A, HIGH);  // OFF LIGHT above door 2
+    digitalWrite(lightR2B, LOW);  // OFF LIGHT 
     lcd.setCursor(0, 0);  
     lcd.print("  pilot MSG #1  ");
 
@@ -76,6 +87,11 @@ void loop()
     delay(150);
   
     digitalWrite(lightR3B, HIGH);
+
+    strip.setPixelColor(0, 0, 0, 0);
+    strip.setPixelColor(1, 0, 0, 0);
+    strip.setPixelColor(2, 0, 0, 0);
+    strip.show();
   
     delay(200);
     digitalWrite(lightR3A, LOW); 
@@ -93,9 +109,7 @@ void loop()
     sendHLms(zombiOUT, 350);
     lcd.setCursor(0, 0);  
     lcd.print(" Witch out  ");
-
-    delay(5000);
-    delay(12000);
+    delay(17000);
     sendHLms(video1, 100);  // first monitor breach message
     witchTimer = 0;
     lcd.setCursor(0, 0);  

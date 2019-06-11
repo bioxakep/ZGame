@@ -16,11 +16,12 @@ void setup()
   lcd.print("They are coming!");
   delay(3000);
 
-  Serial.println("TAC Master 5/MAY/2019 ");
+  Serial.println("TAC Master 28/MAY/2019 (windoor)");
   cpz1 = new ArdCPZ(PIN_CPZ1);
 
   // ---- props ----
   pinMode(phoneOUT , OUTPUT);
+  pinMode(xmonitor , OUTPUT);
 
   pinMode(radioIN  , INPUT_PULLUP);
   pinMode(radioOUT , OUTPUT);
@@ -98,6 +99,7 @@ void setup()
   digitalWrite(video4   ,  LOW);
 
   digitalWrite (phoneOUT,  HIGH);  // HIGH = ON
+  digitalWrite (xmonitor,  HIGH);  // HIGH = ON
 
   digitalWrite (hatchOUT,  LOW);  // LOW = Closed
 
@@ -115,7 +117,7 @@ void setup()
   digitalWrite (boxed,     HIGH); // LOW=CLOSED
 
   digitalWrite(door1     , HIGH);  //open
-  digitalWrite(door2     , LOW);  // closed > light Room 1 ON
+  digitalWrite(door2     , HIGH);  // open  /// closed > light Room 1 ON
   digitalWrite(door3A    , LOW);  // open
   digitalWrite(door3B    , LOW);  // open
   digitalWrite(door4     , LOW);  // open
@@ -123,9 +125,9 @@ void setup()
   digitalWrite(RSTXCNTRL, LOW);
 
   for (int  x = 0; x < 3; x++) {
-    strip.setPixelColor(x, 0, 0, 110); // ALL RED (SHOULD START ALL BLACK)
-  }
+    strip.setPixelColor(x, 0, 0, 50); // ALL RED (SHOULD START ALL BLUE)
   strip.show();
+  }
 
   for (int i = 0; i < gCount; i++)
   {

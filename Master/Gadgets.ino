@@ -49,7 +49,7 @@ void Start(long t)
       mp3Set(1);
       mp3_play(111); //startup sound
       delay(50);
-
+  
       digitalWrite(door2, HIGH);
       digitalWrite(door4, LOW);
       digitalWrite(door3A, HIGH);  //LOCKED
@@ -79,7 +79,6 @@ void Radio()
     if (operSkips[radio]) sendHLms(radioOUT, 250);
     else playerGDone[radio] = true;
     radioTimer = millis();
-    digitalWrite(phoneOUT, LOW);  // turn off the phone
     delay(200);
     strip.setPixelColor(0, 0, 0, 0);
     strip.show();
@@ -99,7 +98,7 @@ void Generator()
   {
     if (operSkips[gener1]) sendHLms(generOUT, 250);
     else playerGDone[gener1] = true;
-    //   sendHLms(video2, 100);
+ //   sendHLms(video2, 100);
     printEvent("Generator-1 OK", true);
     lcd.setCursor(0, 0); // X, Y
     lcd.print("   Gen/FUEL   ");
@@ -142,7 +141,7 @@ void Meter()
     digitalWrite(lightR2B, HIGH);
     strip.setPixelColor(0, 0, 50, 0);
     strip.show();
-    //    sendHLms(alleyOUT, 250);
+//    sendHLms(alleyOUT, 250);
     printEvent("Meter OK", true);
     sendHLms(fusesOUT, 250);
     delay(50);
@@ -168,20 +167,24 @@ void Code()
     else playerGDone[code] = true;
     lcd.setCursor(0, 0); lcd.print("    Code OK     ");
 
-    //    digitalWrite(lightR1, HIGH);
+//    digitalWrite(lightR1, HIGH);
     digitalWrite(door3A, LOW); // UNLOCKED
-
+ 
     strip.setPixelColor(0, 0, 0, 0);
     strip.setPixelColor(1, 0, 0, 0);
     strip.setPixelColor(2, 0, 0, 0);
     strip.show();
+
+    digitalWrite(lightR2A, HIGH);
+    digitalWrite(lightR2B, LOW);
+ 
 
     //mp3Set(1);
     //mp3_play(2);
     //delay(10);
 
     printEvent("Code OK", true);
-
+  
     delay(50);
     level = 30;
   }
@@ -195,8 +198,8 @@ void Fuses()
   {
     if (operSkips[fuses]) sendHLms(fusesOUT, 250);
     else playerGDone[fuses] = true;
-    mp3Set(1);
-    mp3_play(1);
+    mp3Set(1);   
+    mp3_play(1);   
     delay(50);
     digitalWrite(lightR3A, HIGH);
     digitalWrite(lightR3B, HIGH);
@@ -217,14 +220,13 @@ void Fuses()
     digitalWrite(lightR3A, HIGH);
     delay(250);
     digitalWrite(lightR3B, HIGH);
-    if (digitalRead(hatchIN)) hatchSW = true; else hatchSW = false;
+ //   if(digitalRead(hatchIN)) hatchSW = true; else hatchSW = false; 
+    sendHLms(alleyOUT, 533); // signal to fade out ambiance in fence (room2)
   }
 }
 
-
 // ROOM 3 "WinDoor"
-
-void WinDoorGasShelf(long t) //Удали запуски ненужных mp3 файлов (перемести их в PLAY FILE 1 и PLAY FILE 2, ниже)
+void WinDoor(long t)
 {
   if ((digitalRead(fusesIN) == LOW || operSkips[door]) && !gStates[door])
   {
@@ -244,19 +246,27 @@ void WinDoorGasShelf(long t) //Удали запуски ненужных mp3 ф
   if ((digitalRead(alleyIN) == LOW || operSkips[window]) && !gStates[window])
   {
     if (!operSkips[window]) playerGDone[window] = true;
-    mp3Set(1);
-    mp3_play(3);
-    delay(50);
     sendHLms(video2, 100);
     strip.setPixelColor(1, greenColor);
     strip.show();
     printEvent("Window OK", true);
     lcd.setCursor(0, 0); // X, Y
     lcd.print("   Window OK   ");
+    delay(550);
+    mp3Set(1);
+    mp3_play(3);
     delay(50);
+    //level = 33;
     // What else if skip or player
-  }
 
+  }
+  if (gStates[door] && gStates[window]) level = 33;
+}  // eof_windoor
+
+
+// ROOM 3 "Gas"
+void Gas()
+{
   if ((!digitalRead(shelfIN) || operSkips[gas]) && !gStates[gas])
   {
     if (operSkips[gas]) sendHLms(shelfOUT, 250);
@@ -268,14 +278,21 @@ void WinDoorGasShelf(long t) //Удали запуски ненужных mp3 ф
     lcd.setCursor(0, 0); // X, Y
     lcd.print("    Gas OK     ");
     delay(250);
+    level = 34;
     digitalWrite(lightR3B, HIGH);
-    //    delay(250);
+//    delay(250);
   }
+}
 
+// ROOM 3 "Shelf"
+
+void Shelf()
+{
   if ((!digitalRead(shelfIN) || operSkips[shelf]) && !gStates[shelf] && gStates[gas])
   {
     if (operSkips[shelf]) sendHLms(shelfOUT, 250);
     else playerGDone[shelf] = true;
+    shelfTimer = millis();
     mp3Set(1);
     mp3_play(4);
     delay(50);
@@ -286,23 +303,9 @@ void WinDoorGasShelf(long t) //Удали запуски ненужных mp3 ф
     lcd.setCursor(0, 0); // X, Y
     lcd.print("   Shelf OK    ");
     delay(50);
-  }
-
-  if (gStates[door] && gStates[window] && gStates[gas] && gStates[shelf]) 
-  {
-    level = 32;
-    // запоминаем время начала проигрывания первой мелодии и запускаем ее
-    // PLAY FILE 1
-  }
-}
-
-void PlayNext()
-{
-  if (millis() - startPlayFile1 > 8000)
-  {
-    // PLAY FILE 2
-    leve = 33;
-    startPlayFile1 = 0;
+    sendHLms(crateOUT, 250);
+    if(digitalRead(hatchIN)) hatchSW = true; else hatchSW = false; 
+   level = 35;
   }
 }
 
@@ -325,7 +328,7 @@ void Emp()
     lcd.setCursor(0, 0); // X, Y
     lcd.print("   E.M.P. OK   ");
     delay(350);
-    level = 34;
+    level = 36;
   }
 }
 
@@ -340,12 +343,12 @@ void World() // Duplicate
     if (operSkips[world]) sendHLms(crateOUT, 250);
     else playerGDone[world] = true;
     digitalWrite(crateHD, HIGH);  //open
-    printEvent("Map OK", true);
+    printEvent("Crate1 OK", true);
     lcd.setCursor(0, 0); // X, Y
     lcd.print("    MAP OK    ");
     delay(50);
-    level = 35;
-    if (!ambiance) {
+    level = 37;
+     if (!ambiance) {
       digitalWrite(hatchOUT, HIGH);
       mp3Set(1);
       mp3_play(5);
@@ -365,12 +368,12 @@ void Flare()
     sendHLms(video4, 100); //flare lauched and helicopter arrives
     flareTimer = millis();
 
-    printEvent("Flare OK", true);
-    lcd.setCursor(0, 0);
+    printEvent("Crate2 OK", true);
+    lcd.setCursor(0, 0);  
     lcd.print("   Flare OK   ");
-    level = 36;
+    level = 38;
     delay(1500);
-    lcd.setCursor(0, 0);
+    lcd.setCursor(0, 0);  
     lcd.print("   Flare DONE ");
   }
 }
@@ -391,7 +394,7 @@ void Zombie()
     delay(50);
 
     printEvent("Zombie OK", true);
-    lcd.setCursor(0, 0);
+    lcd.setCursor(0, 0);  
     lcd.print("   Zombie OK    ");
     delay(2500);
 
@@ -399,6 +402,8 @@ void Zombie()
     level = 50;
     delay(5000);
     digitalWrite(door4, LOW);
+    delay(2000);
+    sendHLms(video4, 100);  // first monitor : Victory message !
   }
 }
 
@@ -415,9 +420,13 @@ void gameOver()
     game = false;
     delay(10000);
     digitalWrite(lightR3A, HIGH); // ON LIGHT ROOM 3
-    delay(250);
+    delay(150);
+    sendHLms(video4, 100);  // first monitor : Victory message !
+    delay(100);
     digitalWrite(lightR3B, HIGH); // ON LIGHT ROOM 3
     digitalWrite(door4     , HIGH);  // open
+
+  
   }
 }
 
@@ -436,12 +445,12 @@ void Hatch()
   if (((digitalRead(hatchIN) != hatchSW) || operSkips[hatch])  && gStates[shelf])
   {
     if (!ambiance) {
-      digitalWrite(hatchOUT, HIGH);
-      mp3Set(1);
-      // mp3_set_volume(25);
-      delay(50);
-      mp3_play(5);
-      ambiance = true;
+    digitalWrite(hatchOUT, HIGH);
+    mp3Set(1);
+   // mp3_set_volume(25);
+    delay(50);
+    mp3_play(5);
+    ambiance = true;
     }
   }
 }
