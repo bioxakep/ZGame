@@ -46,15 +46,15 @@ def clean_base():
 				connect.commit()
 
 def get_game_scores(game_name):
-	scores = list()
+	times = list()
 	with sqlite3.connect(BASE_PATH) as connect:
 		c = connect.cursor()
 		results = c.execute("""SELECT * from {name}""".format(name = game_name)).fetchall()
 		while results:
 			r = results.pop()
-			scores.append(dict(zip(["Name","Time"],[r[2],r[3]])))
-		scores = sorted(scores, key=lambda k: k['Time']) 
-		uns = json.dumps(scores)
+			times.append(dict(zip(["Name","Time"],[r[2],r[3]])))
+		times = sorted(times, key=lambda k: k['Time'])
+		uns = json.dumps(times)
 		if uns:
 			return uns
 		else:

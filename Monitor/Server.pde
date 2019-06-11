@@ -64,7 +64,7 @@ void sendStart()
 void sendEnd()
 {
   PostRequest endGet = new PostRequest(server_addr + "endgame");
-  String gData = join(nf(gTimes, 0), ","); 
+  String gData = join(nf(gTimes, 0), ",");
   endGet.addData("gdata", gData);
   endGet.addData("scores", str(currScores));
   game_over = true;

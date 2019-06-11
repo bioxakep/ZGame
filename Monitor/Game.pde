@@ -51,7 +51,7 @@ void playGame()
           long passedTime = now - last_passed_time;
           last_passed_time = now;
           passedTimes[i] = getTime(hours(passedTime), minutes(passedTime), seconds(passedTime));
-          gTimes[i] = seconds(passedTime);
+          gTimes[i] = int(passedTime/1000);
           print("Gadget "); 
           print(i); 
           print(" skipped at ");
@@ -92,6 +92,7 @@ void playGame()
 
   // TIMER DRAW
   long elpsTime = t.getElapsedTime();
+  if (game_over) elpsTime = t.getPassedTime();
   String currTime = getTime(hours(elpsTime), minutes(elpsTime), seconds(elpsTime));
   fill(orange);
   if (t.overtime) 
@@ -156,7 +157,7 @@ void playGame()
           long passedTime = now - last_passed_time;
           last_passed_time = now;
           passedTimes[i] = getTime(hours(passedTime), minutes(passedTime), seconds(passedTime));
-          gTimes[i] = seconds(passedTime);
+          gTimes[i] = int(passedTime/1000);
           print("Gadget "); 
           print(i);
           print(" done by player at ");

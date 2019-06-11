@@ -49,7 +49,7 @@ void Start(long t)
       mp3Set(1);
       mp3_play(111); //startup sound
       delay(50);
-  
+
       digitalWrite(door2, HIGH);
       digitalWrite(door4, LOW);
       digitalWrite(door3A, HIGH);  //LOCKED
@@ -99,7 +99,7 @@ void Generator()
   {
     if (operSkips[gener1]) sendHLms(generOUT, 250);
     else playerGDone[gener1] = true;
- //   sendHLms(video2, 100);
+    //   sendHLms(video2, 100);
     printEvent("Generator-1 OK", true);
     lcd.setCursor(0, 0); // X, Y
     lcd.print("   Gen/FUEL   ");
@@ -142,7 +142,7 @@ void Meter()
     digitalWrite(lightR2B, HIGH);
     strip.setPixelColor(0, 0, 50, 0);
     strip.show();
-//    sendHLms(alleyOUT, 250);
+    //    sendHLms(alleyOUT, 250);
     printEvent("Meter OK", true);
     sendHLms(fusesOUT, 250);
     delay(50);
@@ -168,9 +168,9 @@ void Code()
     else playerGDone[code] = true;
     lcd.setCursor(0, 0); lcd.print("    Code OK     ");
 
-//    digitalWrite(lightR1, HIGH);
+    //    digitalWrite(lightR1, HIGH);
     digitalWrite(door3A, LOW); // UNLOCKED
- 
+
     strip.setPixelColor(0, 0, 0, 0);
     strip.setPixelColor(1, 0, 0, 0);
     strip.setPixelColor(2, 0, 0, 0);
@@ -181,7 +181,7 @@ void Code()
     //delay(10);
 
     printEvent("Code OK", true);
-  
+
     delay(50);
     level = 30;
   }
@@ -195,8 +195,8 @@ void Fuses()
   {
     if (operSkips[fuses]) sendHLms(fusesOUT, 250);
     else playerGDone[fuses] = true;
-    mp3Set(1);   
-    mp3_play(1);   
+    mp3Set(1);
+    mp3_play(1);
     delay(50);
     digitalWrite(lightR3A, HIGH);
     digitalWrite(lightR3B, HIGH);
@@ -217,14 +217,14 @@ void Fuses()
     digitalWrite(lightR3A, HIGH);
     delay(250);
     digitalWrite(lightR3B, HIGH);
-    if(digitalRead(hatchIN)) hatchSW = true; else hatchSW = false; 
+    if (digitalRead(hatchIN)) hatchSW = true; else hatchSW = false;
   }
 }
 
 
 // ROOM 3 "WinDoor"
 
-void WinDoor(long t)
+void WinDoorGasShelf(long t) //Удали запуски ненужных mp3 файлов (перемести их в PLAY FILE 1 и PLAY FILE 2, ниже)
 {
   if ((digitalRead(fusesIN) == LOW || operSkips[door]) && !gStates[door])
   {
@@ -256,13 +256,7 @@ void WinDoor(long t)
     delay(50);
     // What else if skip or player
   }
-  if (gStates[door] && gStates[window]) level = 33;
-}
 
-// ROOM 3 "Gas"
-
-void Gas()
-{
   if ((!digitalRead(shelfIN) || operSkips[gas]) && !gStates[gas])
   {
     if (operSkips[gas]) sendHLms(shelfOUT, 250);
@@ -274,16 +268,10 @@ void Gas()
     lcd.setCursor(0, 0); // X, Y
     lcd.print("    Gas OK     ");
     delay(250);
-    level = 34;
     digitalWrite(lightR3B, HIGH);
-//    delay(250);
+    //    delay(250);
   }
-}
 
-// ROOM 3 "Shelf"
-
-void Shelf()
-{
   if ((!digitalRead(shelfIN) || operSkips[shelf]) && !gStates[shelf] && gStates[gas])
   {
     if (operSkips[shelf]) sendHLms(shelfOUT, 250);
@@ -298,7 +286,23 @@ void Shelf()
     lcd.setCursor(0, 0); // X, Y
     lcd.print("   Shelf OK    ");
     delay(50);
-    level = 35;
+  }
+
+  if (gStates[door] && gStates[window] && gStates[gas] && gStates[shelf]) 
+  {
+    level = 32;
+    // запоминаем время начала проигрывания первой мелодии и запускаем ее
+    // PLAY FILE 1
+  }
+}
+
+void PlayNext()
+{
+  if (millis() - startPlayFile1 > 8000)
+  {
+    // PLAY FILE 2
+    leve = 33;
+    startPlayFile1 = 0;
   }
 }
 
@@ -321,7 +325,7 @@ void Emp()
     lcd.setCursor(0, 0); // X, Y
     lcd.print("   E.M.P. OK   ");
     delay(350);
-    level = 36;
+    level = 34;
   }
 }
 
@@ -340,8 +344,8 @@ void World() // Duplicate
     lcd.setCursor(0, 0); // X, Y
     lcd.print("    MAP OK    ");
     delay(50);
-    level = 37;
-     if (!ambiance) {
+    level = 35;
+    if (!ambiance) {
       digitalWrite(hatchOUT, HIGH);
       mp3Set(1);
       mp3_play(5);
@@ -362,11 +366,11 @@ void Flare()
     flareTimer = millis();
 
     printEvent("Flare OK", true);
-    lcd.setCursor(0, 0);  
+    lcd.setCursor(0, 0);
     lcd.print("   Flare OK   ");
-    level = 38;
+    level = 36;
     delay(1500);
-    lcd.setCursor(0, 0);  
+    lcd.setCursor(0, 0);
     lcd.print("   Flare DONE ");
   }
 }
@@ -387,7 +391,7 @@ void Zombie()
     delay(50);
 
     printEvent("Zombie OK", true);
-    lcd.setCursor(0, 0);  
+    lcd.setCursor(0, 0);
     lcd.print("   Zombie OK    ");
     delay(2500);
 
@@ -432,12 +436,12 @@ void Hatch()
   if (((digitalRead(hatchIN) != hatchSW) || operSkips[hatch])  && gStates[shelf])
   {
     if (!ambiance) {
-    digitalWrite(hatchOUT, HIGH);
-    mp3Set(1);
-   // mp3_set_volume(25);
-    delay(50);
-    mp3_play(5);
-    ambiance = true;
+      digitalWrite(hatchOUT, HIGH);
+      mp3Set(1);
+      // mp3_set_volume(25);
+      delay(50);
+      mp3_play(5);
+      ambiance = true;
     }
   }
 }
