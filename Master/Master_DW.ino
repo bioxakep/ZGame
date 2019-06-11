@@ -77,6 +77,8 @@ unsigned long windowSigStart = 0;
 unsigned long fusesSigStop = 0;
 unsigned long windowSigStop = 0;
 
+unsigned long startVoice = 0; // start time of voice commands after windoorgasshelf levels pass
+
 boolean fusesStates[2] = {HIGH, HIGH};
 boolean windowStates[2] = {HIGH, HIGH};
 

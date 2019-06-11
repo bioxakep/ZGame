@@ -226,7 +226,7 @@ void Fuses()
 }
 
 // ROOM 3 "WinDoor"
-void WinDoor(long t)
+void WinDoorGasShelf(long t) // Переместить запуск аудиофайлов из гаджетов в строки 301 и 311
 {
   if ((digitalRead(fusesIN) == LOW || operSkips[door]) && !gStates[door])
   {
@@ -258,15 +258,8 @@ void WinDoor(long t)
     delay(50);
     //level = 33;
     // What else if skip or player
-
   }
-  if (gStates[door] && gStates[window]) level = 33;
-}  // eof_windoor
 
-
-// ROOM 3 "Gas"
-void Gas()
-{
   if ((!digitalRead(shelfIN) || operSkips[gas]) && !gStates[gas])
   {
     if (operSkips[gas]) sendHLms(shelfOUT, 250);
@@ -278,16 +271,10 @@ void Gas()
     lcd.setCursor(0, 0); // X, Y
     lcd.print("    Gas OK     ");
     delay(250);
-    level = 34;
     digitalWrite(lightR3B, HIGH);
 //    delay(250);
   }
-}
 
-// ROOM 3 "Shelf"
-
-void Shelf()
-{
   if ((!digitalRead(shelfIN) || operSkips[shelf]) && !gStates[shelf] && gStates[gas])
   {
     if (operSkips[shelf]) sendHLms(shelfOUT, 250);
@@ -305,7 +292,24 @@ void Shelf()
     delay(50);
     sendHLms(crateOUT, 250);
     if(digitalRead(hatchIN)) hatchSW = true; else hatchSW = false; 
-   level = 35;
+  }
+  
+  if (gStates[door] && gStates[window] && gStates[gas] && gStates[shelf]) 
+  {
+    level = 33;
+    startVoice = t;
+    // Play first sound
+  }
+}  // eof_windoorgasshelf
+
+
+// ROOM 3 "Gas"
+void Voice()
+{
+  if (millis() - startVoice > 8000) 
+  {
+    // Play second sound
+    level = 35;
   }
 }
 
