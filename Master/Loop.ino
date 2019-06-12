@@ -10,8 +10,7 @@ void loop()
   else if (level == 22) Meter();
   else if (level == 23) Code();
   else if (level == 30) Fuses(); 
-  else if (level == 31) WinDoorGasShelf(tick);
-  else if (level == 33) Voice();
+  else if (level == 31) WinDoorGasShelf();
   else if (level == 35) Emp();
   else if (level == 36) World();
   else if (level == 37) Flare();

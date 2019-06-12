@@ -1,4 +1,5 @@
-//           05/MAY/2019 
+//           28/MAY/2019 end modified
+//           11/MAY/2019 windoor updated
 //TAC_Master 05/MAR/2019 Beta
 //           21/MAR/2019 organized / pins tested
 //           02/04/2019 Works until end of game
@@ -70,16 +71,10 @@ int fusesOUT = 27;
 // int door3IN  = 9; 
 unsigned long lastSyncTime = 0;
 
-unsigned long fusesSigStart = 0;
-unsigned long windowSigStart = 0;
-
-unsigned long fusesSigStop = 0;
-unsigned long windowSigStop = 0;
-
-unsigned long startPlayFile1 = 0;
 boolean fusesStates[2] = {HIGH, HIGH};
 boolean windowStates[2] = {HIGH, HIGH};
 
+int xmonitor = 36;
 int shelfIN  = 37; // wire 21
 int shelfOUT = 35;
 
@@ -147,6 +142,9 @@ unsigned long witchDelay = 43000;
 
 unsigned long startTimer = 0;
 unsigned long startDelay = 15000;
+
+unsigned long shelfTimer = 0;
+unsigned long shelfDelay = 4000;
 
 /*
 0. PRE-START   >>> ALL DOORS  (2,3,4) LOCK
