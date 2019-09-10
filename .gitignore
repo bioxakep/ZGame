@@ -23,3 +23,5 @@ Monitor.png
 Scores.png
 Master and Bridge RS-485.png
 Server/gamedata.db
+*.db
+*.log
